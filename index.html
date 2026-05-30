@@ -2,1330 +2,968 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#16A085">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1a6b52">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Daily Tracker">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2316A085'/%3E%3Ctext x='50' y='65' font-size='55' text-anchor='middle' fill='white'%3E🌿%3C/text%3E%3C/svg%3E">
-<title>Pre-Diabetic Daily Tracker</title>
+<meta name="apple-mobile-web-app-title" content="Food Tracker">
+<title>Daily Food Tracker</title>
 <style>
-:root {
-  --bg: #F5F7F8;
-  --card: #FFFFFF;
-  --card-soft: #F8FAFB;
-  --primary: #16A085;
-  --primary-soft: rgba(22, 160, 133, 0.08);
-  --primary-deep: #0E6B5A;
-  --success: #27AE60;
-  --warning: #E67E22;
-  --danger: #E74C3C;
-  --warning-soft: rgba(230, 126, 34, 0.1);
-  --danger-soft: rgba(231, 76, 60, 0.08);
-  --text: #2C3E50;
-  --text-muted: #7F8C8D;
-  --text-light: #B0BABF;
-  --border: #ECF0F1;
-  --border-strong: #DDE2E5;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
-  --shadow: 0 2px 8px rgba(0,0,0,0.05);
-  --shadow-lg: 0 8px 24px rgba(0,0,0,0.06);
-  --score-track: #ECF0F1;
+:root{
+  --bg:#F4F6F7;--card:#FFF;--soft:#F8FAFB;
+  --him:#1a6b52;--him-soft:rgba(26,107,82,.09);--him-light:#e7f4ef;
+  --her:#8B3A6B;--her-soft:rgba(139,58,107,.09);--her-light:#f4eaf1;
+  --green:#27AE60;--yellow:#E67E22;--red:#E74C3C;
+  --text:#2C3E50;--muted:#7F8C8D;--light:#BDC3C7;
+  --border:#ECF0F1;--border2:#DDE2E5;
+  --shadow:0 1px 4px rgba(0,0,0,.05);--shadow2:0 4px 16px rgba(0,0,0,.07);
+  --r:14px;
 }
-[data-theme="dark"] {
-  --bg: #0E1419;
-  --card: #1A2128;
-  --card-soft: #232B33;
-  --primary: #1ABC9C;
-  --primary-soft: rgba(26, 188, 156, 0.12);
-  --primary-deep: #16A085;
-  --success: #2ECC71;
-  --warning: #F39C12;
-  --danger: #EC7063;
-  --warning-soft: rgba(243, 156, 18, 0.15);
-  --danger-soft: rgba(236, 112, 99, 0.12);
-  --text: #ECF0F1;
-  --text-muted: #95A5A6;
-  --text-light: #5F6B73;
-  --border: #2C353F;
-  --border-strong: #3A4651;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.2);
-  --shadow: 0 2px 8px rgba(0,0,0,0.25);
-  --shadow-lg: 0 8px 24px rgba(0,0,0,0.3);
-  --score-track: #2C353F;
+[data-theme=dark]{
+  --bg:#0d1117;--card:#161b22;--soft:#1c2128;
+  --him:#2ECC71;--him-soft:rgba(46,204,113,.1);--him-light:rgba(46,204,113,.07);
+  --her:#c77daa;--her-soft:rgba(199,125,170,.1);--her-light:rgba(199,125,170,.07);
+  --green:#2ECC71;--yellow:#F39C12;--red:#EC7063;
+  --text:#e6edf3;--muted:#8B949E;--light:#484F58;
+  --border:#21262D;--border2:#30363D;
+  --shadow:0 1px 4px rgba(0,0,0,.3);--shadow2:0 4px 16px rgba(0,0,0,.35);
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { -webkit-text-size-adjust: 100%; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  font-size: 16px;
-  line-height: 1.5;
-  padding-bottom: 90px;
-  transition: background 0.3s ease, color 0.3s ease;
-  -webkit-font-smoothing: antialiased;
-  min-height: 100vh;
-}
-.app-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 16px 12px;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
-.app-header-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-}
-.app-title {
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.app-title-icon { font-size: 22px; }
-.header-actions { display: flex; gap: 8px; }
-.icon-btn {
-  background: var(--card-soft);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  transition: all 0.2s ease;
-  -webkit-tap-highlight-color: transparent;
-}
-.icon-btn:active { transform: scale(0.95); background: var(--primary-soft); }
-.score-panel { display: flex; flex-direction: column; gap: 8px; }
-.score-row { display: flex; justify-content: space-between; align-items: baseline; }
-.score-number { font-size: 28px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; line-height: 1; }
-.score-target { font-size: 14px; color: var(--text-muted); font-weight: 500; }
-.score-bar-wrap { height: 8px; background: var(--score-track); border-radius: 100px; overflow: hidden; position: relative; }
-.score-bar {
-  height: 100%;
-  background: var(--primary);
-  border-radius: 100px;
-  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
-  width: 0%;
-}
-.score-bar.danger { background: var(--danger); }
-.score-bar.warning { background: var(--warning); }
-.score-bar.success { background: var(--success); }
-.score-msg { font-size: 12px; color: var(--text-muted); font-weight: 500; }
-.master-rule-badge {
-  display: none;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  margin-top: 8px;
-}
-.master-rule-badge.active { display: flex; background: var(--primary-soft); color: var(--primary-deep); }
-.master-rule-badge.hint { display: flex; background: var(--warning-soft); color: var(--warning); }
-[data-theme="dark"] .master-rule-badge.active { color: var(--primary); }
-main { padding: 16px; max-width: 720px; margin: 0 auto; }
-.slot {
-  background: var(--card);
-  border-radius: 16px;
-  padding: 16px;
-  margin-bottom: 12px;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border);
-  transition: all 0.2s ease;
-}
-.slot.hidden { display: none; }
-.slot-header { margin-bottom: 12px; }
-.slot-time { font-size: 11px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 2px; }
-.slot-title { font-size: 16px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
-.slot-subtitle { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
-.slot-options { display: flex; flex-direction: column; gap: 8px; }
-.chip {
-  background: var(--card-soft);
-  border: 1.5px solid var(--border);
-  border-radius: 12px;
-  padding: 12px 14px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  text-align: left;
-  font-family: inherit;
-  font-size: 14px;
-  color: var(--text);
-  width: 100%;
-  transition: all 0.2s ease;
-  -webkit-tap-highlight-color: transparent;
-  position: relative;
-  overflow: hidden;
-}
-.chip:active { transform: scale(0.98); }
-.chip.selected {
-  background: var(--primary-soft);
-  border-color: var(--primary);
-  color: var(--text);
-}
-.chip.selected .chip-score { color: var(--primary); font-weight: 700; }
-.chip.muted { opacity: 0.55; }
-.chip.muted:active { opacity: 1; }
-.chip.indulgence { border-color: var(--danger-soft); }
-.chip.indulgence.selected { background: var(--danger-soft); border-color: var(--danger); }
-.chip.indulgence.selected .chip-score { color: var(--danger); }
-.chip-light {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  background: var(--text-light);
-}
-.chip-light.green { background: var(--success); box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.15); }
-.chip-light.yellow { background: var(--warning); box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.15); }
-.chip-light.red { background: var(--danger); box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.15); }
-.chip.selected .chip-light { background: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
-.chip-content { flex: 1; display: flex; flex-direction: column; gap: 2px; }
-.chip-label { font-weight: 500; line-height: 1.3; }
-.chip-sub { font-size: 11px; color: var(--text-muted); font-weight: 400; }
-.chip-score {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-muted);
-  background: var(--card);
-  padding: 3px 8px;
-  border-radius: 8px;
-  flex-shrink: 0;
-  font-variant-numeric: tabular-nums;
-}
-.chip-check {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--primary);
-  color: white;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-.chip.selected .chip-check { display: flex; }
-.counter-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 14px;
-  background: var(--card-soft);
-  border: 1.5px solid var(--border);
-  border-radius: 12px;
-  margin-bottom: 8px;
-}
-.counter-row.positive { border-color: rgba(39, 174, 96, 0.25); }
-.counter-row.caution { border-color: rgba(230, 126, 34, 0.25); background: var(--warning-soft); }
-[data-theme="dark"] .counter-row.caution { background: rgba(243, 156, 18, 0.06); }
-.counter-info { display: flex; flex-direction: column; gap: 2px; }
-.counter-label { font-size: 14px; font-weight: 500; color: var(--text); }
-.counter-sub { font-size: 11px; color: var(--text-muted); }
-.counter-controls { display: flex; align-items: center; gap: 12px; }
-.counter-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 10px;
-  border: 1.5px solid var(--border-strong);
-  background: var(--card);
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  -webkit-tap-highlight-color: transparent;
-  transition: all 0.15s ease;
-  padding: 0;
-  line-height: 1;
-}
-.counter-btn:active { transform: scale(0.92); background: var(--primary-soft); border-color: var(--primary); }
-.counter-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-.counter-value { font-size: 16px; font-weight: 700; color: var(--text); min-width: 24px; text-align: center; font-variant-numeric: tabular-nums; }
-.indulgence-section { border-color: var(--danger-soft); background: var(--card); }
-.indulgence-section .slot-title { color: var(--danger); }
-.diagnostic {
-  margin-top: 16px;
-  padding: 18px;
-  border-radius: 16px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  text-align: center;
-}
-.diagnostic-icon { font-size: 32px; margin-bottom: 8px; }
-.diagnostic-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-.diagnostic-msg { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
-.reset-confirm-modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 100;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-}
-.reset-confirm-modal.show { display: flex; }
-.reset-confirm-box {
-  background: var(--card);
-  border-radius: 16px;
-  padding: 24px;
-  max-width: 320px;
-  width: 100%;
-  text-align: center;
-}
-.reset-confirm-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
-.reset-confirm-msg { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; }
-.reset-confirm-buttons { display: flex; gap: 8px; }
-.btn {
-  flex: 1;
-  padding: 12px;
-  border-radius: 12px;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  -webkit-tap-highlight-color: transparent;
-  transition: all 0.15s ease;
-}
-.btn:active { transform: scale(0.97); }
-.btn-cancel { background: var(--card-soft); color: var(--text); border: 1px solid var(--border); }
-.btn-danger { background: var(--danger); color: white; }
-.legend {
-  display: flex;
-  gap: 14px;
-  padding: 10px 12px;
-  background: var(--card-soft);
-  border-radius: 10px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-  font-size: 11px;
-  color: var(--text-muted);
-}
-.legend-item { display: flex; align-items: center; gap: 5px; }
-.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
-.legend-dot.green { background: var(--success); }
-.legend-dot.yellow { background: var(--warning); }
-.legend-dot.red { background: var(--danger); }
-.pwa-hint {
-  margin-top: 20px;
-  padding: 14px;
-  background: var(--primary-soft);
-  border-radius: 12px;
-  font-size: 12px;
-  color: var(--text-muted);
-  text-align: center;
-  line-height: 1.5;
-}
-.pwa-hint strong { color: var(--primary-deep); }
-[data-theme="dark"] .pwa-hint strong { color: var(--primary); }
-@media (min-width: 600px) {
-  main { padding: 20px; }
-  .slot { padding: 18px; }
-  body { font-size: 15px; }
-}
-.macro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px 14px; margin-top: 10px; }
-.macro-item { display: flex; flex-direction: column; gap: 3px; }
-.macro-row { display: flex; align-items: baseline; gap: 2px; }
-.macro-label { font-size: 10px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.3px; flex: 1; text-transform: uppercase; }
-.macro-val { font-size: 11px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
-.macro-target { font-size: 10px; color: var(--text-light); }
-.macro-track { height: 4px; background: var(--score-track); border-radius: 100px; overflow: hidden; }
-.macro-fill { height: 100%; border-radius: 100px; background: var(--primary); transition: width 0.45s cubic-bezier(0.4,0,0.2,1), background 0.3s ease; width: 0%; }
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-.score-number.updating { animation: pulse 0.3s ease; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;padding-bottom:50px}
+
+/* ── HEADER ── */
+.app-header{position:sticky;top:0;z-index:90;background:var(--card);border-bottom:1px solid var(--border);padding:10px 14px 12px;box-shadow:var(--shadow2)}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.app-title{font-size:16px;font-weight:800;letter-spacing:-.3px;display:flex;align-items:center;gap:6px}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--light);display:inline-block;transition:background .3s}
+.sync-dot.live{background:var(--green);box-shadow:0 0 0 2px rgba(39,174,96,.25)}
+.hdr-right{display:flex;gap:8px;align-items:center}
+.person-sel{border:1.5px solid var(--border2);border-radius:10px;padding:6px 10px;font-size:13px;font-weight:600;background:var(--soft);color:var(--text);cursor:pointer;-webkit-appearance:none;outline:none}
+.icon-btn{width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border2);background:var(--soft);cursor:pointer;font-size:16px;color:var(--text);display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;transition:all .15s}
+.icon-btn:active{transform:scale(.93)}
+.scores-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.score-card{border-radius:12px;padding:10px 12px}
+.score-card.him-card{background:var(--him-light);border:1.5px solid var(--him)}
+.score-card.her-card{background:var(--her-light);border:1.5px solid var(--her)}
+.sc-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.sc-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.sc-msg{font-size:10px;color:var(--muted);font-weight:500}
+.sc-score{font-size:20px;font-weight:800;letter-spacing:-.5px;line-height:1;margin-bottom:5px}
+.him-card .sc-score{color:var(--him)}
+.her-card .sc-score{color:var(--her)}
+.sc-bar-wrap{height:5px;background:var(--border);border-radius:100px;overflow:hidden}
+.sc-bar{height:100%;border-radius:100px;transition:width .4s ease,background .3s}
+
+/* ── ANALYTICS ── */
+.analytics-wrap{padding:12px 14px 0;max-width:720px;margin:0 auto}
+.analytics{background:var(--card);border-radius:var(--r);padding:14px;border:1px solid var(--border);box-shadow:var(--shadow)}
+.an-title{font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.an-grid{display:grid;grid-template-columns:75px 1fr 1fr;gap:7px 10px;align-items:center}
+.an-col-head{font-size:12px;font-weight:700;text-align:center;padding:4px 0;border-radius:8px}
+.an-col-head.him{background:var(--him-light);color:var(--him)}
+.an-col-head.her{background:var(--her-light);color:var(--her)}
+.an-lbl{font-size:11.5px;font-weight:600;color:var(--muted)}
+.an-cell{display:flex;flex-direction:column;gap:3px}
+.an-pct-row{display:flex;align-items:baseline;gap:4px}
+.an-pct{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums}
+.an-sub{font-size:10px;color:var(--light)}
+.an-bar-track{height:5px;background:var(--border);border-radius:100px;overflow:hidden}
+.an-bar-fill{height:100%;border-radius:100px;transition:width .45s cubic-bezier(.4,0,.2,1),background .3s}
+
+/* ── SECTION DIVIDERS ── */
+.tracker-divider{display:flex;align-items:center;gap:12px;padding:14px 14px 4px;max-width:720px;margin:0 auto}
+.divider-line{flex:1;height:2px;border-radius:100px;opacity:.4}
+.divider-label{font-size:13px;font-weight:800;white-space:nowrap}
+.cal-section-head{padding:14px 14px 0;max-width:720px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.cal-section-line{flex:1;height:1px;background:var(--border)}
+.cal-section-lbl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+
+/* ── PERSON SECTION ── */
+.person-section{padding:10px 14px 0;max-width:720px;margin:0 auto}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.section-title{font-size:16px;font-weight:800;display:flex;align-items:center;gap:6px}
+.reset-btn{padding:7px 14px;border-radius:10px;border:1.5px solid var(--border2);background:var(--soft);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.reset-btn:active{transform:scale(.95)}
+
+/* ── LEGEND ── */
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-bottom:10px}
+.leg-item{display:flex;align-items:center;gap:4px}
+.leg-dot{width:8px;height:8px;border-radius:50%}
+
+/* ── MACRO BARS ── */
+.macro-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-bottom:10px}
+.macro-item{display:flex;flex-direction:column;gap:3px}
+.macro-row{display:flex;align-items:baseline;gap:2px}
+.macro-lbl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;flex:1}
+.macro-val{font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}
+.macro-tgt{font-size:10px;color:var(--light)}
+.macro-track{height:4px;background:var(--border);border-radius:100px;overflow:hidden}
+.macro-fill{height:100%;border-radius:100px;background:var(--green);transition:width .4s ease,background .3s}
+
+/* ── SLOT CARD ── */
+.slot{background:var(--card);border-radius:var(--r);padding:13px;margin-bottom:9px;border:1px solid var(--border);box-shadow:var(--shadow)}
+.slot-hdr{margin-bottom:9px}
+.slot-time{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.slot-title{font-size:15px;font-weight:700}
+.slot-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.opts{display:flex;flex-direction:column;gap:7px}
+
+/* ── OPTION ROW ── */
+.opt-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:11px;border:1.5px solid var(--border);background:var(--soft);transition:all .2s}
+.opt-row.active{background:var(--him-soft);border-color:var(--him)}
+.her-section .opt-row.active{background:var(--her-soft);border-color:var(--her)}
+.opt-row.ind-active{background:rgba(231,76,60,.07);border-color:var(--red)}
+.opt-row.muted-opt{opacity:.42}
+.opt-dot{width:8px;min-width:8px;height:8px;border-radius:50%;background:var(--light);transition:all .2s}
+.opt-dot.g{background:var(--green);box-shadow:0 0 0 3px rgba(39,174,96,.15)}
+.opt-dot.y{background:var(--yellow);box-shadow:0 0 0 3px rgba(230,126,34,.15)}
+.opt-dot.r{background:var(--red);box-shadow:0 0 0 3px rgba(231,76,60,.15)}
+.opt-dot.on{background:var(--him);box-shadow:0 0 0 3px var(--him-soft)}
+.her-section .opt-dot.on{background:var(--her);box-shadow:0 0 0 3px var(--her-soft)}
+.opt-info{flex:1;min-width:0}
+.opt-lbl{font-size:13.5px;font-weight:500;line-height:1.3}
+.opt-sub{font-size:11px;color:var(--muted);line-height:1.3;margin-top:1px}
+.opt-score{font-size:12px;font-weight:700;color:var(--muted);min-width:30px;text-align:right;flex-shrink:0}
+.opt-ctr{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.cnt-btn{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--border2);background:var(--card);font-size:17px;font-weight:700;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;padding:0;line-height:1;transition:all .15s}
+.cnt-btn:active{transform:scale(.88);border-color:var(--him);background:var(--him-soft)}
+.her-section .cnt-btn:active{border-color:var(--her);background:var(--her-soft)}
+.cnt-val{font-size:15px;font-weight:800;min-width:18px;text-align:center;font-variant-numeric:tabular-nums}
+
+/* ── PENALTY / MASTER ── */
+.penalty-row{font-size:11.5px;color:var(--red);font-weight:600;min-height:0;margin-bottom:4px;line-height:1.6}
+.master-badge{display:none;font-size:11.5px;font-weight:600;padding:5px 10px;border-radius:8px;margin-bottom:8px}
+.master-badge.active{display:block;background:var(--him-soft);color:var(--him)}
+.master-badge.hint{display:block;background:rgba(230,126,34,.1);color:var(--yellow)}
+
+/* ── COUNTER ROWS (workout/extras) ── */
+.counter-row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:11px;border:1.5px solid var(--border);background:var(--soft);margin-bottom:7px}
+.counter-row.pos{border-color:rgba(39,174,96,.3)}
+.counter-row.neg{border-color:rgba(230,126,34,.25);background:rgba(230,126,34,.04)}
+.ctr-info{flex:1}
+.ctr-lbl{font-size:13.5px;font-weight:500}
+.ctr-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.ctr-right{display:flex;align-items:center;gap:7px}
+.workout-total{padding:10px 12px;border-radius:11px;background:var(--him-soft);border:1.5px solid var(--him);font-size:12px;font-weight:700;color:var(--him);margin-top:8px;text-align:center}
+.her-section .workout-total{background:var(--her-soft);border-color:var(--her);color:var(--her)}
+
+/* ── DIAGNOSTIC ── */
+.diagnostic{text-align:center;padding:16px;border-radius:var(--r);background:var(--card);border:1px solid var(--border);margin-bottom:6px}
+.diag-icon{font-size:28px;margin-bottom:6px}
+.diag-title{font-size:15px;font-weight:700;margin-bottom:4px}
+.diag-msg{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* ── MODAL ── */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal.show{display:flex}
+.modal-box{background:var(--card);border-radius:var(--r);padding:22px;max-width:300px;width:100%;text-align:center}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:6px}
+.modal-msg{font-size:13px;color:var(--muted);margin-bottom:18px}
+.modal-btns{display:flex;gap:8px}
+.btn{flex:1;padding:11px;border-radius:11px;font-size:14px;font-weight:600;cursor:pointer;border:none;font-family:inherit}
+.btn-cancel{background:var(--soft);color:var(--text);border:1.5px solid var(--border)}
+.btn-danger{background:var(--red);color:#fff}
+.pwa-hint{text-align:center;font-size:11.5px;color:var(--muted);padding:14px;margin:14px;border-radius:10px;background:var(--card);border:1px solid var(--border);max-width:720px;margin:12px auto}
+.pwa-hint strong{color:var(--him)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.updating{animation:pulse .3s ease}
 </style>
 </head>
 <body>
 
+<!-- ══ STICKY HEADER ══ -->
 <header class="app-header">
-  <div class="app-header-top">
+  <div class="hdr-top">
     <div class="app-title">
-      <span class="app-title-icon">🌿</span>
-      <span>Daily Tracker</span>
+      🌿 Daily Food Tracker
+      <span class="sync-dot" id="syncDot" title="Sync status"></span>
     </div>
-    <div class="header-actions">
-      <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">☀️</button>
-      <button class="icon-btn" id="resetBtn" aria-label="Reset day">↺</button>
+    <div class="hdr-right">
+      <select class="person-sel" id="personSel">
+        <option value="">👥 Both</option>
+        <option value="him">👨 His view</option>
+        <option value="her">👩 Her view</option>
+      </select>
+      <button class="icon-btn" id="themeBtn">☀️</button>
     </div>
   </div>
-  <div class="score-panel">
-    <div class="score-row">
-      <div>
-        <span class="score-number" id="scoreNumber">+0.00</span>
-        <span class="score-target"> / +5.00</span>
+  <div class="scores-row">
+    <div class="score-card him-card">
+      <div class="sc-top">
+        <span class="sc-label">👨 Him</span>
+        <span class="sc-msg" id="himMsg">—</span>
       </div>
-      <div class="score-msg" id="scoreMsg">Start your day</div>
+      <div class="sc-score" id="himScore">+0.00</div>
+      <div class="sc-bar-wrap"><div class="sc-bar" id="himBar"></div></div>
     </div>
-    <div class="score-bar-wrap">
-      <div class="score-bar" id="scoreBar"></div>
-    </div>
-    <div class="master-rule-badge" id="masterBadge"></div>
-    <div class="macro-grid">
-      <div class="macro-item">
-        <div class="macro-row">
-          <span class="macro-label">Calories</span>
-          <span class="macro-val" id="macro-val-cal">0</span>
-          <span class="macro-target">/1650</span>
-        </div>
-        <div class="macro-track"><div class="macro-fill" id="macro-fill-cal"></div></div>
+    <div class="score-card her-card">
+      <div class="sc-top">
+        <span class="sc-label">👩 Her</span>
+        <span class="sc-msg" id="herMsg">—</span>
       </div>
-      <div class="macro-item">
-        <div class="macro-row">
-          <span class="macro-label">Protein</span>
-          <span class="macro-val" id="macro-val-protein">0g</span>
-          <span class="macro-target">/120g</span>
-        </div>
-        <div class="macro-track"><div class="macro-fill" id="macro-fill-protein"></div></div>
-      </div>
-      <div class="macro-item">
-        <div class="macro-row">
-          <span class="macro-label">Carbs</span>
-          <span class="macro-val" id="macro-val-carbs">0g</span>
-          <span class="macro-target">/120g</span>
-        </div>
-        <div class="macro-track"><div class="macro-fill" id="macro-fill-carbs"></div></div>
-      </div>
-      <div class="macro-item">
-        <div class="macro-row">
-          <span class="macro-label">Fat</span>
-          <span class="macro-val" id="macro-val-fat">0g</span>
-          <span class="macro-target">/65g</span>
-        </div>
-        <div class="macro-track"><div class="macro-fill" id="macro-fill-fat"></div></div>
-      </div>
+      <div class="sc-score" id="herScore">+0.00</div>
+      <div class="sc-bar-wrap"><div class="sc-bar" id="herBar"></div></div>
     </div>
   </div>
 </header>
 
-<main>
+<!-- ══ ANALYTICS (always visible) ══ -->
+<div class="analytics-wrap">
+  <div class="analytics">
+    <div class="an-title">📊 Daily Progress — % of Target</div>
+    <div class="an-grid">
+      <div></div>
+      <div class="an-col-head him">👨 Him</div>
+      <div class="an-col-head her">👩 Her</div>
+      <div class="an-lbl">🔥 Calories</div>
+      <div class="an-cell" id="an-him-cal"></div>
+      <div class="an-cell" id="an-her-cal"></div>
+      <div class="an-lbl">💪 Protein</div>
+      <div class="an-cell" id="an-him-protein"></div>
+      <div class="an-cell" id="an-her-protein"></div>
+      <div class="an-lbl">🌾 Carbs</div>
+      <div class="an-cell" id="an-him-carbs"></div>
+      <div class="an-cell" id="an-her-carbs"></div>
+      <div class="an-lbl">🥑 Fat</div>
+      <div class="an-cell" id="an-him-fat"></div>
+      <div class="an-cell" id="an-her-fat"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ HIS FOOD LOG ══ -->
+<div id="himFoodSection" class="person-section">
+  <div class="section-head">
+    <div class="section-title" style="color:var(--him)">👨 His Food Log</div>
+  </div>
   <div class="legend">
-    <div class="legend-item"><span class="legend-dot green"></span>Hits +5 target</div>
-    <div class="legend-item"><span class="legend-dot yellow"></span>Close to target</div>
-    <div class="legend-item"><span class="legend-dot red"></span>Falls below</div>
+    <div class="leg-item"><span class="leg-dot" style="background:var(--green)"></span>Helps reach +5</div>
+    <div class="leg-item"><span class="leg-dot" style="background:var(--yellow)"></span>Neutral</div>
+    <div class="leg-item"><span class="leg-dot" style="background:var(--red)"></span>Hurts score</div>
   </div>
+  <div id="himSlots"></div>
+  <div id="himExtras"></div>
+</div>
 
-  <div id="slotsContainer"></div>
+<!-- ══ FOOD DIVIDER (both view only) ══ -->
+<div class="tracker-divider" id="foodDivider">
+  <div class="divider-line" style="background:var(--her)"></div>
+  <span class="divider-label" style="color:var(--her)">👩 Her Food Log</span>
+  <div class="divider-line" style="background:var(--her)"></div>
+</div>
 
-  <section class="slot">
-    <div class="slot-header">
-      <div class="slot-time">EXTRAS · ANYTIME</div>
-      <h2 class="slot-title">➕ Extras Counter</h2>
-      <div class="slot-subtitle">Add as needed throughout the day</div>
-    </div>
-    <div class="counter-row">
-      <div class="counter-info">
-        <span class="counter-label">☕ Extra black coffees</span>
-        <span class="counter-sub">+0.25 each</span>
-      </div>
-      <div class="counter-controls">
-        <button class="counter-btn" data-counter="blackCoffees" data-delta="-1">−</button>
-        <span class="counter-value" id="counter-blackCoffees">0</span>
-        <button class="counter-btn" data-counter="blackCoffees" data-delta="1">+</button>
-      </div>
-    </div>
-    <div class="counter-row">
-      <div class="counter-info">
-        <span class="counter-label">🚶 Extra walks (10+ min)</span>
-        <span class="counter-sub">+0.25 each</span>
-      </div>
-      <div class="counter-controls">
-        <button class="counter-btn" data-counter="walks" data-delta="-1">−</button>
-        <span class="counter-value" id="counter-walks">0</span>
-        <button class="counter-btn" data-counter="walks" data-delta="1">+</button>
-      </div>
-    </div>
-    <div class="counter-row">
-      <div class="counter-info">
-        <span class="counter-label">💧 Water glasses</span>
-        <span class="counter-sub">Tracked, not scored</span>
-      </div>
-      <div class="counter-controls">
-        <button class="counter-btn" data-counter="water" data-delta="-1">−</button>
-        <span class="counter-value" id="counter-water">0</span>
-        <button class="counter-btn" data-counter="water" data-delta="1">+</button>
-      </div>
-    </div>
-    <div class="counter-row">
-      <div class="counter-info">
-        <span class="counter-label">🫖 Extra chai (no sugar)</span>
-        <span class="counter-sub">Tracked, not scored</span>
-      </div>
-      <div class="counter-controls">
-        <button class="counter-btn" data-counter="chai" data-delta="-1">−</button>
-        <span class="counter-value" id="counter-chai">0</span>
-        <button class="counter-btn" data-counter="chai" data-delta="1">+</button>
-      </div>
-    </div>
-    <div class="counter-row positive">
-      <div class="counter-info">
-        <span class="counter-label">🫐 Low-GI fruit bowl</span>
-        <span class="counter-sub">Berries, kiwi, papaya, guava, apple, pear · +0.25 each</span>
-      </div>
-      <div class="counter-controls">
-        <button class="counter-btn" data-counter="fruitsLow" data-delta="-1">−</button>
-        <span class="counter-value" id="counter-fruitsLow">0</span>
-        <button class="counter-btn" data-counter="fruitsLow" data-delta="1">+</button>
-      </div>
-    </div>
-    <div class="counter-row caution">
-      <div class="counter-info">
-        <span class="counter-label">🍊 Moderate-GI fruit bowl</span>
-        <span class="counter-sub">Mango, pineapple, orange, peach · -0.25 each</span>
-      </div>
-      <div class="counter-controls">
-        <button class="counter-btn" data-counter="fruitsMod" data-delta="-1">−</button>
-        <span class="counter-value" id="counter-fruitsMod">0</span>
-        <button class="counter-btn" data-counter="fruitsMod" data-delta="1">+</button>
-      </div>
-    </div>
-    <div class="counter-row caution">
-      <div class="counter-info">
-        <span class="counter-label">🍌 High-GI fruit bowl</span>
-        <span class="counter-sub">Banana, watermelon, grapes, dates · -1 each</span>
-      </div>
-      <div class="counter-controls">
-        <button class="counter-btn" data-counter="fruitsHigh" data-delta="-1">−</button>
-        <span class="counter-value" id="counter-fruitsHigh">0</span>
-        <button class="counter-btn" data-counter="fruitsHigh" data-delta="1">+</button>
-      </div>
-    </div>
-    <div class="counter-row caution">
-      <div class="counter-info">
-        <span class="counter-label">☕ Extra lattes (over 2)</span>
-        <span class="counter-sub">-0.5 each — milk-based insulin load</span>
-      </div>
-      <div class="counter-controls">
-        <button class="counter-btn" data-counter="lattes" data-delta="-1">−</button>
-        <span class="counter-value" id="counter-lattes">0</span>
-        <button class="counter-btn" data-counter="lattes" data-delta="1">+</button>
-      </div>
-    </div>
-    <div class="counter-row caution">
-      <div class="counter-info">
-        <span class="counter-label">🥖 Extra biscuits (per 3)</span>
-        <span class="counter-sub">Marie / bran biscuits · -0.25 each set of 3</span>
-      </div>
-      <div class="counter-controls">
-        <button class="counter-btn" data-counter="biscuits" data-delta="-1">−</button>
-        <span class="counter-value" id="counter-biscuits">0</span>
-        <button class="counter-btn" data-counter="biscuits" data-delta="1">+</button>
-      </div>
-    </div>
-    <div class="counter-row caution">
-      <div class="counter-info">
-        <span class="counter-label">🍚 Extra rice portion</span>
-        <span class="counter-sub">White or basmati · -0.5 each</span>
-      </div>
-      <div class="counter-controls">
-        <button class="counter-btn" data-counter="rice" data-delta="-1">−</button>
-        <span class="counter-value" id="counter-rice">0</span>
-        <button class="counter-btn" data-counter="rice" data-delta="1">+</button>
-      </div>
-    </div>
-  </section>
+<!-- ══ HER FOOD LOG ══ -->
+<div id="herFoodSection" class="person-section her-section">
+  <div id="herSlots"></div>
+  <div id="herExtras"></div>
+</div>
 
-  <div id="indulgenceContainer"></div>
+<!-- ══ CAL TRACKERS HEADER ══ -->
+<div class="cal-section-head" id="calSectionHead">
+  <div class="cal-section-line"></div>
+  <span class="cal-section-lbl">📈 Calorie Trackers</span>
+  <div class="cal-section-line"></div>
+</div>
 
-  <div class="diagnostic" id="diagnostic">
-    <div class="diagnostic-icon">🌱</div>
-    <div class="diagnostic-title">Start your day</div>
-    <div class="diagnostic-msg">Begin with morning lemon water and build from there.</div>
+<!-- ══ HIS CAL TRACKER ══ -->
+<div id="himCalSection" class="person-section">
+  <div class="section-head">
+    <div class="section-title" style="color:var(--him)">👨 His Tracker</div>
+    <button class="reset-btn" onclick="confirmReset('him')">↺ Reset</button>
   </div>
+  <div class="macro-grid" id="himMacros"></div>
+  <div class="penalty-row" id="himPenalty"></div>
+  <div class="master-badge" id="himMaster"></div>
+  <div id="himWorkout"></div>
+  <div id="himInds"></div>
+  <div id="himDiag"></div>
+</div>
 
-  <div class="pwa-hint">
-    📱 <strong>Save as iPhone app:</strong> Open this URL in Safari → tap Share → Add to Home Screen → tap Add
+<!-- ══ CAL DIVIDER (both view only) ══ -->
+<div class="tracker-divider" id="calDivider">
+  <div class="divider-line" style="background:var(--her)"></div>
+  <span class="divider-label" style="color:var(--her)">👩 Her Tracker</span>
+  <div class="divider-line" style="background:var(--her)"></div>
+</div>
+
+<!-- ══ HER CAL TRACKER ══ -->
+<div id="herCalSection" class="person-section her-section">
+  <div class="section-head">
+    <div class="section-title" style="color:var(--her)">👩 Her Tracker</div>
+    <button class="reset-btn" onclick="confirmReset('her')">↺ Reset</button>
   </div>
-</main>
+  <div class="macro-grid" id="herMacros"></div>
+  <div class="penalty-row" id="herPenalty"></div>
+  <div id="herWorkout"></div>
+  <div id="herInds"></div>
+  <div id="herDiag"></div>
+</div>
 
-<div class="reset-confirm-modal" id="resetModal">
-  <div class="reset-confirm-box">
-    <div class="reset-confirm-title">Reset day?</div>
-    <div class="reset-confirm-msg">This will clear all selections and counters. Cannot be undone.</div>
-    <div class="reset-confirm-buttons">
-      <button class="btn btn-cancel" id="cancelReset">Cancel</button>
-      <button class="btn btn-danger" id="confirmReset">Reset</button>
+<div class="pwa-hint">
+  📱 <strong>Save as iPhone app:</strong> Safari → Share → Add to Home Screen &nbsp;|&nbsp;
+  🔥 <strong>Live sync:</strong> Add Firebase config in HTML source for real-time 2-device sync
+</div>
+
+<div class="modal" id="resetModal">
+  <div class="modal-box">
+    <div class="modal-title">Reset tracker?</div>
+    <div class="modal-msg">Clears all food and workout entries for today. Cannot be undone.</div>
+    <div class="modal-btns">
+      <button class="btn btn-cancel" onclick="document.getElementById('resetModal').classList.remove('show')">Cancel</button>
+      <button class="btn btn-danger" id="confirmResetBtn">Reset</button>
     </div>
   </div>
 </div>
 
 <script>
-// ============ DATA MODEL ============
-const SLOTS = {
-  morning: {
-    title: '🍋 Morning Ritual',
-    time: '7:00 AM',
-    type: 'single',
-    options: [
-      { id: 'lemon_cinnamon', label: 'Lemon water + cinnamon', score: 0.5 },
-      { id: 'lemon_only', label: 'Lemon water only', score: 0.25 }
-    ]
+// ═══════════════════════════════════════════════════
+//  🔥 FIREBASE — FILL IN YOUR CONFIG BELOW
+//  Setup: console.firebase.google.com → New project → Realtime Database
+//  Rules: { "rules": { ".read": true, ".write": true } }
+//  Project Settings → Web app → Copy config here
+// ═══════════════════════════════════════════════════
+const FIREBASE_CONFIG = {
+  apiKey:            "YOUR_API_KEY",
+  authDomain:        "YOUR_PROJECT.firebaseapp.com",
+  databaseURL:       "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+  projectId:         "YOUR_PROJECT_ID",
+  storageBucket:     "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId:             "YOUR_APP_ID"
+};
+// ═══════════════════════════════════════════════════
+
+// ── SHARED SNACKS (appear in both trackers) ──
+const SHARED_SNACKS = [
+  {id:'pumpkin_walnut',  label:'🎃 Pumpkin seeds + walnuts',             sub:'Zinc, magnesium, omega-3',              score:.75, m:[180,7,8,15]},
+  {id:'apple_almond',   label:'🍎 Apple + almond butter',               sub:'Inositol, slow-release carbs',          score:.5,  m:[180,5,28,9]},
+  {id:'roast_chickpea', label:'🫘 Roasted chickpeas (masala)',           sub:'Zinc, inositol, fiber',                 score:.5,  m:[180,8,24,6]},
+  {id:'edamame_s',      label:'🫛 Steamed edamame',                     sub:'Complete plant protein',                score:.5,  m:[120,11,8,5]},
+  {id:'berries_flax',   label:'🫐 Berries + ground flaxseed (1 tbsp)',  sub:'Anti-androgenic lignans, antioxidants', score:.5,  m:[80,2,16,3]},
+  {id:'dark_choc',      label:'🍫 Dark chocolate 70%+ (2 squares)',     sub:'Antioxidants — max 2',                  score:.25, m:[80,1,10,5]},
+  {id:'celery_hummus',  label:'🥗 Celery + hummus',                     sub:'Low GI, iron, satisfying crunch',       score:.5,  m:[110,4,14,6]},
+];
+
+// ── HIM CONFIG ──
+const HIM = {
+  id:'him', burnCap:500,
+  targets:{cal:1700,protein:150,carbs:150,fat:65},
+  grace:{cal:250,carb:20},
+  slots:{
+    morning:{title:'🍋 Morning Ritual',time:'7:00 AM',opts:[
+      {id:'lemon_cinn',   label:'Lemon water + cinnamon',              sub:'Pre-loads insulin sensitivity',           score:.5,  m:[10,0,2,0]},
+      {id:'lemon_only',   label:'Lemon water only',                                                                   score:.25, m:[10,0,2,0]},
+    ]},
+    breakfast:{title:'🌅 Breakfast',time:'7:30–8:30 AM',opts:[
+      {id:'c2',           label:'🥣 Yogurt bowl + chai (C2)',           sub:'38g protein, best pre-kulcha buffer',    score:1.25,m:[500,38,42,22]},
+      {id:'a2',           label:'🌴 Tropical smoothie (A2)',            sub:'Papaya, kiwi, mango, seeds, protein',    score:1.0, m:[422,33,47,15]},
+      {id:'b2',           label:'🫐 Chai + biscuits + blueberry shake', sub:'B2 — shaker bottle, 51g protein',       score:1.0, m:[610,51,70,15]},
+      {id:'b_omelette',   label:'🍳 Chai + biscuits + omelette',        sub:'B — 10 min cook, 55g protein',          score:.75, m:[775,55,54,37]},
+      {id:'a_yogurt',     label:'🥄 Greek yogurt jar',                  sub:'A — overnight prep, grab & go',          score:.75, m:[280,22,28,8]},
+      {id:'silver_honey', label:'🍞 Silver Hills + cottage cheese + honey',sub:'Fiber bread, 13g protein, honey drizzle',score:.5,m:[271,19,34,7]},
+      {id:'boiled_eggs',  label:'🥚 2 Boiled eggs',                     sub:'12g protein, zero carbs, ultra easy',   score:.5,  m:[150,12,0,10]},
+      {id:'eggs_biscuits',label:'🥚 Boiled eggs + biscuits + cheese',   sub:'Pre-boiled batch — no morning effort',   score:.5,  m:[290,20,22,14]},
+      {id:'wrap',         label:'🥪 Tim Hortons / Starbucks wrap',       sub:'Outside food — master rule fires',      score:.25, m:[300,18,28,10],takeout:true},
+      {id:'chai_bis',     label:'🫖 Chai + biscuits only',               sub:'Weakest — no protein',                  score:0,   m:[275,7,42,8]},
+    ]},
+    coffee1:{title:'☕ Coffee Slot 1',time:'9:00 AM',opts:[
+      {id:'black1',label:'Black coffee / Americano',score:.25,m:[5,0,0,0],isBlack:true},
+      {id:'latte1',label:'Latte (oat or 2%, no sugar)',score:0,m:[150,9,14,6]},
+    ]},
+    coffee2:{title:'☕ Coffee Slot 2',time:'11:00 AM',opts:[
+      {id:'black2',label:'Black coffee / Americano',score:.25,m:[5,0,0,0],isBlack:true},
+      {id:'latte2',label:'Latte (oat or 2%, no sugar)',score:0,m:[150,9,14,6]},
+    ]},
+    greentea1:{title:'🌿 Green Tea',time:'11:30 AM',opts:[
+      {id:'gt1',label:'Lemon ginger green tea',score:.25,m:[5,0,1,0]},
+    ]},
+    lunch:{title:'🍽️ Lunch',time:'12:30–1:00 PM',opts:[
+      {id:'salmon_l',    label:'🏠 Salmon + edamame + lemon',           sub:'~480 cal, 51g protein',                 score:1.25,m:[480,51,8,14]},
+      {id:'chk_veg_l',   label:'🏠 Grilled chicken + veggies',          sub:'~420 cal, 42g protein',                 score:1.0, m:[420,42,16,14]},
+      {id:'chk_rice_l',  label:'🏠 Chicken + small rice + cucumber',    sub:'~450 cal, 45g protein',                 score:.75, m:[450,45,35,9]},
+      {id:'lentil_l',    label:'🏠 Lentil soup + chicken side',          sub:'Lazy option, ~420 cal',                 score:.75, m:[420,40,28,6]},
+      {id:'tahini_l',    label:'🥡 Tahini shawarma (modified)',           sub:'Half rice, no pita',                   score:-.25,m:[550,40,45,18],takeout:true},
+      {id:'burrito_l',   label:'🥡 Bar Burrito bowl',                    sub:'Half rice, double chicken, guac',       score:-.25,m:[580,42,52,16],takeout:true},
+      {id:'skip_l',      label:'⏭️ Skip lunch',                          sub:'C2 days after kulcha only',             score:0,   m:[0,0,0,0]},
+      {id:'tofu_veg_l',  label:'🫘 Tofu + roasted veggies (turmeric)',   sub:'Plant protein — 22g',                   score:1.25,m:[380,22,20,16],isTofu:true},
+      {id:'tofu_quin_l', label:'🫘 Tofu + quinoa + greens',              sub:'Complete plant protein',                score:1.0, m:[400,24,35,14],isTofu:true},
+      {id:'tofu_tikka_l',label:'🫘 Tofu tikka + salad',                  sub:'Yogurt-marinated, grilled',             score:1.0, m:[350,20,18,16],isTofu:true},
+    ]},
+    kulcha:{title:'🫓 Kulcha Block',time:'12:30 PM (alt)',subtitle:'Alternative to lunch on C2 days',opts:[
+      {id:'pre_walk_k',  label:'🚶 Pre-kulcha 10 min walk',              sub:'Activates muscles before carb load',    score:.5,  m:[0,0,0,0]},
+      {id:'kulcha_meal', label:'2 Aloo kulcha + chane + onion',           sub:'1 tsp butter, yogurt, onion chutney',  score:-1.25,m:[820,30,122,22]},
+      {id:'post_walk_k', label:'🚶 Post-kulcha 20 min walk',             sub:'Non-negotiable — offsets the kulcha',   score:1.25,m:[0,0,0,0]},
+    ]},
+    greentea2:{title:'🌿 Green Tea',time:'2:30 PM',opts:[
+      {id:'gt2',label:'Lemon ginger green tea',score:.25,m:[5,0,1,0]},
+    ]},
+    snack:{title:'🌰 Snack',time:'3:00 PM',opts:[
+      {id:'almonds_s',   label:'Almonds (15–20)',                        sub:'Walnuts even better for omega-3',        score:.5,  m:[100,4,3,9]},
+      {id:'yogurt_s',    label:'Plain 2% Greek yogurt small',            sub:'12g protein, 130 cal',                  score:.5,  m:[130,12,8,3]},
+      {id:'cottage_s',   label:'Cottage cheese + berries',               sub:'15g protein, low GI',                   score:.5,  m:[160,15,12,6]},
+      {id:'nuts_s',      label:'Mixed nuts + pumpkin seeds',             sub:'Magnesium boost',                       score:.5,  m:[150,5,10,10]},
+      {id:'babybel_s',   label:'Babybel + 3 bran biscuits',              sub:'Lighter option',                        score:.25, m:[160,7,22,6]},
+      ...SHARED_SNACKS,
+      {id:'skip_s',      label:'⏭️ Skip snack',                          sub:'Risks afternoon glucose crash',         score:-.25,m:[0,0,0,0]},
+    ]},
+    predinner:{title:'💧 Pre-Dinner Water',time:'5:45 PM',opts:[
+      {id:'pre_water',label:'Glass of water before dinner',sub:'Reduces meal size, pre-hydrates digestion',score:.25,m:[0,0,0,0]},
+    ]},
+    dinner:{title:'🌙 Dinner',time:'6:00–7:00 PM',opts:[
+      {id:'chk_veg_d',   label:'🏠 Grilled chicken + veggies',           sub:'~470 cal, 66g protein — best overall',  score:1.0, m:[470,66,16,14]},
+      {id:'salmon_d',    label:'🏠 Salmon + edamame',                    sub:'~550 cal, 55g protein',                 score:1.0, m:[550,55,8,22]},
+      {id:'parm_d',      label:'🏠 Modified chicken parm + veggies',      sub:'No pasta, no breading',                 score:.75, m:[420,52,12,14]},
+      {id:'lentil_d',    label:'🏠 Lentil soup + chicken',               sub:'Lazy night option',                     score:.75, m:[420,40,28,6]},
+      {id:'tahini_d',    label:'🥡 Tahini chicken plate',                 sub:'Half rice, no pita',                   score:-.25,m:[520,40,42,16],takeout:true},
+      {id:'burrito_d',   label:'🥡 Bar Burrito bowl',                     sub:'Same order as lunch',                   score:-.25,m:[580,42,52,16],takeout:true},
+      {id:'thai_d',      label:'🥡 Thai green curry (no rice)',            sub:'Extra veggies instead of rice',         score:0,   m:[480,28,28,22],takeout:true},
+      {id:'tofu_veg_d',  label:'🫘 Tofu + roasted veggies',               sub:'Plant protein dinner',                  score:1.0, m:[380,20,18,16],isTofu:true},
+      {id:'tofu_pep_d',  label:'🫘 Tofu stuffed peppers + quinoa',         sub:'High fiber, plant protein',             score:1.0, m:[400,22,30,16],isTofu:true},
+      {id:'tofu_stir_d', label:'🫘 Tofu stir-fry + veggies',              sub:'No sugar sauce',                        score:1.0, m:[340,18,22,14],isTofu:true},
+    ]},
+    postdinner:{title:'💧 Post-Dinner',time:'7:30–8:00 PM',opts:[
+      {id:'acv_water',   label:'Water + apple cider vinegar',            sub:'Lowers next-morning fasting glucose ~20%',score:.25,m:[5,0,1,0]},
+      {id:'plain_water', label:'Plain water',                            sub:'Hydration — tracked',                   score:.1,  m:[0,0,0,0]},
+    ]},
+    tweaks:{title:'✨ Daily Tweaks',time:'All Day',subtitle:'Tap once per application today',opts:[
+      {id:'eat_order',   label:'Eating order: veggies → protein → carbs',sub:'Reduces post-meal spike by up to 37%',  score:.5,  m:[0,0,0,0]},
+      {id:'turmeric',    label:'Garlic + turmeric + black pepper added',  sub:'Added to at least one meal',            score:.5,  m:[0,0,0,0]},
+      {id:'water_meals', label:'Water before each major meal',                                                         score:.25, m:[0,0,0,0]},
+    ]},
   },
-  breakfast: {
-    title: '🌅 Breakfast',
-    time: '7:30 - 8:30 AM',
-    type: 'single',
-    options: [
-      { id: 'c2', label: '🥣 Yogurt bowl + chai', sub: 'C2 path — 38g protein, best pre-kulcha buffer', score: 1.25 },
-      { id: 'a2', label: '🌴 Tropical smoothie', sub: 'A2 path — papaya, kiwi, mango, seeds, protein powder', score: 1.0 },
-      { id: 'b2', label: '🫐 Chai + biscuits + blueberry smoothie', sub: 'B2 path — shaker bottle version', score: 1.0 },
-      { id: 'b', label: '🍳 Chai + biscuits + omelette', sub: 'B path — hot breakfast, 10 min cook', score: 0.75 },
-      { id: 'a_yogurt', label: '🥄 Greek yogurt jar', sub: 'A path — overnight prep, grab & go', score: 0.75 },
-      { id: 'a_eggs', label: '🥚 Boiled eggs + biscuits + cheese', sub: 'A path — pre-boiled, no cooking', score: 0.5 },
-      { id: 'a_wrap', label: '🥪 Tim Hortons / Starbucks wrap', sub: 'A path — outside food, master rule applies', score: 0.25, takeout: true },
-      { id: 'chai_biscuits', label: '🫖 Chai + biscuits only', sub: 'Light — no protein, weakest option', score: 0 },
-      { id: 'silver_cottage', label: '🍞 Silver Hills + cottage cheese + honey', sub: 'High-fiber sprouted bread, 13g protein from cottage cheese, drizzle honey', score: 0.5 }
-    ]
-  },
-  coffee1: {
-    title: '☕ Coffee Slot 1',
-    time: '9:00 AM',
-    type: 'single',
-    options: [
-      { id: 'black1', label: 'Black coffee / Americano', score: 0.25, isBlack: true },
-      { id: 'latte1', label: 'Latte (oat or 2%, no sugar)', score: 0 }
-    ]
-  },
-  coffee2: {
-    title: '☕ Coffee Slot 2',
-    time: '11:00 AM',
-    type: 'single',
-    options: [
-      { id: 'black2', label: 'Black coffee / Americano', score: 0.25, isBlack: true },
-      { id: 'latte2', label: 'Latte (oat or 2%, no sugar)', score: 0 }
-    ]
-  },
-  greentea1: {
-    title: '🌿 Green Tea',
-    time: '11:30 AM - 12:00 PM',
-    type: 'single',
-    options: [
-      { id: 'gt1', label: 'Lemon ginger green tea', score: 0.25 }
-    ]
-  },
-  lunch: {
-    title: '🍽️ Lunch',
-    time: '12:30 - 1:00 PM',
-    type: 'single',
-    options: [
-      { id: 'lunch_salmon', label: '🏠 Salmon + edamame + lemon', sub: '~480 cal, 51g protein', score: 1.25 },
-      { id: 'lunch_chicken_veg', label: '🏠 Grilled chicken + veggies', sub: '~420 cal, 42g protein', score: 1.0 },
-      { id: 'lunch_chicken_rice', label: '🏠 Chicken + small rice + cucumber', sub: '~450 cal, 45g protein', score: 0.75 },
-      { id: 'lunch_lentil', label: '🏠 Lentil soup + chicken side', sub: 'Lazy option, ~420 cal', score: 0.75 },
-      { id: 'lunch_tahini', label: '🥡 Tahini shawarma (modified)', sub: 'Half rice, no pita, sauce on side', score: -0.25, takeout: true },
-      { id: 'lunch_burrito', label: '🥡 Bar Burrito bowl', sub: 'Half brown rice, double chicken, guac', score: -0.25, takeout: true },
-      { id: 'lunch_skip', label: '⏭️ Skip lunch (after kulcha)', sub: 'Only valid on C2 days', score: 0 }
-    ]
-  },
-  kulcha: {
-    title: '🫓 Kulcha Block',
-    time: '12:30 - 1:00 PM',
-    type: 'multi',
-    subtitle: 'Alternative to lunch on C2 days — track each piece',
-    options: [
-      { id: 'pre_walk', label: '🚶 Pre-kulcha 10 min walk', sub: 'Activates muscles before the carb load', score: 0.5 },
-      { id: 'kulcha_meal', label: '2 aloo kulcha + chane + onion', sub: '1 tsp butter, yogurt, onion chutney', score: -1.25 },
-      { id: 'post_walk', label: '🚶 Post-kulcha 20 min walk', sub: 'Mandatory — non-negotiable on this day', score: 1.25 }
-    ]
-  },
-  greentea2: {
-    title: '🌿 Green Tea',
-    time: '2:30 PM',
-    type: 'single',
-    options: [
-      { id: 'gt2', label: 'Lemon ginger green tea', score: 0.25 }
-    ]
-  },
-  snack: {
-    title: '🌰 Bridge Snack',
-    time: '3:00 PM',
-    type: 'single',
-    options: [
-      { id: 'snack_almonds', label: 'Almonds (15-20)', sub: 'Walnuts even better — omega-3', score: 0.5 },
-      { id: 'snack_yogurt', label: 'Plain 2% Greek yogurt small', sub: '12g protein in 130 cal', score: 0.5 },
-      { id: 'snack_cottage', label: 'Cottage cheese + berries', sub: '15g protein, low GI', score: 0.5 },
-      { id: 'snack_mix', label: 'Mixed nuts + pumpkin seeds', sub: 'Magnesium boost', score: 0.5 },
-      { id: 'snack_babybel', label: 'Babybel + 3 bran biscuits', sub: 'Lighter option', score: 0.25 },
-      { id: 'snack_skip', label: '⏭️ Skip snack', sub: 'Risks afternoon glucose crash', score: -0.25 }
-    ]
-  },
-  predinner: {
-    title: '💧 Pre-Dinner Water',
-    time: '5:45 PM',
-    type: 'single',
-    options: [
-      { id: 'pre_water', label: 'Glass of water before dinner', sub: 'Reduces meal size, pre-hydrates digestion', score: 0.25 }
-    ]
-  },
-  dinner: {
-    title: '🌙 Dinner',
-    time: '6:00 - 7:00 PM',
-    type: 'single',
-    options: [
-      { id: 'dinner_chicken', label: '🏠 Grilled chicken + veggies', sub: '~470 cal, 66g protein — best', score: 1.0 },
-      { id: 'dinner_salmon', label: '🏠 Salmon + edamame', sub: '~550 cal, 55g protein', score: 1.0 },
-      { id: 'dinner_parm', label: '🏠 Modified chicken parm + veggies', sub: 'No pasta, no breading', score: 0.75 },
-      { id: 'dinner_lentil', label: '🏠 Lentil soup + chicken side', sub: 'Lazy night option', score: 0.75 },
-      { id: 'dinner_tahini', label: '🥡 Tahini chicken plate', sub: 'Modified — half rice, no pita', score: -0.25, takeout: true },
-      { id: 'dinner_burrito', label: '🥡 Bar Burrito bowl', sub: 'Same order as lunch', score: -0.25, takeout: true },
-      { id: 'dinner_thai', label: '🥡 Thai green curry (no rice)', sub: 'Extra veggies instead of white rice', score: 0, takeout: true }
-    ]
-  },
-  walk: {
-    title: '🚶 Post-Dinner Walk',
-    time: '6:30 - 7:45 PM',
-    type: 'single',
-    options: [
-      { id: 'walk_20', label: '20+ min walk', score: 0.75 },
-      { id: 'walk_15', label: '15 min walk', score: 0.5 },
-      { id: 'walk_10', label: '10 min walk', score: 0.25 },
-      { id: 'walk_none', label: 'No walk', score: 0 }
-    ]
-  },
-  tweaks: {
-    title: '✨ Daily Tweaks',
-    time: 'THROUGHOUT THE DAY',
-    type: 'multi',
-    subtitle: 'Tap each one as you apply it',
-    options: [
-      { id: 'tweak_order', label: 'Eating order followed', sub: 'Veggies → protein → carbs', score: 0.5 },
-      { id: 'tweak_turmeric', label: 'Garlic + turmeric + black pepper', sub: 'Added to at least one meal', score: 0.5 },
-      { id: 'tweak_water', label: 'Water before each major meal', sub: 'Glass before lunch & dinner', score: 0.25 }
-    ]
-  }
+  indulgences:{title:'⚠️ Indulgences',subtitle:'Honest tracking only',opts:[
+    {id:'lays_full',  label:'Masala Lays full bag (alone)',            sub:'High-GI on empty stomach',              score:-3,   m:[270,3,29,16]},
+    {id:'lays_small', label:'Lays handful with protein meal',          sub:'Protein buffers slightly',              score:-.5,  m:[135,2,15,8]},
+    {id:'white_rice', label:'White rice added to meal',                                                             score:-1,   m:[200,4,45,0]},
+    {id:'pita',       label:'Pita added to shawarma',                                                               score:-.5,  m:[165,6,34,1]},
+    {id:'sweet_drk',  label:'Sweetened juice / soda',                  sub:'Worst single-item glucose hit',         score:-2,   m:[150,0,40,0]},
+  ]},
+  extras:[
+    {id:'xblack',   label:'☕ Extra black coffees',    sub:'+0.25 each', score:.25, m:[5,0,0,0]},
+    {id:'xwalks',   label:'🚶 Extra walks (10+ min)', sub:'+0.25 each', score:.25, m:[0,0,0,0]},
+    {id:'xwater',   label:'💧 Water glasses',          sub:'Tracked only',score:0,  m:[0,0,0,0]},
+    {id:'xchai',    label:'🫖 Extra chai (no sugar)',  sub:'Tracked only',score:0,  m:[85,4,10,3]},
+    {id:'xflo',     label:'🫐 Low-GI fruit bowl',      sub:'Berries, kiwi, papaya, guava, apple, pear · +0.25', score:.25, m:[60,1,14,0]},
+    {id:'xfmod',    label:'🍊 Moderate-GI fruit bowl', sub:'Mango, pineapple, orange, peach · -0.25',           score:-.25,m:[65,1,16,0]},
+    {id:'xfhi',     label:'🍌 High-GI fruit bowl',     sub:'Banana, watermelon, grapes, dates · -1',            score:-1,  m:[70,1,18,0]},
+    {id:'xlatte',   label:'☕ Extra lattes (over 2)',  sub:'-0.5 each', score:-.5, m:[150,9,14,6]},
+    {id:'xbiscuit', label:'🥖 Extra biscuits (per 3)', sub:'Marie/bran · -0.25', score:-.25, m:[95,2,16,3]},
+    {id:'xrice',    label:'🍚 Extra rice portion',     sub:'White or basmati · -0.5', score:-.5, m:[200,4,45,0]},
+  ],
+  workout:[
+    {id:'badminton',label:'🏸 Badminton (1 hr)',        burn:220},
+    {id:'muaythai', label:'🥊 Muay Thai (1 hr)',        burn:300},
+    {id:'weights',  label:'🏋️ Weight lifting (10 min)', burn:45},
+    {id:'walk10',   label:'🚶 Walk 10 min',             burn:40},
+    {id:'walk20',   label:'🚶 Walk 20 min',             burn:75},
+    {id:'walk30',   label:'🚶 Walk 30 min',             burn:110},
+  ],
 };
 
-const INDULGENCES = {
-  title: '⚠️ Indulgences',
-  time: 'IF HAPPENED TODAY',
-  type: 'multi',
-  subtitle: 'Honesty helps — tap if it happened',
-  options: [
-    { id: 'ind_lays_full', label: 'Masala Lays full bag (alone)', sub: 'High-GI starch on empty stomach', score: -3 },
-    { id: 'ind_lays_small', label: 'Lays handful with protein meal', sub: 'Protein buffers the spike', score: -0.5 },
-    { id: 'ind_rice', label: 'White rice added to a meal', sub: 'Bumps GI of the whole meal', score: -1 },
-    { id: 'ind_pita', label: 'Pita added to shawarma', sub: 'Extra refined carbs', score: -0.5 },
-    { id: 'ind_drink', label: 'Sweetened juice / soda', sub: 'Worst single-item carb hit', score: -2 }
-  ]
-};
-
-// ============ MACROS LOOKUP [cal, protein, carbs, fat] ============
-const OPTION_MACROS = {
-  // Morning
-  lemon_cinnamon:[10,0,2,0], lemon_only:[10,0,2,0],
-  // Breakfast
-  c2:[500,38,42,22], a2:[422,33,47,15], b2:[610,51,70,15],
-  b:[775,55,54,37], a_yogurt:[280,22,28,8], a_eggs:[290,20,22,14],
-  a_wrap:[300,18,28,10], chai_biscuits:[275,7,42,8],
-  silver_cottage:[271,19,34,7],
-  // Coffee
-  black1:[5,0,0,0], latte1:[150,9,14,6],
-  black2:[5,0,0,0], latte2:[150,9,14,6],
-  // Kulcha block
-  pre_walk:[0,0,0,0], kulcha_meal:[820,30,122,22], post_walk:[0,0,0,0],
-  // Green tea
-  gt1:[5,0,1,0], gt2:[5,0,1,0],
-  // Lunch
-  lunch_salmon:[480,51,8,14], lunch_chicken_veg:[420,42,16,14],
-  lunch_chicken_rice:[450,45,35,9], lunch_lentil:[420,40,28,6],
-  lunch_tahini:[550,40,45,18], lunch_burrito:[580,42,52,16], lunch_skip:[0,0,0,0],
-  // Snack
-  snack_almonds:[100,4,3,9], snack_yogurt:[130,12,8,3],
-  snack_cottage:[160,15,12,6], snack_mix:[150,5,10,10],
-  snack_babybel:[160,7,22,6], snack_skip:[0,0,0,0],
-  // Pre-dinner
-  pre_water:[0,0,0,0],
-  // Dinner
-  dinner_chicken:[470,66,16,14], dinner_salmon:[550,55,8,22],
-  dinner_parm:[420,52,12,14], dinner_lentil:[420,40,28,6],
-  dinner_tahini:[520,40,42,16], dinner_burrito:[580,42,52,16], dinner_thai:[480,28,28,22],
-  // Walk & tweaks
-  walk_20:[0,0,0,0], walk_15:[0,0,0,0], walk_10:[0,0,0,0], walk_none:[0,0,0,0],
-  tweak_order:[0,0,0,0], tweak_turmeric:[0,0,0,0], tweak_water:[0,0,0,0],
-  // Indulgences
-  ind_lays_full:[270,3,29,16], ind_lays_small:[135,2,15,8],
-  ind_rice:[200,4,45,0], ind_pita:[165,6,34,1], ind_drink:[150,0,40,0]
-};
-const EXTRA_MACROS = {
-  blackCoffees:[5,0,0,0], walks:[0,0,0,0], water:[0,0,0,0],
-  chai:[85,4,10,3], fruitsLow:[60,1,14,0], fruitsMod:[65,1,16,0],
-  fruitsHigh:[70,1,18,0], lattes:[150,9,14,6], biscuits:[95,2,16,3], rice:[200,4,45,0]
-};
-const MACRO_TARGETS = { cal:1650, protein:120, carbs:120, fat:65 };
-const DEFAULT_STATE = {
-  selections: {},
-  extras: {
-    blackCoffees: 0, walks: 0, water: 0, chai: 0,
-    fruitsLow: 0, fruitsMod: 0, fruitsHigh: 0,
-    lattes: 0, biscuits: 0, rice: 0
+// ── HER CONFIG ──
+const HER = {
+  id:'her', burnCap:400,
+  targets:{cal:1400,protein:100,carbs:100,fat:55},
+  grace:{cal:150,carb:10},
+  slots:{
+    morning:{title:'🍋 Morning Ritual',time:'7:00 AM',opts:[
+      {id:'spearmint_lem',label:'🌿 Spearmint tea + lemon water + cinnamon',sub:'Anti-androgenic, blood sugar support',score:.75,m:[15,0,3,0]},
+      {id:'lemon_cinn_h', label:'Lemon water + cinnamon',                                                             score:.5, m:[10,0,2,0]},
+      {id:'lemon_only_h', label:'Lemon water only',                                                                   score:.25,m:[10,0,2,0]},
+    ]},
+    breakfast:{title:'🌅 Breakfast',time:'7:30–8:30 AM',opts:[
+      {id:'spinach_oml', label:'🥬 Spinach & turmeric omelette + flaxseed',sub:'3 eggs, anti-inflammatory, 30g protein',score:1.25,m:[380,30,8,22]},
+      {id:'yogurt_ber_h',label:'🫐 Greek yogurt + berries + flaxseed + chia',sub:'Anti-androgenic lignans, probiotics', score:1.25,m:[320,22,35,10]},
+      {id:'green_smth',  label:'💚 Spinach + berries + flaxseed + protein', sub:'Iron, omega-3, anti-inflammatory',    score:1.0, m:[380,30,40,12]},
+      {id:'oats_h',      label:'🌾 Overnight oats + cinnamon + berries',    sub:'Fiber-rich, slow-release carbs',      score:.75, m:[350,12,55,8]},
+      {id:'silver_alm_h',label:'🍞 Silver Hills + almond butter',           sub:'Healthy fat, no honey',               score:.5,  m:[280,12,28,14]},
+      {id:'silver_cot_h',label:'🍞 Silver Hills + cottage cheese',          sub:'Lean protein, low-GI bread',          score:.5,  m:[250,17,28,5]},
+      {id:'boiled_egg_h',label:'🥚 2 Boiled eggs',                          sub:'12g protein, zero carbs',             score:.5,  m:[150,12,0,10]},
+      {id:'chai_bis_h',  label:'🫖 Chai + biscuits only',                   sub:'Weakest — no protein',                score:0,   m:[275,7,42,8]},
+    ]},
+    coffee1:{title:'☕ Morning Drink',time:'9:00 AM',opts:[
+      {id:'spearmint1_h',label:'🌿 Spearmint tea',         sub:'Best for PCOD — lowers free testosterone',score:.5, m:[5,0,1,0]},
+      {id:'green1_h',    label:'Green tea (lemon/ginger)', sub:'Antioxidants, metabolism',               score:.25,m:[5,0,1,0]},
+      {id:'black1_h',    label:'Black coffee / Americano',                                               score:.25,m:[5,0,0,0],isBlack:true},
+      {id:'latte1_h',    label:'Oat milk latte (no sugar)',sub:'Oat milk over dairy for PCOD',           score:0,  m:[130,5,18,5]},
+    ]},
+    coffee2:{title:'☕ Mid-Morning Drink',time:'11:00 AM',opts:[
+      {id:'spearmint2_h',label:'🌿 Spearmint tea',         sub:'2nd cup doubles anti-androgenic benefit',score:.5, m:[5,0,1,0]},
+      {id:'green2_h',    label:'Green tea',                                                               score:.25,m:[5,0,1,0]},
+      {id:'black2_h',    label:'Black coffee / Americano',                                               score:.25,m:[5,0,0,0],isBlack:true},
+      {id:'latte2_h',    label:'Oat milk latte (no sugar)',                                              score:0,  m:[130,5,18,5]},
+    ]},
+    afternoon_tea:{title:'🌿 Afternoon Spearmint',time:'2:30 PM',opts:[
+      {id:'spearmint_pm',label:'🌿 Spearmint tea',         sub:'3rd cup = strong anti-androgenic effect',score:.5, m:[5,0,1,0]},
+      {id:'gt_pm_h',     label:'Lemon ginger green tea',                                                 score:.25,m:[5,0,1,0]},
+    ]},
+    lunch:{title:'🍽️ Lunch',time:'12:30–1:00 PM',subtitle:'Chicken + Tofu options',opts:[
+      {id:'turmeric_chk',label:'🍗 Turmeric & ginger chicken + roasted veg',sub:'Anti-inflammatory powerhouse',       score:1.25,m:[420,45,15,14]},
+      {id:'chk_quinoa_h',label:'🍗 Grilled chicken + quinoa + mixed greens', sub:'Complete protein, complex carbs',   score:1.0, m:[450,48,30,12]},
+      {id:'chk_tikka_h', label:'🍗 Home-made chicken tikka + salad',         sub:'Yogurt-marinated, no cream',        score:1.0, m:[400,42,12,16]},
+      {id:'chk_avo_h',   label:'🍗 Grilled chicken + avocado + large salad', sub:'Healthy fat, anti-inflammatory',    score:1.0, m:[430,40,10,22]},
+      {id:'chk_soup_h',  label:'🍗 Chicken vegetable soup (homemade)',        sub:'High vegetable ratio, gut healing', score:.75, m:[320,35,20,8]},
+      {id:'chickpea_h',  label:'🥗 Large chickpea + vegetable salad',        sub:'Inositol-rich, zinc, fiber',        score:.75, m:[350,14,45,10]},
+      {id:'lentil_h',    label:'🫘 Lentil dal + mixed vegetables',           sub:'Iron-rich, complex carbs',          score:.75, m:[380,18,50,8]},
+      {id:'tofu_turm_h', label:'🫘 Tofu + turmeric roasted veg',             sub:'Plant protein — 22g',               score:1.25,m:[380,22,20,16],isTofu:true},
+      {id:'tofu_quin_h', label:'🫘 Tofu + quinoa + mixed greens',            sub:'Complete plant protein',            score:1.0, m:[400,24,35,14],isTofu:true},
+      {id:'tofu_tikk_h', label:'🫘 Tofu tikka + salad',                      sub:'Yogurt-marinated, grilled',         score:1.0, m:[350,20,18,16],isTofu:true},
+      {id:'tofu_avo_h',  label:'🫘 Tofu + avocado + large salad',            sub:'Healthy fat, light',                score:1.0, m:[370,18,15,22],isTofu:true},
+      {id:'tofu_soup_h', label:'🫘 Tofu vegetable soup',                     sub:'Light, gut-healing broth',          score:.75, m:[280,16,25,10],isTofu:true},
+      {id:'takeout_l_h', label:'🥡 Takeout (modified)',                       sub:'Use master rule',                   score:-.25,m:[550,38,45,18],takeout:true},
+    ]},
+    snack:{title:'🌰 PCOD Snack',time:'3:00 PM',opts:[
+      ...SHARED_SNACKS,
+      {id:'yogurt_cinn_h',label:'🥛 Plain Greek yogurt + cinnamon',          sub:'Probiotics — limit dairy total',    score:.5, m:[130,12,8,3]},
+      {id:'skip_s_h',     label:'⏭️ Skip snack',                             sub:'Can lead to overeating at dinner',  score:-.25,m:[0,0,0,0]},
+    ]},
+    predinner:{title:'💧 Pre-Dinner Water',time:'5:45 PM',opts:[
+      {id:'pre_water_h',label:'Glass of water before dinner',sub:'Reduces meal size, pre-hydrates',score:.25,m:[0,0,0,0]},
+    ]},
+    dinner:{title:'🌙 Dinner',time:'6:00–7:00 PM',subtitle:'Chicken + Tofu options',opts:[
+      {id:'stuffed_pep', label:'🍗 Chicken stuffed peppers + quinoa',        sub:'Anti-inflammatory, complete meal',  score:1.25,m:[450,48,28,14]},
+      {id:'chk_avo_d_h', label:'🍗 Grilled chicken + avocado + greens',      sub:'Highest healthy fat dinner',       score:1.25,m:[430,44,12,22]},
+      {id:'turm_cauli',  label:'🍗 Turmeric chicken + cauliflower rice',      sub:'Lowest carb dinner option',        score:1.0, m:[380,44,15,14]},
+      {id:'chk_stir_h',  label:'🍗 Chicken + vegetable stir-fry',            sub:'No sugar sauce, high veg',         score:1.0, m:[400,42,20,14]},
+      {id:'salmon_d_h',  label:'🐟 Salmon + edamame + greens',               sub:'Omega-3, anti-inflammatory',       score:1.0, m:[520,52,12,22]},
+      {id:'lentil_c_h',  label:'🫘 Lentil curry + small brown rice',         sub:'Iron-rich, plant protein',         score:.75, m:[420,18,55,8]},
+      {id:'tofu_pep_h',  label:'🫘 Tofu stuffed peppers + quinoa',           sub:'High fiber, plant protein',        score:1.25,m:[400,22,30,16],isTofu:true},
+      {id:'tofu_avo_d_h',label:'🫘 Grilled tofu + avocado + greens',         sub:'Healthy fat, light dinner',        score:1.0, m:[380,20,16,22],isTofu:true},
+      {id:'tofu_caul_h', label:'🫘 Tofu + cauliflower rice (turmeric)',       sub:'Lowest carb option',               score:1.0, m:[320,20,18,16],isTofu:true},
+      {id:'tofu_stir_h', label:'🫘 Tofu stir-fry + veggies',                 sub:'No sugar sauce',                   score:1.0, m:[340,18,22,14],isTofu:true},
+      {id:'takeout_d_h', label:'🥡 Takeout (grilled, modified)',               sub:'Use master rule',                  score:-.25,m:[520,38,42,16],takeout:true},
+    ]},
+    postdinner:{title:'💧 Post-Dinner',time:'7:30–8:00 PM',opts:[
+      {id:'acv_h',    label:'Water + apple cider vinegar',sub:'Lowers next-morning fasting glucose',score:.25,m:[5,0,1,0]},
+      {id:'plain_h',  label:'Plain water',                sub:'Hydration — tracked',               score:.1, m:[0,0,0,0]},
+    ]},
+    tweaks:{title:'✨ PCOD Tweaks',time:'All Day',subtitle:'Each is clinically supported',opts:[
+      {id:'flaxseed_h',   label:'🌱 Flaxseed (1 tbsp) in meal',             sub:'Lignans lower testosterone',        score:.5, m:[37,1,2,3]},
+      {id:'spearmint_tw', label:'🌿 Spearmint consumed (2+ cups today)',     sub:'Proven to lower free testosterone', score:.5, m:[0,0,0,0]},
+      {id:'inositol_h',   label:'💊 Myo-inositol supplement',                sub:'Most evidence-backed PCOD supplement',score:.5,m:[0,0,0,0]},
+      {id:'eat_ord_h',    label:'Eating order: fiber → protein → carbs',                                             score:.5, m:[0,0,0,0]},
+      {id:'zinc_h',       label:'🎃 Zinc-rich food today',                  sub:'Pumpkin seeds/chickpeas — regulates cycle',score:.25,m:[0,0,0,0]},
+    ]},
   },
-  indulgences: []
+  indulgences:{title:'⚠️ Indulgences',subtitle:'Stricter — hormones are sensitive',opts:[
+    {id:'dairy_h',    label:'Full-fat dairy / cream sauce',             sub:'Can worsen hormonal imbalance',       score:-.5, m:[80,5,5,6]},
+    {id:'sweet_h',    label:'Sweetened juice / soda / alcohol',                                                    score:-2,  m:[150,0,40,0]},
+    {id:'refined_h',  label:'White bread / pizza / pasta (large)',      sub:'Spikes insulin driving PCOD',         score:-1,  m:[300,8,60,4]},
+    {id:'processed_h',label:'Processed / packaged junk food',           sub:'Inflammatory, worsens PCOD',          score:-1.5,m:[250,4,35,12]},
+    {id:'caffeine_h', label:'Excess caffeine (3+ coffees/lattes)',      sub:'Raises cortisol, disrupts hormones',  score:-.75,m:[0,0,0,0]},
+  ]},
+  extras:[
+    {id:'spearmint_x',label:'🌿 Extra spearmint teas',    sub:'+0.5 each — key PCOD anti-androgen',    score:.5, m:[5,0,1,0]},
+    {id:'walks_hx',   label:'🚶 Extra walks (15+ min)',   sub:'+0.5 each — insulin + hormone support', score:.5, m:[0,0,0,0]},
+    {id:'water_hx',   label:'💧 Water glasses',           sub:'Tracked only',                          score:0,  m:[0,0,0,0]},
+    {id:'flo_hx',     label:'🫐 Low-GI fruit bowl',       sub:'Berries, kiwi, apple, pear · +0.25',    score:.25,m:[60,1,14,0]},
+    {id:'fmod_hx',    label:'🍊 Moderate-GI fruit bowl',  sub:'Mango, pineapple, peach · -0.25',       score:-.25,m:[65,1,16,0]},
+    {id:'fhi_hx',     label:'🍌 High-GI fruit bowl',      sub:'Banana, watermelon, grapes · -1',       score:-1, m:[70,1,18,0]},
+    {id:'dairy_hx',   label:'🥛 Extra dairy portions',    sub:'-0.5 each — can worsen PCOD',           score:-.5,m:[80,5,5,6]},
+    {id:'lattes_hx',  label:'☕ Extra lattes',            sub:'-0.5 each — use oat milk',              score:-.5,m:[130,5,18,5]},
+    {id:'biscuits_hx',label:'🥖 Extra biscuits (per 3)',  sub:'-0.25 each',                            score:-.25,m:[95,2,16,3]},
+  ],
+  workout:[
+    {id:'badminton_h',label:'🏸 Badminton (1 hr)',        burn:200},
+    {id:'muaythai_h', label:'🥊 Muay Thai (1 hr)',        burn:270},
+    {id:'weights_h',  label:'🏋️ Weight lifting (10 min)', burn:40},
+    {id:'walk10_h',   label:'🚶 Walk 10 min',             burn:35},
+    {id:'walk20_h',   label:'🚶 Walk 20 min',             burn:65},
+    {id:'walk30_h',   label:'🚶 Walk 30 min',             burn:95},
+  ],
 };
-let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-let theme = 'light';
 
-// ============ STORAGE (localStorage — works on GitHub Pages & iPhone PWA) ============
-const STORAGE_KEY = 'predia_tracker_v1';
-const THEME_KEY = 'predia_tracker_theme';
+const CONFIGS = {him:HIM, her:HER};
+const TODAY = new Date().toISOString().split('T')[0];
+let firebaseReady = false, db = null;
 
-async function loadState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      state = {
-        selections: parsed.selections || {},
-        extras: { ...DEFAULT_STATE.extras, ...(parsed.extras || {}) },
-        indulgences: parsed.indulgences || []
-      };
-    }
-    const savedTheme = localStorage.getItem(THEME_KEY);
-    if (savedTheme) theme = savedTheme;
-  } catch (e) { console.log('Storage load error:', e); }
+// ═══ STATE ═══
+function defaultState(cfg) {
+  const e={}, w={};
+  cfg.extras.forEach(x=>e[x.id]=0);
+  cfg.workout.forEach(x=>w[x.id]=0);
+  return {counts:{},extras:e,inds:{},workout:w};
+}
+let allState = {him:defaultState(HIM), her:defaultState(HER)};
+let theme='light', currentView='', resetTarget=null;
+
+// ═══ VISIBILITY ═══
+function updateVisibility(sel) {
+  const both = !sel;
+  const showHim = both || sel==='him';
+  const showHer = both || sel==='her';
+  const show = (id,v)=>{ const el=document.getElementById(id); if(el) el.style.display=v?'':'none'; };
+  show('himFoodSection', showHim);
+  show('herFoodSection', showHer);
+  show('foodDivider',    both);
+  show('himCalSection',  showHim);
+  show('herCalSection',  showHer);
+  show('calDivider',     both);
 }
 
-async function saveState() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch (e) {}
-}
-
-async function saveTheme() {
-  try {
-    localStorage.setItem(THEME_KEY, theme);
-  } catch (e) {}
-}
-
-// ============ SCORING ============
-function getOption(slotKey, optionId, isIndulgence = false) {
-  const slot = isIndulgence ? INDULGENCES : SLOTS[slotKey];
-  if (!slot) return null;
-  return slot.options.find(o => o.id === optionId);
-}
-
-function calculateScore() {
-  let score = 0;
-  for (const slotKey in state.selections) {
-    const slot = SLOTS[slotKey];
-    if (!slot) continue;
-    const sel = state.selections[slotKey];
-    if (slot.type === 'single' && sel) {
-      const opt = slot.options.find(o => o.id === sel);
-      if (opt) score += opt.score;
-    } else if (slot.type === 'multi' && Array.isArray(sel)) {
-      sel.forEach(id => {
-        const opt = slot.options.find(o => o.id === id);
-        if (opt) score += opt.score;
-      });
-    }
-  }
-  state.indulgences.forEach(id => {
-    const opt = INDULGENCES.options.find(o => o.id === id);
-    if (opt) score += opt.score;
-  });
-  score += state.extras.blackCoffees * 0.25;
-  score += state.extras.walks * 0.25;
-  score += state.extras.fruitsLow * 0.25;
-  score += state.extras.fruitsMod * -0.25;
-  score += state.extras.fruitsHigh * -1;
-  score += state.extras.lattes * -0.5;
-  score += state.extras.biscuits * -0.25;
-  score += state.extras.rice * -0.5;
-  // water and chai not scored — tracked only
-  if (checkMasterRule()) score += 0.5;
-  return Math.round(score * 100) / 100;
-}
-
-function hasTakeoutOrIndulgence() {
-  if (state.indulgences.length > 0) return true;
-  const breakfastSel = state.selections.breakfast;
-  const lunchSel = state.selections.lunch;
-  const dinnerSel = state.selections.dinner;
-  const bOpt = breakfastSel && SLOTS.breakfast.options.find(o => o.id === breakfastSel);
-  const lOpt = lunchSel && SLOTS.lunch.options.find(o => o.id === lunchSel);
-  const dOpt = dinnerSel && SLOTS.dinner.options.find(o => o.id === dinnerSel);
-  return !!(bOpt?.takeout || lOpt?.takeout || dOpt?.takeout);
-}
-
-function checkMasterRule() {
-  if (!hasTakeoutOrIndulgence()) return false;
-  const c1 = state.selections.coffee1;
-  const c2 = state.selections.coffee2;
-  const c1Black = c1 && SLOTS.coffee1.options.find(o => o.id === c1)?.isBlack;
-  const c2Black = c2 && SLOTS.coffee2.options.find(o => o.id === c2)?.isBlack;
-  // Need both coffees to be black (or both unfilled which won't happen if they had takeout meals)
-  return c1Black && c2Black;
-}
-
-function maxPossibleForSlot(slotKey) {
-  const slot = SLOTS[slotKey];
-  if (!slot) return 0;
-  if (slot.type === 'single') {
-    const positives = slot.options.filter(o => o.score > 0).map(o => o.score);
-    return positives.length > 0 ? Math.max(...positives) : 0;
-  } else {
-    return slot.options.filter(o => o.score > 0).reduce((s, o) => s + o.score, 0);
-  }
-}
-
-function getTrafficLight(slotKey, optionId) {
-  const slot = SLOTS[slotKey];
-  const opt = slot.options.find(o => o.id === optionId);
-  if (!opt) return 'red';
-
-  // Hypothetical score: apply this choice + max possible from all OTHER unselected slots
-  let hypothetical = 0;
-
-  // Add existing selections (except current slot)
-  for (const sKey in state.selections) {
-    if (sKey === slotKey) continue;
-    const s = SLOTS[sKey];
-    if (!s) continue;
-    const sel = state.selections[sKey];
-    if (s.type === 'single' && sel) {
-      const o = s.options.find(x => x.id === sel);
-      if (o) hypothetical += o.score;
-    } else if (s.type === 'multi' && Array.isArray(sel)) {
-      sel.forEach(id => {
-        const o = s.options.find(x => x.id === id);
-        if (o) hypothetical += o.score;
-      });
-    }
-  }
-
-  // Indulgences (negative)
-  state.indulgences.forEach(id => {
-    const o = INDULGENCES.options.find(x => x.id === id);
-    if (o) hypothetical += o.score;
-  });
-
-  // Extras
-  hypothetical += state.extras.blackCoffees * 0.25;
-  hypothetical += state.extras.walks * 0.25;
-
-  // Apply this hypothetical choice
-  if (slot.type === 'multi') {
-    // For multi, add this option's score
-    hypothetical += opt.score;
-    // Plus existing selections in this slot (if any others)
-    const currentMulti = state.selections[slotKey] || [];
-    currentMulti.forEach(id => {
-      if (id !== optionId) {
-        const o = slot.options.find(x => x.id === id);
-        if (o) hypothetical += o.score;
-      }
+// ═══ FIREBASE ═══
+function initFirebase() {
+  if (FIREBASE_CONFIG.apiKey==='YOUR_API_KEY') return;
+  const load = (src, cb) => { const s=document.createElement('script'); s.src=src; s.onload=cb; document.head.appendChild(s); };
+  load('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js', () => {
+    load('https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js', () => {
+      try {
+        firebase.initializeApp(FIREBASE_CONFIG);
+        db = firebase.database();
+        document.getElementById('syncDot').classList.add('live');
+        firebaseReady = true;
+        ['him','her'].forEach(p => {
+          db.ref(`dt/${TODAY}/${p}`).on('value', snap => {
+            const d = snap.val();
+            if (d) {
+              const def = defaultState(CONFIGS[p]);
+              allState[p] = {counts:{...(d.counts||{})},extras:{...def.extras,...(d.extras||{})},inds:{...(d.inds||{})},workout:{...def.workout,...(d.workout||{})}};
+            }
+            renderAll();
+          });
+        });
+      } catch(e) { console.warn('Firebase init failed'); loadLocal(); }
     });
-  } else {
-    hypothetical += opt.score;
-  }
-
-  // Add max possible from unselected slots
-  for (const sKey in SLOTS) {
-    if (sKey === slotKey) continue;
-    if (state.selections[sKey] !== undefined && state.selections[sKey] !== null) {
-      const sel = state.selections[sKey];
-      if (Array.isArray(sel) && sel.length === 0) {
-        // multi with nothing picked yet, add max
-        hypothetical += maxPossibleForSlot(sKey);
-      } else if (!Array.isArray(sel)) {
-        // already counted above
-        continue;
-      } else {
-        // multi with some picked — add max of remaining
-        const slotData = SLOTS[sKey];
-        const remainingPositives = slotData.options
-          .filter(o => o.score > 0 && !sel.includes(o.id))
-          .map(o => o.score);
-        if (remainingPositives.length > 0) {
-          hypothetical += remainingPositives.reduce((s, v) => s + v, 0);
-        }
-      }
-    } else {
-      hypothetical += maxPossibleForSlot(sKey);
-    }
-  }
-
-  // Master rule bonus possible?
-  // If choosing this option creates takeout possibility but coffees not yet black, assume best case
-  const futureTakeout = hasTakeoutOrIndulgence() || opt.takeout;
-  if (futureTakeout) {
-    // Can still earn the 0.5 bonus if coffee slots become black
-    const c1Sel = state.selections.coffee1;
-    const c2Sel = state.selections.coffee2;
-    const c1IsBlack = c1Sel && SLOTS.coffee1.options.find(o => o.id === c1Sel)?.isBlack;
-    const c2IsBlack = c2Sel && SLOTS.coffee2.options.find(o => o.id === c2Sel)?.isBlack;
-    // If both possible to make black, can get bonus
-    if ((!c1Sel || c1IsBlack) && (!c2Sel || c2IsBlack)) {
-      hypothetical += 0.5;
-    }
-  }
-
-  if (hypothetical >= 5) return 'green';
-  if (hypothetical >= 3.5) return 'yellow';
-  return 'red';
+  });
 }
 
-// ============ MACRO CALCULATION ============
-function calculateMacros() {
-  const m = { cal:0, protein:0, carbs:0, fat:0 };
-  // Slots
-  for (const slotKey in state.selections) {
-    const slot = SLOTS[slotKey];
-    if (!slot) continue;
-    const sel = state.selections[slotKey];
-    if (slot.type === 'single' && sel) {
-      const v = OPTION_MACROS[sel];
-      if (v) { m.cal+=v[0]; m.protein+=v[1]; m.carbs+=v[2]; m.fat+=v[3]; }
-    } else if (slot.type === 'multi' && Array.isArray(sel)) {
-      sel.forEach(id => {
-        const v = OPTION_MACROS[id];
-        if (v) { m.cal+=v[0]; m.protein+=v[1]; m.carbs+=v[2]; m.fat+=v[3]; }
+function writeDb(person, type, key, value) {
+  if (firebaseReady && db) db.ref(`dt/${TODAY}/${person}/${type}/${key}`).transaction(()=>Math.max(0,value));
+  else saveLocal();
+}
+
+// ═══ STORAGE ═══
+const LS='dft_v2', LST='dft_theme';
+function saveLocal() { try{localStorage.setItem(LS,JSON.stringify(allState));}catch(e){} }
+function loadLocal() {
+  try {
+    const d=localStorage.getItem(LS);
+    if(d){
+      const p=JSON.parse(d);
+      ['him','her'].forEach(person=>{
+        if(p[person]){const def=defaultState(CONFIGS[person]);allState[person]={counts:p[person].counts||{},extras:{...def.extras,...(p[person].extras||{})},inds:p[person].inds||{},workout:{...def.workout,...(p[person].workout||{})}};}
       });
     }
-  }
-  // Indulgences
-  state.indulgences.forEach(id => {
-    const v = OPTION_MACROS[id];
-    if (v) { m.cal+=v[0]; m.protein+=v[1]; m.carbs+=v[2]; m.fat+=v[3]; }
-  });
-  // Extras
-  for (const key in state.extras) {
-    const count = state.extras[key];
-    const v = EXTRA_MACROS[key];
-    if (count > 0 && v) { m.cal+=v[0]*count; m.protein+=v[1]*count; m.carbs+=v[2]*count; m.fat+=v[3]*count; }
-  }
+    theme=localStorage.getItem(LST)||'light';
+  }catch(e){}
+  renderAll();
+}
+
+// ═══ CALCULATIONS ═══
+function getCount(p,k){return Math.max(0,allState[p].counts[k]||0);}
+function getExtra(p,id){return Math.max(0,allState[p].extras[id]||0);}
+function getInd(p,id){return Math.max(0,allState[p].inds[id]||0);}
+function getWkt(p,id){return Math.max(0,allState[p].workout[id]||0);}
+
+function calcMacros(p) {
+  const m={cal:0,protein:0,carbs:0,fat:0};
+  const add=(mac,cnt)=>{if(!mac||cnt<=0)return;m.cal+=mac[0]*cnt;m.protein+=mac[1]*cnt;m.carbs+=mac[2]*cnt;m.fat+=mac[3]*cnt;};
+  const cfg=CONFIGS[p];
+  for(const sk in cfg.slots) cfg.slots[sk].opts.forEach(o=>add(o.m,getCount(p,`${sk}__${o.id}`)));
+  cfg.indulgences.opts.forEach(o=>add(o.m,getInd(p,o.id)));
+  cfg.extras.forEach(e=>add(e.m,getExtra(p,e.id)));
   return m;
 }
+function getTotalBurn(p) {
+  const cfg=CONFIGS[p];
+  return Math.min(cfg.workout.reduce((t,w)=>t+getWkt(p,w.id)*w.burn,0), cfg.burnCap);
+}
+function calPenalty(netCal,target,grace) { const x=netCal-(target+grace); return x<=0?0:-Math.min(3,x/200); }
+function carbPenalty(carbs,target,grace) { const x=carbs-(target+grace); return x<=0?0:-Math.min(2.5,x/15); }
 
-function updateMacros() {
-  const m = calculateMacros();
-  const T = MACRO_TARGETS;
-  const items = [
-    { id:'cal',     val:Math.round(m.cal),     target:T.cal,     unit:'',  lowerBetter:false, isCalorie:true },
-    { id:'protein', val:Math.round(m.protein), target:T.protein, unit:'g', lowerBetter:false },
-    { id:'carbs',   val:Math.round(m.carbs),   target:T.carbs,   unit:'g', lowerBetter:true  },
-    { id:'fat',     val:Math.round(m.fat),     target:T.fat,     unit:'g', lowerBetter:true  },
+function hasTakeout(p) {
+  const cfg=CONFIGS[p];
+  for(const sk in cfg.slots) for(const o of cfg.slots[sk].opts) if(o.takeout&&getCount(p,`${sk}__${o.id}`)>0) return true;
+  return Object.values(allState[p].inds).some(v=>v>0);
+}
+function masterActive(p) {
+  if(!hasTakeout(p)) return false;
+  const c=allState[p].counts;
+  return ((c['coffee1__black1']||0)+(c['coffee1__black1_h']||0))>0 && ((c['coffee2__black2']||0)+(c['coffee2__black2_h']||0))>0;
+}
+function calcScore(p) {
+  const cfg=CONFIGS[p];
+  let s=0;
+  for(const sk in cfg.slots) cfg.slots[sk].opts.forEach(o=>{const c=getCount(p,`${sk}__${o.id}`);if(c>0)s+=c*o.score;});
+  cfg.indulgences.opts.forEach(o=>{const c=getInd(p,o.id);if(c>0)s+=c*o.score;});
+  cfg.extras.forEach(e=>{const c=getExtra(p,e.id);if(c>0)s+=c*e.score;});
+  const mac=calcMacros(p), burn=getTotalBurn(p), netCal=mac.cal-burn;
+  s+=calPenalty(netCal,cfg.targets.cal,cfg.grace.cal);
+  s+=carbPenalty(mac.carbs,cfg.targets.carbs,cfg.grace.carb);
+  if(masterActive(p))s+=0.5;
+  return Math.round(s*100)/100;
+}
+function getLight(p,optScore,optM) {
+  const cfg=CONFIGS[p], mac=calcMacros(p), burn=getTotalBurn(p);
+  const om=optM||[0,0,0,0];
+  const netCur=mac.cal-burn, netNew=mac.cal+om[0]-burn;
+  const calD=calPenalty(netNew,cfg.targets.cal,cfg.grace.cal)-calPenalty(netCur,cfg.targets.cal,cfg.grace.cal);
+  const carbD=carbPenalty(mac.carbs+om[2],cfg.targets.carbs,cfg.grace.carb)-carbPenalty(mac.carbs,cfg.targets.carbs,cfg.grace.carb);
+  const net=optScore+calD+carbD;
+  return net>=0.5?'g':net>=0?'y':'r';
+}
+
+// ═══ RENDER ═══
+function sStr(s){return(s>=0?'+':'')+s.toFixed(2);}
+function oStr(s){return(s>=0?'+':'')+s.toFixed(s%1===0?1:2);}
+
+function renderOptRow(p,slotKey,opt,isInd=false) {
+  const key=isInd?opt.id:`${slotKey}__${opt.id}`;
+  const cnt=isInd?getInd(p,opt.id):getCount(p,key);
+  const active=cnt>0;
+  const light=active?'on':getLight(p,opt.score,opt.m);
+  const cls=active?(isInd?'ind-active':'active'):(opt.isTofu&&p==='him'?'muted-opt':'');
+  const dtype=isInd?'ind':'count';
+  return `<div class="opt-row ${cls}">
+    <span class="opt-dot ${light}"></span>
+    <span class="opt-info">
+      <span class="opt-lbl">${opt.label}</span>
+      ${opt.sub?`<span class="opt-sub">${opt.sub}</span>`:''}
+    </span>
+    <span class="opt-score">${oStr(opt.score)}</span>
+    <div class="opt-ctr">
+      <button class="cnt-btn" data-p="${p}" data-t="${dtype}" data-k="${key}" data-oid="${opt.id}" data-d="-1">−</button>
+      <span class="cnt-val">${cnt}</span>
+      <button class="cnt-btn" data-p="${p}" data-t="${dtype}" data-k="${key}" data-oid="${opt.id}" data-d="1">+</button>
+    </div>
+  </div>`;
+}
+
+function renderSlots(p) {
+  const cfg=CONFIGS[p];
+  return Object.entries(cfg.slots).map(([sk,slot])=>`
+    <div class="slot">
+      <div class="slot-hdr">
+        <div class="slot-time">${slot.time}</div>
+        <div class="slot-title">${slot.title}</div>
+        ${slot.subtitle?`<div class="slot-sub">${slot.subtitle}</div>`:''}
+      </div>
+      <div class="opts">${slot.opts.map(o=>renderOptRow(p,sk,o)).join('')}</div>
+    </div>`).join('');
+}
+
+function renderExtras(p) {
+  const cfg=CONFIGS[p];
+  const rows=cfg.extras.map(e=>{
+    const cnt=getExtra(p,e.id);
+    const cls=e.score>0?'pos':e.score<0?'neg':'';
+    return `<div class="counter-row ${cls}">
+      <div class="ctr-info"><div class="ctr-lbl">${e.label}</div><div class="ctr-sub">${e.sub}</div></div>
+      <div class="ctr-right">
+        <button class="cnt-btn" data-p="${p}" data-t="extra" data-k="${e.id}" data-oid="${e.id}" data-d="-1">−</button>
+        <span class="cnt-val">${cnt}</span>
+        <button class="cnt-btn" data-p="${p}" data-t="extra" data-k="${e.id}" data-oid="${e.id}" data-d="1">+</button>
+      </div>
+    </div>`;
+  }).join('');
+  return `<div class="slot"><div class="slot-hdr"><div class="slot-time">ANYTIME</div><div class="slot-title">➕ Extras & Tracking</div></div>${rows}</div>`;
+}
+
+function renderWorkout(p) {
+  const cfg=CONFIGS[p], burn=getTotalBurn(p), capped=burn>=cfg.burnCap;
+  const rows=cfg.workout.map(w=>{
+    const cnt=getWkt(p,w.id);
+    return `<div class="counter-row ${cnt>0?'pos':''}">
+      <div class="ctr-info"><div class="ctr-lbl">${w.label}</div><div class="ctr-sub">~${w.burn} cal each · conservative</div></div>
+      <div class="ctr-right">
+        <button class="cnt-btn" data-p="${p}" data-t="workout" data-k="${w.id}" data-oid="${w.id}" data-d="-1">−</button>
+        <span class="cnt-val">${cnt}</span>
+        <button class="cnt-btn" data-p="${p}" data-t="workout" data-k="${w.id}" data-oid="${w.id}" data-d="1">+</button>
+      </div>
+    </div>`;
+  }).join('');
+  return `<div class="slot">
+    <div class="slot-hdr"><div class="slot-time">END OF DAY</div><div class="slot-title">🏋️ Workout</div><div class="slot-sub">Burns reduce net calories for penalty calc only</div></div>
+    ${rows}
+    <div class="workout-total">🔥 Burned: <strong>${burn} cal</strong> ${capped?`· 🔒 Cap reached (${cfg.burnCap} max)`:` · Cap: ${cfg.burnCap} cal`}</div>
+  </div>`;
+}
+
+function renderInds(p) {
+  const cfg=CONFIGS[p];
+  return `<div class="slot" style="border-color:rgba(231,76,60,.25)">
+    <div class="slot-hdr">
+      <div class="slot-time">IF HAPPENED</div>
+      <div class="slot-title" style="color:var(--red)">${cfg.indulgences.title}</div>
+      <div class="slot-sub">${cfg.indulgences.subtitle}</div>
+    </div>
+    <div class="opts">${cfg.indulgences.opts.map(o=>renderOptRow(p,'inds',o,true)).join('')}</div>
+  </div>`;
+}
+
+function renderMacros(p) {
+  const cfg=CONFIGS[p], m=calcMacros(p), burn=getTotalBurn(p), netCal=m.cal-burn, T=cfg.targets;
+  const bars=[
+    {id:'cal',val:Math.round(netCal),display:`${Math.round(m.cal)}${burn>0?`−${burn}`:''}`,target:T.cal,unit:'',isCalorie:true},
+    {id:'protein',val:Math.round(m.protein),display:Math.round(m.protein),target:T.protein,unit:'g',lowerBetter:false},
+    {id:'carbs',val:Math.round(m.carbs),display:Math.round(m.carbs),target:T.carbs,unit:'g',lowerBetter:true},
+    {id:'fat',val:Math.round(m.fat),display:Math.round(m.fat),target:T.fat,unit:'g',lowerBetter:true},
   ];
-  items.forEach(({ id, val, target, unit, lowerBetter, isCalorie }) => {
-    const fill = document.getElementById(`macro-fill-${id}`);
-    const valEl = document.getElementById(`macro-val-${id}`);
-    if (!fill || !valEl) return;
-    const pct = (val / target) * 100;
-    fill.style.width = Math.min(pct, 100) + '%';
-    let color;
-    if (isCalorie) {
-      color = pct < 70 ? 'var(--warning)' : pct <= 115 ? 'var(--success)' : 'var(--danger)';
-    } else if (lowerBetter) {
-      color = pct <= 80 ? 'var(--success)' : pct <= 110 ? 'var(--warning)' : 'var(--danger)';
-    } else {
-      color = pct < 50 ? 'var(--danger)' : pct < 80 ? 'var(--warning)' : 'var(--success)';
-    }
-    fill.style.background = color;
-    valEl.textContent = val + unit;
+  return bars.map(b=>{
+    const pct=Math.min(100,(b.val/b.target)*100);
+    const c=b.isCalorie?(pct<70?'var(--yellow)':pct<=115?'var(--green)':'var(--red)'):
+             !b.lowerBetter?(pct<50?'var(--red)':pct<80?'var(--yellow)':'var(--green)'):
+             (pct<=80?'var(--green)':pct<=110?'var(--yellow)':'var(--red)');
+    return `<div class="macro-item">
+      <div class="macro-row">
+        <span class="macro-lbl">${b.id==='cal'?'Net cal':b.id}</span>
+        <span class="macro-val" style="color:${c}">${b.display}${b.unit}</span>
+        <span class="macro-tgt">/${b.target}${b.unit}</span>
+      </div>
+      <div class="macro-track"><div class="macro-fill" style="width:${pct}%;background:${c}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderPenalty(p) {
+  const cfg=CONFIGS[p], m=calcMacros(p), burn=getTotalBurn(p), netCal=m.cal-burn;
+  const cp=calPenalty(netCal,cfg.targets.cal,cfg.grace.cal);
+  const cb=carbPenalty(m.carbs,cfg.targets.carbs,cfg.grace.carb);
+  const msgs=[];
+  if(cp<0) msgs.push(`⚠️ Cal over by ${Math.round(netCal-(cfg.targets.cal+cfg.grace.cal))} kcal → ${cp.toFixed(2)} penalty`);
+  if(cb<0) msgs.push(`⚠️ Carbs over by ${Math.round(m.carbs-(cfg.targets.carbs+cfg.grace.carb))}g → ${cb.toFixed(2)} penalty`);
+  return msgs.join('  |  ');
+}
+
+function renderDiagnostic(p) {
+  const s=calcScore(p);
+  const [icon,title,msg]=s>=6?['🏆','Exceptional day!','Well above target — outstanding.']:
+    s>=5?['🟢','Target hit','Great day. Keep this pattern.']:
+    s>=3.5?['🟡','Close to target','Add 1–2 small wins to reach +5.']:
+    s>=1?['🟠','Below target','Try master rule + walks tomorrow.']:
+    s>0?['🌱','Building up','Keep going — every choice counts.']:
+    s<0?['🔴','Bad day','Reset clean tomorrow. Start fresh.']:
+    ['🌱','Start your day','Tap any option to begin.'];
+  return `<div class="diagnostic"><div class="diag-icon">${icon}</div><div class="diag-title">${title}</div><div class="diag-msg">${msg}</div></div>`;
+}
+
+function renderMasterBadge(p) {
+  const el=document.getElementById(`${p}Master`);
+  if(!el||p==='her'){if(el)el.style.display='none';return;}
+  const active=masterActive(p), has=hasTakeout(p);
+  el.className='master-badge';
+  if(has&&active){el.className='master-badge active';el.textContent='✓ Master Rule active — +0.5 bonus applied';}
+  else if(has){el.className='master-badge hint';el.textContent='💡 Master Rule: swap lattes to black coffee for +0.5';}
+}
+
+function renderAnalytics() {
+  ['him','her'].forEach(p=>{
+    const cfg=CONFIGS[p], m=calcMacros(p), burn=getTotalBurn(p), netCal=m.cal-burn, T=cfg.targets;
+    const items=[
+      {key:'cal',   val:netCal,   target:T.cal,     isCalorie:true},
+      {key:'protein',val:m.protein,target:T.protein, lowerBetter:false},
+      {key:'carbs', val:m.carbs,  target:T.carbs,   lowerBetter:true},
+      {key:'fat',   val:m.fat,    target:T.fat,     lowerBetter:true},
+    ];
+    items.forEach(({key,val,target,isCalorie,lowerBetter})=>{
+      const el=document.getElementById(`an-${p}-${key}`);
+      if(!el) return;
+      const pct=Math.round((val/target)*100);
+      const fill=Math.min(100,pct);
+      const c=isCalorie?(pct<70?'var(--yellow)':pct<=115?'var(--green)':'var(--red)'):
+               lowerBetter===false?(pct<50?'var(--red)':pct<80?'var(--yellow)':'var(--green)'):
+               (pct<=80?'var(--green)':pct<=110?'var(--yellow)':'var(--red)');
+      const valDisplay=Math.round(val);
+      el.innerHTML=`<div class="an-pct-row"><span class="an-pct" style="color:${c}">${pct}%</span><span class="an-sub">${valDisplay}/${target}</span></div>
+        <div class="an-bar-track"><div class="an-bar-fill" style="width:${fill}%;background:${c}"></div></div>`;
+    });
   });
 }
 
-// ============ RENDER ============
-function renderSlot(slotKey, slot) {
-  const sel = state.selections[slotKey];
-  const isMulti = slot.type === 'multi';
-  const hasSelection = isMulti ? (Array.isArray(sel) && sel.length > 0) : !!sel;
-
-  const optionsHtml = slot.options.map(opt => {
-    let isSelected = false;
-    let isMuted = false;
-    if (isMulti) {
-      isSelected = Array.isArray(sel) && sel.includes(opt.id);
-    } else {
-      isSelected = sel === opt.id;
-      isMuted = hasSelection && !isSelected;
-    }
-
-    const lightClass = isSelected ? '' : getTrafficLight(slotKey, opt.id);
-    const scoreStr = (opt.score >= 0 ? '+' : '') + opt.score.toFixed(opt.score % 1 === 0 ? 1 : 2);
-    const subHtml = opt.sub ? `<span class="chip-sub">${opt.sub}</span>` : '';
-
-    return `
-      <button class="chip ${isSelected ? 'selected' : ''} ${isMuted ? 'muted' : ''}"
-        data-slot="${slotKey}" data-id="${opt.id}" data-multi="${isMulti}">
-        <span class="chip-light ${lightClass}"></span>
-        <span class="chip-content">
-          <span class="chip-label">${opt.label}</span>
-          ${subHtml}
-        </span>
-        <span class="chip-score">${scoreStr}</span>
-        <span class="chip-check">✓</span>
-      </button>
-    `;
-  }).join('');
-
-  const subtitleHtml = slot.subtitle ? `<div class="slot-subtitle">${slot.subtitle}</div>` : '';
-
-  return `
-    <section class="slot" data-slot-key="${slotKey}">
-      <div class="slot-header">
-        <div class="slot-time">${slot.time}</div>
-        <h2 class="slot-title">${slot.title}</h2>
-        ${subtitleHtml}
-      </div>
-      <div class="slot-options">${optionsHtml}</div>
-    </section>
-  `;
-}
-
-function renderIndulgences() {
-  const optionsHtml = INDULGENCES.options.map(opt => {
-    const isSelected = state.indulgences.includes(opt.id);
-    const scoreStr = opt.score.toFixed(opt.score % 1 === 0 ? 1 : 2);
-    const subHtml = opt.sub ? `<span class="chip-sub">${opt.sub}</span>` : '';
-    return `
-      <button class="chip indulgence ${isSelected ? 'selected' : ''}"
-        data-indulgence="${opt.id}">
-        <span class="chip-light"></span>
-        <span class="chip-content">
-          <span class="chip-label">${opt.label}</span>
-          ${subHtml}
-        </span>
-        <span class="chip-score">${scoreStr}</span>
-        <span class="chip-check">✓</span>
-      </button>
-    `;
-  }).join('');
-
-  return `
-    <section class="slot indulgence-section">
-      <div class="slot-header">
-        <div class="slot-time">${INDULGENCES.time}</div>
-        <h2 class="slot-title">${INDULGENCES.title}</h2>
-        <div class="slot-subtitle">${INDULGENCES.subtitle}</div>
-      </div>
-      <div class="slot-options">${optionsHtml}</div>
-    </section>
-  `;
+function updateHeaderScore(p) {
+  const s=calcScore(p);
+  const el=document.getElementById(`${p}Score`);
+  const bar=document.getElementById(`${p}Bar`);
+  const msg=document.getElementById(`${p}Msg`);
+  if(!el) return;
+  el.textContent=sStr(s);
+  el.classList.add('updating'); setTimeout(()=>el.classList.remove('updating'),300);
+  const pct=Math.max(0,Math.min(100,(s/5)*100));
+  bar.style.width=pct+'%';
+  bar.style.background=s>=5?'var(--green)':s>=3.5?'var(--yellow)':'var(--red)';
+  msg.textContent=s>=5?'✓ Target!':s>=0?`Need +${(5-s).toFixed(2)}`:'Off track';
 }
 
 function renderAll() {
-  const container = document.getElementById('slotsContainer');
-  container.innerHTML = Object.keys(SLOTS).map(k => renderSlot(k, SLOTS[k])).join('');
-  document.getElementById('indulgenceContainer').innerHTML = renderIndulgences();
-  attachListeners();
-  updateScore();
-  updateCounters();
-}
-
-function updateScore() {
-  const score = calculateScore();
-  const scoreEl = document.getElementById('scoreNumber');
-  const sign = score >= 0 ? '+' : '';
-  scoreEl.textContent = sign + score.toFixed(2);
-  scoreEl.classList.add('updating');
-  setTimeout(() => scoreEl.classList.remove('updating'), 300);
-
-  // Progress bar
-  const bar = document.getElementById('scoreBar');
-  const pct = Math.max(0, Math.min(100, (score / 5) * 100));
-  bar.style.width = pct + '%';
-  bar.className = 'score-bar';
-  if (score >= 5) bar.classList.add('success');
-  else if (score >= 3.5) bar.classList.add('warning');
-  else if (score >= 1) bar.classList.add('warning');
-  else bar.classList.add('danger');
-
-  // Message
-  const msg = document.getElementById('scoreMsg');
-  if (score >= 5) msg.textContent = '✓ Target hit!';
-  else {
-    const need = (5 - score).toFixed(2);
-    msg.textContent = `Need +${need} more`;
-  }
-
-  // Master rule badge
-  const badge = document.getElementById('masterBadge');
-  badge.className = 'master-rule-badge';
-  if (hasTakeoutOrIndulgence()) {
-    if (checkMasterRule()) {
-      badge.classList.add('active');
-      badge.innerHTML = '✓ Master Rule active — +0.5 bonus applied';
-    } else {
-      badge.classList.add('hint');
-      badge.innerHTML = '💡 Master Rule available: swap lattes → black coffee for +0.5';
-    }
-  }
-
-  updateDiagnostic(score);
-  updateMacros();
-}
-
-function updateDiagnostic(score) {
-  const el = document.getElementById('diagnostic');
-  let icon, title, msg;
-  if (score >= 6) {
-    icon = '🏆'; title = 'Exceptional day';
-    msg = 'Bonus territory — your friend is doing the work.';
-  } else if (score >= 5) {
-    icon = '🟢'; title = 'Target hit';
-    msg = 'Successful pre-diabetic day. Keep this pattern going.';
-  } else if (score >= 3.5) {
-    icon = '🟡'; title = 'Close to target';
-    msg = 'Add 1-2 small wins — extra walk, water tweak, or fire the Master Rule.';
-  } else if (score >= 1) {
-    icon = '🟠'; title = 'Below target';
-    msg = 'Tomorrow: fire the Master Rule + lock in the walks + tweaks.';
-  } else if (score > 0) {
-    icon = '🌱'; title = 'Building up';
-    msg = 'Keep going — every selection moves you closer.';
-  } else if (score < 0) {
-    icon = '🔴'; title = 'Bad day';
-    msg = 'Review what slipped. Restart clean tomorrow with the master rule active.';
-  } else {
-    icon = '🌱'; title = 'Start your day';
-    msg = 'Begin with morning lemon water and build from there.';
-  }
-  el.innerHTML = `
-    <div class="diagnostic-icon">${icon}</div>
-    <div class="diagnostic-title">${title}</div>
-    <div class="diagnostic-msg">${msg}</div>
-  `;
-}
-
-function updateCounters() {
-  document.getElementById('counter-blackCoffees').textContent = state.extras.blackCoffees;
-  document.getElementById('counter-walks').textContent = state.extras.walks;
-  document.getElementById('counter-water').textContent = state.extras.water;
-  document.getElementById('counter-chai').textContent = state.extras.chai;
-  document.getElementById('counter-fruitsLow').textContent = state.extras.fruitsLow;
-  document.getElementById('counter-fruitsMod').textContent = state.extras.fruitsMod;
-  document.getElementById('counter-fruitsHigh').textContent = state.extras.fruitsHigh;
-  document.getElementById('counter-lattes').textContent = state.extras.lattes;
-  document.getElementById('counter-biscuits').textContent = state.extras.biscuits;
-  document.getElementById('counter-rice').textContent = state.extras.rice;
-}
-
-// ============ EVENT HANDLERS ============
-function attachListeners() {
-  // Slot chips
-  document.querySelectorAll('.chip[data-slot]').forEach(chip => {
-    chip.addEventListener('click', handleChipClick);
+  ['him','her'].forEach(p=>{
+    document.getElementById(`${p}Slots`).innerHTML=renderSlots(p);
+    document.getElementById(`${p}Extras`).innerHTML=renderExtras(p);
+    document.getElementById(`${p}Workout`).innerHTML=renderWorkout(p);
+    document.getElementById(`${p}Inds`).innerHTML=renderInds(p);
+    document.getElementById(`${p}Macros`).innerHTML=renderMacros(p);
+    document.getElementById(`${p}Penalty`).textContent=renderPenalty(p);
+    document.getElementById(`${p}Diag`).innerHTML=renderDiagnostic(p);
+    renderMasterBadge(p);
+    updateHeaderScore(p);
   });
-  // Indulgence chips
-  document.querySelectorAll('.chip[data-indulgence]').forEach(chip => {
-    chip.addEventListener('click', handleIndulgenceClick);
-  });
+  renderAnalytics();
+  document.querySelectorAll('.cnt-btn').forEach(b=>b.addEventListener('click',handleCnt));
 }
 
-function handleChipClick(e) {
-  const chip = e.currentTarget;
-  const slotKey = chip.dataset.slot;
-  const optId = chip.dataset.id;
-  const isMulti = chip.dataset.multi === 'true';
-  const slot = SLOTS[slotKey];
-
-  if (isMulti) {
-    if (!Array.isArray(state.selections[slotKey])) {
-      state.selections[slotKey] = [];
-    }
-    const idx = state.selections[slotKey].indexOf(optId);
-    if (idx >= 0) {
-      state.selections[slotKey].splice(idx, 1);
-      if (state.selections[slotKey].length === 0) delete state.selections[slotKey];
-    } else {
-      state.selections[slotKey].push(optId);
-    }
-  } else {
-    // Single: toggle if same, replace if different
-    if (state.selections[slotKey] === optId) {
-      delete state.selections[slotKey];
-    } else {
-      state.selections[slotKey] = optId;
-    }
+// ═══ EVENTS ═══
+function handleCnt(e) {
+  const b=e.currentTarget;
+  const p=b.dataset.p, t=b.dataset.t, k=b.dataset.k, oid=b.dataset.oid, d=parseInt(b.dataset.d);
+  if(t==='count'){
+    const nv=Math.max(0,(allState[p].counts[k]||0)+d);
+    if(nv===0) delete allState[p].counts[k]; else allState[p].counts[k]=nv;
+    writeDb(p,'counts',k.replace('__','--'),nv);
+  } else if(t==='ind'){
+    const nv=Math.max(0,(allState[p].inds[oid]||0)+d);
+    allState[p].inds[oid]=nv;
+    writeDb(p,'inds',oid,nv);
+  } else if(t==='extra'){
+    const nv=Math.max(0,(allState[p].extras[k]||0)+d);
+    allState[p].extras[k]=nv;
+    writeDb(p,'extras',k,nv);
+  } else if(t==='workout'){
+    const nv=Math.max(0,(allState[p].workout[k]||0)+d);
+    allState[p].workout[k]=nv;
+    writeDb(p,'workout',k,nv);
   }
+  if(!firebaseReady) saveLocal();
   renderAll();
-  saveState();
 }
 
-function handleIndulgenceClick(e) {
-  const optId = e.currentTarget.dataset.indulgence;
-  const idx = state.indulgences.indexOf(optId);
-  if (idx >= 0) state.indulgences.splice(idx, 1);
-  else state.indulgences.push(optId);
-  renderAll();
-  saveState();
-}
-
-// Counter buttons
-document.querySelectorAll('.counter-btn').forEach(btn => {
-  btn.addEventListener('click', e => {
-    const counter = btn.dataset.counter;
-    const delta = parseInt(btn.dataset.delta, 10);
-    state.extras[counter] = Math.max(0, state.extras[counter] + delta);
-    updateCounters();
-    updateScore();
-    saveState();
-  });
+document.getElementById('personSel').addEventListener('change', function() {
+  currentView = this.value;
+  updateVisibility(currentView);
+  if(currentView) {
+    const t = currentView==='him' ? 'himFoodSection' : 'herFoodSection';
+    setTimeout(()=>document.getElementById(t)?.scrollIntoView({behavior:'smooth',block:'start'}),50);
+  }
 });
 
-// Theme toggle
-document.getElementById('themeBtn').addEventListener('click', () => {
-  theme = theme === 'light' ? 'dark' : 'light';
-  applyTheme();
-  saveTheme();
+document.getElementById('themeBtn').addEventListener('click',()=>{
+  theme=theme==='light'?'dark':'light';
+  document.documentElement.setAttribute('data-theme',theme);
+  document.getElementById('themeBtn').textContent=theme==='light'?'☀️':'🌙';
+  try{localStorage.setItem(LST,theme);}catch(e){}
 });
 
-function applyTheme() {
-  document.documentElement.setAttribute('data-theme', theme);
-  document.getElementById('themeBtn').textContent = theme === 'light' ? '☀️' : '🌙';
-  document.querySelector('meta[name="theme-color"]').setAttribute('content', theme === 'light' ? '#16A085' : '#0E1419');
-}
-
-// Reset
-document.getElementById('resetBtn').addEventListener('click', () => {
+function confirmReset(p) {
+  resetTarget=p;
   document.getElementById('resetModal').classList.add('show');
-});
-document.getElementById('cancelReset').addEventListener('click', () => {
-  document.getElementById('resetModal').classList.remove('show');
-});
-document.getElementById('confirmReset').addEventListener('click', () => {
-  state = JSON.parse(JSON.stringify(DEFAULT_STATE));
-  document.getElementById('resetModal').classList.remove('show');
-  renderAll();
-  saveState();
-});
-document.getElementById('resetModal').addEventListener('click', e => {
-  if (e.target.id === 'resetModal') {
+}
+document.getElementById('confirmResetBtn').addEventListener('click',()=>{
+  if(resetTarget){
+    allState[resetTarget]=defaultState(CONFIGS[resetTarget]);
+    if(firebaseReady&&db) db.ref(`dt/${TODAY}/${resetTarget}`).remove();
+    else saveLocal();
     document.getElementById('resetModal').classList.remove('show');
+    resetTarget=null;
+    renderAll();
   }
 });
+document.addEventListener('click',e=>{ if(e.target.id==='resetModal') document.getElementById('resetModal').classList.remove('show'); });
 
-// ============ INIT ============
-(async function init() {
-  await loadState();
-  applyTheme();
-  renderAll();
+// ═══ INIT ═══
+(function init(){
+  try{theme=localStorage.getItem(LST)||'light';}catch(e){}
+  document.documentElement.setAttribute('data-theme',theme);
+  document.getElementById('themeBtn').textContent=theme==='light'?'☀️':'🌙';
+  updateVisibility('');
+  loadLocal();
+  initFirebase();
 })();
 </script>
 </body>
