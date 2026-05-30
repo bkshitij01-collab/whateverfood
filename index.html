@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Whatever Food - Trackers & Tools</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 50px;
+      color: white;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    .cards {
+      display: grid;
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+
+    .card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .card p {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      flex-grow: 1;
+    }
+
+    .card-link {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      align-self: flex-start;
+    }
+
+    .card-link:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 50px;
+      color: white;
+      opacity: 0.8;
+    }
+
+    .footer p {
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      .header h1 {
+        font-size: 1.8rem;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .card h2 {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🍽️ Whatever Food</h1>
+      <p>Your Personal Health & Nutrition Tracking Suite</p>
+    </div>
+
+    <div class="cards">
+      <a href="food_tracker.html" class="card">
+        <div class="card-icon">🌿</div>
+        <h2>Pre-Diabetic Daily Tracker</h2>
+        <p>Track your daily food choices with an intelligent scoring system. Hit your +5.00 target with smart meal suggestions, real-time feedback, and traffic light guidance.</p>
+        <span class="card-link">Open Tracker →</span>
+      </a>
+    </div>
+
+    <div class="footer">
+      <p>Track. Score. Improve. One meal at a time.</p>
+    </div>
+  </div>
+</body>
+</html>
