@@ -300,7 +300,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
 
 <div class="pwa-hint">
   📱 <strong>Save as iPhone app:</strong> Safari → Share → Add to Home Screen &nbsp;|&nbsp;
-  🔥 <strong>Live sync:</strong> Add Firebase config in HTML source for real-time 2-device sync
+  🔥 <strong>Live sync:</strong> Add Firebase config below, then use the same link on both devices
 </div>
 
 <div class="modal" id="resetModal">
@@ -574,6 +574,18 @@ const HER = {
 
 const CONFIGS = {him:HIM, her:HER};
 const TODAY = new Date().toISOString().split('T')[0];
+
+// Change this to any private/shared key you want.
+// Anyone using the same SYNC_KEY + Firebase project will share the same tracker data.
+const SYNC_KEY = 'family-food-tracker-2026';
+
+function firebasePath(person, type, key) {
+  let path = `trackers/${SYNC_KEY}/dt/${TODAY}/${person}`;
+  if (type) path += `/${type}`;
+  if (key) path += `/${key}`;
+  return path;
+}
+
 let firebaseReady = false, db = null;
 
 // ═══ STATE ═══
@@ -612,7 +624,7 @@ function initFirebase() {
         document.getElementById('syncDot').classList.add('live');
         firebaseReady = true;
         ['him','her'].forEach(p => {
-          db.ref(`dt/${TODAY}/${p}`).on('value', snap => {
+          db.ref(firebasePath(p)).on('value', snap => {
             const d = snap.val();
             if (d) {
               const def = defaultState(CONFIGS[p]);
@@ -627,7 +639,7 @@ function initFirebase() {
 }
 
 function writeDb(person, type, key, value) {
-  if (firebaseReady && db) db.ref(`dt/${TODAY}/${person}/${type}/${key}`).transaction(()=>Math.max(0,value));
+  if (firebaseReady && db) db.ref(firebasePath(person, type, key)).transaction(()=>Math.max(0,value));
   else saveLocal();
 }
 
@@ -947,7 +959,7 @@ function confirmReset(p) {
 document.getElementById('confirmResetBtn').addEventListener('click',()=>{
   if(resetTarget){
     allState[resetTarget]=defaultState(CONFIGS[resetTarget]);
-    if(firebaseReady&&db) db.ref(`dt/${TODAY}/${resetTarget}`).remove();
+    if(firebaseReady&&db) db.ref(firebasePath(resetTarget)).remove();
     else saveLocal();
     document.getElementById('resetModal').classList.remove('show');
     resetTarget=null;
