@@ -166,6 +166,32 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
 .pwa-hint strong{color:var(--him)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 .updating{animation:pulse .3s ease}
+
+/* ── SEARCH BAR ── */
+.search-wrap{padding:0 14px 8px;max-width:720px;margin:0 auto}
+.search-box{display:flex;align-items:center;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:4px 10px 4px 12px;gap:8px;box-shadow:var(--shadow);transition:all .2s}
+.search-box:focus-within{border-color:var(--him);box-shadow:0 0 0 3px var(--him-soft)}
+.search-icon{font-size:14px;color:var(--muted)}
+.search-input{flex:1;border:none;background:transparent;font-family:inherit;font-size:14px;color:var(--text);padding:9px 0;outline:none;width:100%}
+.search-input::placeholder{color:var(--light)}
+.search-clear{border:none;background:var(--soft);width:24px;height:24px;border-radius:50%;font-size:14px;cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;padding:0;line-height:1}
+.search-clear:active{transform:scale(.9)}
+
+/* ── EXPANDABLE CARDS ── */
+.opt-row{flex-wrap:wrap}
+.opt-info{cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+.opt-info:active{opacity:.7}
+.opt-details{flex-basis:100%;max-height:0;overflow:hidden;transition:max-height 0.3s ease,padding-top 0.3s ease,margin-top 0.3s ease;padding-top:0;margin-top:0;border-top:1px solid transparent}
+.opt-row.expanded .opt-details{max-height:280px;padding-top:10px;margin-top:8px;border-top-color:var(--border)}
+.detail-macros{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.her-section .detail-macros,.opt-row[data-row-id^="her"] .detail-macros{grid-template-columns:repeat(5,1fr)}
+.dm-item{text-align:center;padding:7px 4px;background:var(--card);border-radius:8px;border:1px solid var(--border)}
+.opt-row.active .dm-item{background:var(--card)}
+.dm-val{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
+.dm-lbl{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;margin-top:2px}
+.detail-text{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.5}
+.detail-text strong{color:var(--text);font-weight:700}
+.no-results{padding:30px 14px;text-align:center;color:var(--muted);font-size:13px;background:var(--card);border-radius:var(--r);border:1px solid var(--border);max-width:720px;margin:8px auto}
 </style>
 </head>
 <body>
@@ -226,7 +252,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
       <div class="an-lbl">🥑 Fat</div>
       <div class="an-cell" id="an-him-fat"></div>
       <div class="an-cell" id="an-her-fat"></div>
+      <div class="an-lbl">🌱 Fiber</div>
+      <div class="an-cell" id="an-him-fiber"></div>
+      <div class="an-cell" id="an-her-fiber"></div>
     </div>
+  </div>
+</div>
+
+<!-- ══ SEARCH BAR ══ -->
+<div class="search-wrap">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" class="search-input" id="searchInput" placeholder="Search items (chicken, smoothie, chaach, bubly…)" autocomplete="off">
+    <button class="search-clear" id="searchClear" style="display:none">×</button>
   </div>
 </div>
 
@@ -321,7 +359,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
 //  Rules: { "rules": { ".read": true, ".write": true } }
 //  Project Settings → Web app → Copy config here
 // ═══════════════════════════════════════════════════
-const FIREBASE_CONFIG = = {
+const FIREBASE_CONFIG = {
   apiKey: "AIzaSyDmZStC-d8Vo92XfPnXA-nOPnzDTFGMdvI",
   authDomain: "whateverfood-3863a.firebaseapp.com",
   databaseURL: "https://whateverfood-3863a-default-rtdb.firebaseio.com",
@@ -346,7 +384,7 @@ const SHARED_SNACKS = [
 // ── HIM CONFIG ──
 const HIM = {
   id:'him', burnCap:500,
-  targets:{cal:1700,protein:150,carbs:150,fat:65},
+  targets:{cal:3000,protein:240,carbs:300,fat:90},
   grace:{cal:250,carb:20},
   slots:{
     morning:{title:'🍋 Morning Ritual',time:'7:00 AM',opts:[
@@ -442,6 +480,8 @@ const HIM = {
     {id:'xwalks',   label:'🚶 Extra walks (10+ min)', sub:'+0.25 each', score:.25, m:[0,0,0,0]},
     {id:'xwater',   label:'💧 Water glasses',          sub:'Tracked only',score:0,  m:[0,0,0,0]},
     {id:'xchai',    label:'🫖 Extra chai (no sugar)',  sub:'Tracked only',score:0,  m:[85,4,10,3]},
+    {id:'xchaach',  label:'🥛 Chaach (salty lassi)',    sub:'+0.5 — probiotic, low cal, hydrating',score:.5, m:[55,3,5,2]},
+    {id:'xbubly',   label:'🫧 Bubly / sparkling water',  sub:'Tracked — zero cal hydration',score:0, m:[0,0,0,0]},
     {id:'xflo',     label:'🫐 Low-GI fruit bowl',      sub:'Berries, kiwi, papaya, guava, apple, pear · +0.25', score:.25, m:[60,1,14,0]},
     {id:'xfmod',    label:'🍊 Moderate-GI fruit bowl', sub:'Mango, pineapple, orange, peach · -0.25',           score:-.25,m:[65,1,16,0]},
     {id:'xfhi',     label:'🍌 High-GI fruit bowl',     sub:'Banana, watermelon, grapes, dates · -1',            score:-1,  m:[70,1,18,0]},
@@ -462,7 +502,7 @@ const HIM = {
 // ── HER CONFIG ──
 const HER = {
   id:'her', burnCap:400,
-  targets:{cal:1400,protein:100,carbs:100,fat:55},
+  targets:{cal:2100,protein:200,carbs:175,fat:90,fiber:40},
   grace:{cal:150,carb:10},
   slots:{
     morning:{title:'🍋 Morning Ritual',time:'7:00 AM',opts:[
@@ -553,6 +593,8 @@ const HER = {
   ]},
   extras:[
     {id:'spearmint_x',label:'🌿 Extra spearmint teas',    sub:'+0.5 each — key PCOD anti-androgen',    score:.5, m:[5,0,1,0]},
+    {id:'chaach_hx', label:'🥛 Chaach (salty lassi)',     sub:'+0.25 — probiotic but contains dairy',score:.25, m:[55,3,5,2]},
+    {id:'bubly_hx',  label:'🫧 Bubly / sparkling water',  sub:'Tracked — zero cal hydration',score:0, m:[0,0,0,0]},
     {id:'walks_hx',   label:'🚶 Extra walks (15+ min)',   sub:'+0.5 each — insulin + hormone support', score:.5, m:[0,0,0,0]},
     {id:'water_hx',   label:'💧 Water glasses',           sub:'Tracked only',                          score:0,  m:[0,0,0,0]},
     {id:'flo_hx',     label:'🫐 Low-GI fruit bowl',       sub:'Berries, kiwi, apple, pear · +0.25',    score:.25,m:[60,1,14,0]},
@@ -596,6 +638,7 @@ function defaultState(cfg) {
   return {counts:{},extras:e,inds:{},workout:w};
 }
 let allState = {him:defaultState(HIM), her:defaultState(HER)};
+let expandedIds = new Set();
 let theme='light', currentView='', resetTarget=null;
 
 // ═══ VISIBILITY ═══
@@ -614,7 +657,7 @@ function updateVisibility(sel) {
 
 // ═══ FIREBASE ═══
 function initFirebase() {
-  if (FIREBASE_CONFIG.apiKey==='AIzaSyDmZStC-d8Vo92XfPnXA-nOPnzDTFGMdvI') return;
+  if (FIREBASE_CONFIG.apiKey==='YOUR_API_KEY' || !FIREBASE_CONFIG.apiKey) return;
 
   const load = (src, cb) => {
     const s=document.createElement('script');
@@ -705,8 +748,8 @@ function getInd(p,id){return Math.max(0,allState[p].inds[id]||0);}
 function getWkt(p,id){return Math.max(0,allState[p].workout[id]||0);}
 
 function calcMacros(p) {
-  const m={cal:0,protein:0,carbs:0,fat:0};
-  const add=(mac,cnt)=>{if(!mac||cnt<=0)return;m.cal+=mac[0]*cnt;m.protein+=mac[1]*cnt;m.carbs+=mac[2]*cnt;m.fat+=mac[3]*cnt;};
+  const m={cal:0,protein:0,carbs:0,fat:0,fiber:0};
+  const add=(mac,cnt)=>{if(!mac||cnt<=0)return;m.cal+=mac[0]*cnt;m.protein+=mac[1]*cnt;m.carbs+=mac[2]*cnt;m.fat+=mac[3]*cnt;m.fiber+=(mac[4]||0)*cnt;};
   const cfg=CONFIGS[p];
   for(const sk in cfg.slots) cfg.slots[sk].opts.forEach(o=>add(o.m,getCount(p,`${sk}__${o.id}`)));
   cfg.indulgences.opts.forEach(o=>add(o.m,getInd(p,o.id)));
@@ -758,14 +801,18 @@ function oStr(s){return(s>=0?'+':'')+s.toFixed(s%1===0?1:2);}
 
 function renderOptRow(p,slotKey,opt,isInd=false) {
   const key=isInd?opt.id:`${slotKey}__${opt.id}`;
+  const rowId=`${p}|${key}`;
   const cnt=isInd?getInd(p,opt.id):getCount(p,key);
   const active=cnt>0;
   const light=active?'on':getLight(p,opt.score,opt.m);
   const cls=active?(isInd?'ind-active':'active'):(opt.isTofu&&p==='him'?'muted-opt':'');
+  const exp=expandedIds.has(rowId)?'expanded':'';
   const dtype=isInd?'ind':'count';
-  return `<div class="opt-row ${cls}">
+  const [cal,prot,carbs,fat,fiber]=opt.m||[0,0,0,0,0];
+  const showFiber=p==='her';
+  return `<div class="opt-row ${cls} ${exp}" data-row-id="${rowId}">
     <span class="opt-dot ${light}"></span>
-    <span class="opt-info">
+    <span class="opt-info" data-expand="${rowId}">
       <span class="opt-lbl">${opt.label}</span>
       ${opt.sub?`<span class="opt-sub">${opt.sub}</span>`:''}
     </span>
@@ -774,6 +821,17 @@ function renderOptRow(p,slotKey,opt,isInd=false) {
       <button class="cnt-btn" data-p="${p}" data-t="${dtype}" data-k="${key}" data-oid="${opt.id}" data-d="-1">−</button>
       <span class="cnt-val">${cnt}</span>
       <button class="cnt-btn" data-p="${p}" data-t="${dtype}" data-k="${key}" data-oid="${opt.id}" data-d="1">+</button>
+    </div>
+    <div class="opt-details">
+      <div class="detail-macros">
+        <div class="dm-item"><div class="dm-val">${cal}</div><div class="dm-lbl">cal</div></div>
+        <div class="dm-item"><div class="dm-val">${prot}g</div><div class="dm-lbl">protein</div></div>
+        <div class="dm-item"><div class="dm-val">${carbs}g</div><div class="dm-lbl">carbs</div></div>
+        <div class="dm-item"><div class="dm-val">${fat}g</div><div class="dm-lbl">fat</div></div>
+        ${showFiber?`<div class="dm-item"><div class="dm-val">${fiber||0}g</div><div class="dm-lbl">fiber</div></div>`:''}
+      </div>
+      ${opt.details?`<div class="detail-text">${opt.details}</div>`:''}
+      <div class="detail-text">Tap any item again to collapse · Score: <strong>${oStr(opt.score)}</strong> per serving</div>
     </div>
   </div>`;
 }
@@ -848,6 +906,7 @@ function renderMacros(p) {
     {id:'carbs',val:Math.round(m.carbs),display:Math.round(m.carbs),target:T.carbs,unit:'g',lowerBetter:true},
     {id:'fat',val:Math.round(m.fat),display:Math.round(m.fat),target:T.fat,unit:'g',lowerBetter:true},
   ];
+  if(T.fiber) bars.push({id:'fiber',val:Math.round(m.fiber),display:Math.round(m.fiber),target:T.fiber,unit:'g',lowerBetter:false});
   return bars.map(b=>{
     const pct=Math.min(100,(b.val/b.target)*100);
     const c=b.isCalorie?(pct<70?'var(--yellow)':pct<=115?'var(--green)':'var(--red)'):
@@ -903,6 +962,7 @@ function renderAnalytics() {
       {key:'protein',val:m.protein,target:T.protein, lowerBetter:false},
       {key:'carbs', val:m.carbs,  target:T.carbs,   lowerBetter:true},
       {key:'fat',   val:m.fat,    target:T.fat,     lowerBetter:true},
+      {key:'fiber', val:m.fiber,  target:T.fiber||35, lowerBetter:false},
     ];
     items.forEach(({key,val,target,isCalorie,lowerBetter})=>{
       const el=document.getElementById(`an-${p}-${key}`);
@@ -947,6 +1007,38 @@ function renderAll() {
   });
   renderAnalytics();
   document.querySelectorAll('.cnt-btn').forEach(b=>b.addEventListener('click',handleCnt));
+  attachExpansion();
+  const q=document.getElementById('searchInput')?.value||'';
+  if(q) applySearch(q);
+}
+
+function attachExpansion() {
+  document.querySelectorAll('[data-expand]').forEach(el=>{
+    el.addEventListener('click',e=>{
+      e.stopPropagation();
+      const id=el.dataset.expand;
+      const row=el.closest('.opt-row');
+      if(!row) return;
+      if(expandedIds.has(id)){expandedIds.delete(id);row.classList.remove('expanded');}
+      else{expandedIds.add(id);row.classList.add('expanded');}
+    });
+  });
+}
+
+function applySearch(query){
+  const q=query.toLowerCase().trim();
+  const clear=document.getElementById('searchClear');
+  if(clear) clear.style.display=q?'flex':'none';
+  document.querySelectorAll('.slot').forEach(slot=>{
+    let slotHasMatch=false;
+    slot.querySelectorAll('.opt-row, .counter-row').forEach(row=>{
+      const text=row.textContent.toLowerCase();
+      const match=!q||text.includes(q);
+      row.style.display=match?'':'none';
+      if(match) slotHasMatch=true;
+    });
+    slot.style.display=(slotHasMatch||!q)?'':'none';
+  });
 }
 
 // ═══ EVENTS ═══
@@ -988,6 +1080,14 @@ document.getElementById('themeBtn').addEventListener('click',()=>{
   document.documentElement.setAttribute('data-theme',theme);
   document.getElementById('themeBtn').textContent=theme==='light'?'☀️':'🌙';
   try{localStorage.setItem(LST,theme);}catch(e){}
+});
+
+document.getElementById('searchInput').addEventListener('input',e=>applySearch(e.target.value));
+document.getElementById('searchClear').addEventListener('click',()=>{
+  const inp=document.getElementById('searchInput');
+  inp.value='';
+  applySearch('');
+  inp.focus();
 });
 
 function confirmReset(p) {
