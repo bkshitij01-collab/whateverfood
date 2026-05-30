@@ -192,6 +192,47 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
 .detail-text{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.5}
 .detail-text strong{color:var(--text);font-weight:700}
 .no-results{padding:30px 14px;text-align:center;color:var(--muted);font-size:13px;background:var(--card);border-radius:var(--r);border:1px solid var(--border);max-width:720px;margin:8px auto}
+
+/* ── INFO MODAL ── */
+.info-box{max-width:520px;text-align:left;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;padding:0}
+.info-header{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.info-title{font-size:16px;font-weight:800}
+.info-close{border:none;background:var(--soft);width:28px;height:28px;border-radius:50%;font-size:18px;cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;padding:0;line-height:1}
+.info-body{padding:16px 20px;overflow-y:auto;flex:1}
+.info-footer{display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--border);flex-shrink:0}
+.info-section{margin-bottom:18px}
+.info-section:last-child{margin-bottom:0}
+.info-section h3{font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.report-card{background:var(--soft);border-radius:10px;padding:12px;margin-bottom:8px;border:1.5px solid var(--border)}
+.report-card.him{border-color:var(--him)}
+.report-card.her{border-color:var(--her)}
+.rc-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.rc-name{font-size:14px;font-weight:800}
+.rc-score{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums}
+.report-card.him .rc-score{color:var(--him)}
+.report-card.her .rc-score{color:var(--her)}
+.rc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:4px 10px;font-size:11.5px}
+.rc-grid .rcg-item{display:flex;justify-content:space-between;color:var(--muted)}
+.rc-grid .rcg-item strong{color:var(--text);font-weight:700}
+.tier-badge{display:inline-block;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px}
+.tier-ultra{background:linear-gradient(135deg,#27AE60,#1a6b52);color:#fff}
+.tier-neat{background:linear-gradient(135deg,#E67E22,#D35400);color:#fff}
+.tier-okay{background:linear-gradient(135deg,#F39C12,#E67E22);color:#fff}
+.tier-summary{font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6}
+.tier-summary strong{color:var(--text)}
+.plan-card{background:var(--card);border-radius:10px;padding:12px;margin-bottom:8px;border:1.5px solid var(--border)}
+.plan-card.him{border-left:3px solid var(--him)}
+.plan-card.her{border-left:3px solid var(--her)}
+.plan-name{font-size:13px;font-weight:800;margin-bottom:8px}
+.plan-card.him .plan-name{color:var(--him)}
+.plan-card.her .plan-name{color:var(--her)}
+.plan-items{display:flex;flex-direction:column;gap:6px}
+.plan-item{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;font-size:12px;line-height:1.4}
+.plan-time{color:var(--muted);font-weight:600;font-size:10.5px;text-transform:uppercase;letter-spacing:.3px;min-width:55px;flex-shrink:0}
+.plan-label{flex:1;color:var(--text)}
+.plan-score{color:var(--green);font-weight:700;font-size:11px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.plan-totals{margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);font-size:11.5px;color:var(--muted);display:flex;justify-content:space-between}
+.plan-totals strong{color:var(--text);font-weight:700}
 </style>
 </head>
 <body>
@@ -209,6 +250,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
         <option value="him">👨 His view</option>
         <option value="her">👩 Her view</option>
       </select>
+      <button class="icon-btn" id="infoBtn" title="Today's report & tomorrow's plan">📊</button>
+      <button class="icon-btn" id="resetAllBtn" title="Reset both trackers">↺</button>
       <button class="icon-btn" id="themeBtn">☀️</button>
     </div>
   </div>
@@ -348,6 +391,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
     <div class="modal-btns">
       <button class="btn btn-cancel" onclick="document.getElementById('resetModal').classList.remove('show')">Cancel</button>
       <button class="btn btn-danger" id="confirmResetBtn">Reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="resetAllModal">
+  <div class="modal-box">
+    <div class="modal-title">Reset BOTH trackers?</div>
+    <div class="modal-msg">Clears today's food & workout entries for both Him and Her. Cannot be undone.</div>
+    <div class="modal-btns">
+      <button class="btn btn-cancel" onclick="document.getElementById('resetAllModal').classList.remove('show')">Cancel</button>
+      <button class="btn btn-danger" id="confirmResetAllBtn">Reset Both</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="infoModal">
+  <div class="modal-box info-box">
+    <div class="info-header">
+      <div class="info-title">📊 Today + Tomorrow Plan</div>
+      <button class="info-close" onclick="document.getElementById('infoModal').classList.remove('show')">×</button>
+    </div>
+    <div class="info-body" id="infoBody"></div>
+    <div class="info-footer">
+      <button class="btn btn-cancel" onclick="document.getElementById('infoModal').classList.remove('show')" style="flex:1">Close</button>
+      <button class="btn" id="regenPlanBtn" style="flex:1;background:var(--him);color:#fff">🎲 Re-roll plan</button>
     </div>
   </div>
 </div>
@@ -1104,7 +1172,202 @@ document.getElementById('confirmResetBtn').addEventListener('click',()=>{
     renderAll();
   }
 });
-document.addEventListener('click',e=>{ if(e.target.id==='resetModal') document.getElementById('resetModal').classList.remove('show'); });
+document.addEventListener('click',e=>{
+  if(e.target.id==='resetModal') document.getElementById('resetModal').classList.remove('show');
+  if(e.target.id==='resetAllModal') document.getElementById('resetAllModal').classList.remove('show');
+  if(e.target.id==='infoModal') document.getElementById('infoModal').classList.remove('show');
+});
+
+// ═══ RESET ALL ═══
+document.getElementById('resetAllBtn').addEventListener('click',()=>{
+  document.getElementById('resetAllModal').classList.add('show');
+});
+document.getElementById('confirmResetAllBtn').addEventListener('click',()=>{
+  allState.him=defaultState(HIM);
+  allState.her=defaultState(HER);
+  expandedIds.clear();
+  if(firebaseReady&&db){
+    db.ref(firebasePath('him')).remove();
+    db.ref(firebasePath('her')).remove();
+  } else saveLocal();
+  document.getElementById('resetAllModal').classList.remove('show');
+  renderAll();
+});
+
+// ═══ INFO MODAL & RECOMMENDATION ENGINE ═══
+function pickTier() {
+  const r = Math.random();
+  if (r < 0.40) return {tier:'ultra', minAvg:5.0, maxAvg:6.0, label:'🏆 Ultra-clean', cls:'tier-ultra',
+                       desc:'Top-tier picks across the board — discipline mode'};
+  if (r < 0.80) return {tier:'neat',  minAvg:4.0, maxAvg:5.0, label:'🟢 Neat',         cls:'tier-neat',
+                       desc:'Solid choices with a few light indulgences'};
+  return                {tier:'okay',  minAvg:3.25,maxAvg:4.0, label:'🟡 Okay',         cls:'tier-okay',
+                       desc:'Realistic day — flexible with some compromises'};
+}
+
+// Pick options from a slot based on score tier
+function pickFromSlot(slot, tier) {
+  if (!slot || !slot.opts) return null;
+  // Filter out negative and zero-score options for recommendations
+  const positive = slot.opts.filter(o => o.score > 0 && !o.takeout);
+  if (positive.length === 0) return null;
+  // Sort by score desc
+  const sorted = [...positive].sort((a,b) => b.score - a.score);
+  if (tier === 'ultra') {
+    // Top 30% of options
+    return sorted[Math.floor(Math.random() * Math.max(1, Math.ceil(sorted.length * 0.3)))];
+  } else if (tier === 'neat') {
+    // Middle range — top 60%
+    const top = sorted.slice(0, Math.max(1, Math.ceil(sorted.length * 0.6)));
+    return top[Math.floor(Math.random() * top.length)];
+  } else {
+    // Okay tier — any positive option, lean middle
+    return sorted[Math.floor(Math.random() * sorted.length)];
+  }
+}
+
+function buildPlan(person, tier) {
+  const cfg = CONFIGS[person];
+  const plan = [];
+  let totalScore = 0;
+  let totalCal = 0, totalP = 0, totalC = 0, totalF = 0, totalFib = 0;
+
+  const slotOrder = ['morning','breakfast','coffee1','greentea1','lunch','greentea2','snack','predinner','dinner','postdinner','tweaks','coffee2','afternoon_tea'];
+
+  slotOrder.forEach(sk => {
+    if (!cfg.slots[sk]) return;
+    const slot = cfg.slots[sk];
+    let pick = null;
+
+    if (sk === 'morning' || sk === 'predinner' || sk === 'postdinner') {
+      // Always pick best (small +)
+      pick = pickFromSlot(slot, 'ultra');
+    } else if (sk === 'coffee1' || sk === 'coffee2') {
+      // Black coffee = +0.25 for him; for her — spearmint preferred
+      pick = slot.opts.find(o => o.isBlack || o.id.includes('spearmint'));
+    } else if (sk === 'tweaks') {
+      // Add tweaks based on tier
+      const n = tier==='ultra'?slot.opts.length:tier==='neat'?Math.ceil(slot.opts.length*0.6):Math.ceil(slot.opts.length*0.3);
+      slot.opts.slice(0,n).forEach(o => {
+        plan.push({slot:'Tweaks',time:slot.time,opt:o});
+        totalScore += o.score;
+        if (o.m) { totalCal+=o.m[0]; totalP+=o.m[1]; totalC+=o.m[2]; totalF+=o.m[3]; totalFib+=(o.m[4]||0); }
+      });
+      return;
+    } else if (sk === 'snack') {
+      // Maybe 1-2 snacks
+      pick = pickFromSlot(slot, tier);
+      if (tier==='ultra' && pick) {
+        // Maybe add another snack
+        const second = pickFromSlot(slot, 'ultra');
+        if (second && second.id !== pick.id) {
+          plan.push({slot:slot.title,time:slot.time,opt:second});
+          totalScore += second.score;
+          if (second.m) { totalCal+=second.m[0]; totalP+=second.m[1]; totalC+=second.m[2]; totalF+=second.m[3]; totalFib+=(second.m[4]||0); }
+        }
+      }
+    } else {
+      pick = pickFromSlot(slot, tier);
+    }
+
+    if (pick) {
+      plan.push({slot:slot.title,time:slot.time,opt:pick});
+      totalScore += pick.score;
+      if (pick.m) { totalCal+=pick.m[0]; totalP+=pick.m[1]; totalC+=pick.m[2]; totalF+=pick.m[3]; totalFib+=(pick.m[4]||0); }
+    }
+  });
+
+  // Add a walk based on tier
+  const walkSlot = cfg.slots.walk || cfg.slots.tweaks; // older versions
+  // (workout is separate — but represent intent for walk in narrative)
+
+  return {plan, totalScore: Math.round(totalScore*100)/100, totals:{cal:totalCal,protein:totalP,carbs:totalC,fat:totalF,fiber:totalFib}};
+}
+
+function generateRecommendation() {
+  const himToday = calcScore('him');
+  const herToday = calcScore('her');
+  // Use the lower of the two (or average) to pick a shared tier
+  const avgToday = (himToday + herToday) / 2;
+  // Roll the tier
+  const tier = pickTier();
+  // Compute what tomorrow needs to hit the band
+  const targetAvg = (tier.minAvg + tier.maxAvg) / 2;
+  const tomorrowNeed = (2 * targetAvg) - avgToday;
+
+  // Build plans
+  const himPlan = buildPlan('him', tier.tier);
+  const herPlan = buildPlan('her', tier.tier);
+
+  return { tier, avgToday, targetAvg, tomorrowNeed, himPlan, herPlan, himToday, herToday };
+}
+
+function renderInfoModal() {
+  const rec = generateRecommendation();
+  const himM = calcMacros('him'); const himBurn = getTotalBurn('him'); const himNetCal = himM.cal - himBurn;
+  const herM = calcMacros('her'); const herBurn = getTotalBurn('her'); const herNetCal = herM.cal - herBurn;
+  const HT = HIM.targets, RT = HER.targets;
+
+  const renderToday = (name, score, m, netCal, T, cls, hasFiber) => `
+    <div class="report-card ${cls}">
+      <div class="rc-top">
+        <span class="rc-name">${name}</span>
+        <span class="rc-score">${sStr(score)}</span>
+      </div>
+      <div class="rc-grid">
+        <div class="rcg-item"><span>Net cal</span><strong>${Math.round(netCal)}/${T.cal}</strong></div>
+        <div class="rcg-item"><span>Protein</span><strong>${Math.round(m.protein)}g/${T.protein}g</strong></div>
+        <div class="rcg-item"><span>Carbs</span><strong>${Math.round(m.carbs)}g/${T.carbs}g</strong></div>
+        <div class="rcg-item"><span>Fat</span><strong>${Math.round(m.fat)}g/${T.fat}g</strong></div>
+        ${hasFiber?`<div class="rcg-item"><span>Fiber</span><strong>${Math.round(m.fiber)}g/${T.fiber}g</strong></div>`:''}
+      </div>
+    </div>`;
+
+  const renderPlan = (name, plan, cls) => `
+    <div class="plan-card ${cls}">
+      <div class="plan-name">${name}</div>
+      <div class="plan-items">
+        ${plan.plan.map(p => `
+          <div class="plan-item">
+            <span class="plan-time">${p.time.split('–')[0].trim()}</span>
+            <span class="plan-label">${p.opt.label}</span>
+            <span class="plan-score">${oStr(p.opt.score)}</span>
+          </div>`).join('')}
+      </div>
+      <div class="plan-totals">
+        <span>Projected: <strong>${sStr(plan.totalScore)}</strong></span>
+        <span><strong>${plan.totals.cal}</strong> cal · <strong>${plan.totals.protein}g</strong> protein</span>
+      </div>
+    </div>`;
+
+  document.getElementById('infoBody').innerHTML = `
+    <div class="info-section">
+      <h3>📍 Today's Progress</h3>
+      ${renderToday('👨 Him', rec.himToday, himM, himNetCal, HT, 'him', false)}
+      ${renderToday('👩 Her', rec.herToday, herM, herNetCal, RT, 'her', true)}
+      <div class="tier-summary">
+        Today's combined average: <strong>${rec.avgToday.toFixed(2)}</strong>
+      </div>
+    </div>
+    <div class="info-section">
+      <h3>🔮 Recommended for Tomorrow</h3>
+      <span class="tier-badge ${rec.tier.cls}">${rec.tier.label} tier</span>
+      <div class="tier-summary">
+        ${rec.tier.desc}.<br>
+        Target 2-day avg: <strong>${rec.tier.minAvg}–${rec.tier.maxAvg}</strong>.
+        Tomorrow needs a score of <strong>${sStr(rec.tomorrowNeed)}</strong> to hit the band.
+      </div>
+      ${renderPlan('👨 His plan', rec.himPlan, 'him')}
+      ${renderPlan('👩 Her plan', rec.herPlan, 'her')}
+    </div>
+  `;
+}
+
+document.getElementById('infoBtn').addEventListener('click', () => {
+  renderInfoModal();
+  document.getElementById('infoModal').classList.add('show');
+});
+document.getElementById('regenPlanBtn').addEventListener('click', renderInfoModal);
 
 // ═══ INIT ═══
 (function init(){
