@@ -615,7 +615,20 @@ function updateVisibility(sel) {
 // ═══ FIREBASE ═══
 function initFirebase() {
   if (FIREBASE_CONFIG.apiKey==='AIzaSyDmZStC-d8Vo92XfPnXA-nOPnzDTFGMdvI') return;
-  const load = (src, cb) => { const s=document.createElement('script'); s.src=src; s.onload=cb; document.head.appendChild(s); };
+
+  const load = (src, cb) => {
+    const s=document.createElement('script');
+    s.src=src;
+    s.onload=cb;
+    s.onerror=()=>{
+      console.warn('Firebase script failed to load:', src);
+      document.getElementById('syncDot').classList.remove('live');
+      firebaseReady=false;
+      renderAll();
+    };
+    document.head.appendChild(s);
+  };
+
   load('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js', () => {
     load('https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js', () => {
       try {
@@ -623,24 +636,49 @@ function initFirebase() {
         db = firebase.database();
         document.getElementById('syncDot').classList.add('live');
         firebaseReady = true;
+
         ['him','her'].forEach(p => {
           db.ref(firebasePath(p)).on('value', snap => {
             const d = snap.val();
             if (d) {
               const def = defaultState(CONFIGS[p]);
-              allState[p] = {counts:{...(d.counts||{})},extras:{...def.extras,...(d.extras||{})},inds:{...(d.inds||{})},workout:{...def.workout,...(d.workout||{})}};
+              allState[p] = {
+                counts:{...(d.counts||{})},
+                extras:{...def.extras,...(d.extras||{})},
+                inds:{...(d.inds||{})},
+                workout:{...def.workout,...(d.workout||{})}
+              };
             }
+            renderAll();
+          }, err => {
+            console.warn('Firebase read failed:', err);
+            document.getElementById('syncDot').classList.remove('live');
+            firebaseReady=false;
             renderAll();
           });
         });
-      } catch(e) { console.warn('Firebase init failed'); loadLocal(); }
+      } catch(e) {
+        console.warn('Firebase init failed:', e);
+        document.getElementById('syncDot').classList.remove('live');
+        firebaseReady=false;
+        loadLocal();
+      }
     });
   });
 }
 
 function writeDb(person, type, key, value) {
-  if (firebaseReady && db) db.ref(firebasePath(person, type, key)).transaction(()=>Math.max(0,value));
-  else saveLocal();
+  const safeValue = Math.max(0, value);
+  if (firebaseReady && db) {
+    db.ref(firebasePath(person, type, key)).set(safeValue).catch(err => {
+      console.warn('Firebase write failed:', err);
+      firebaseReady=false;
+      document.getElementById('syncDot').classList.remove('live');
+      saveLocal();
+    });
+  } else {
+    saveLocal();
+  }
 }
 
 // ═══ STORAGE ═══
@@ -918,7 +956,7 @@ function handleCnt(e) {
   if(t==='count'){
     const nv=Math.max(0,(allState[p].counts[k]||0)+d);
     if(nv===0) delete allState[p].counts[k]; else allState[p].counts[k]=nv;
-    writeDb(p,'counts',k.replace('__','--'),nv);
+    writeDb(p,'counts',k,nv);
   } else if(t==='ind'){
     const nv=Math.max(0,(allState[p].inds[oid]||0)+d);
     allState[p].inds[oid]=nv;
