@@ -346,6 +346,14 @@ main { padding: 16px; max-width: 720px; margin: 0 auto; }
   .slot { padding: 18px; }
   body { font-size: 15px; }
 }
+.macro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px 14px; margin-top: 10px; }
+.macro-item { display: flex; flex-direction: column; gap: 3px; }
+.macro-row { display: flex; align-items: baseline; gap: 2px; }
+.macro-label { font-size: 10px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.3px; flex: 1; text-transform: uppercase; }
+.macro-val { font-size: 11px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+.macro-target { font-size: 10px; color: var(--text-light); }
+.macro-track { height: 4px; background: var(--score-track); border-radius: 100px; overflow: hidden; }
+.macro-fill { height: 100%; border-radius: 100px; background: var(--primary); transition: width 0.45s cubic-bezier(0.4,0,0.2,1), background 0.3s ease; width: 0%; }
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
@@ -378,6 +386,40 @@ main { padding: 16px; max-width: 720px; margin: 0 auto; }
       <div class="score-bar" id="scoreBar"></div>
     </div>
     <div class="master-rule-badge" id="masterBadge"></div>
+    <div class="macro-grid">
+      <div class="macro-item">
+        <div class="macro-row">
+          <span class="macro-label">Calories</span>
+          <span class="macro-val" id="macro-val-cal">0</span>
+          <span class="macro-target">/1650</span>
+        </div>
+        <div class="macro-track"><div class="macro-fill" id="macro-fill-cal"></div></div>
+      </div>
+      <div class="macro-item">
+        <div class="macro-row">
+          <span class="macro-label">Protein</span>
+          <span class="macro-val" id="macro-val-protein">0g</span>
+          <span class="macro-target">/120g</span>
+        </div>
+        <div class="macro-track"><div class="macro-fill" id="macro-fill-protein"></div></div>
+      </div>
+      <div class="macro-item">
+        <div class="macro-row">
+          <span class="macro-label">Carbs</span>
+          <span class="macro-val" id="macro-val-carbs">0g</span>
+          <span class="macro-target">/120g</span>
+        </div>
+        <div class="macro-track"><div class="macro-fill" id="macro-fill-carbs"></div></div>
+      </div>
+      <div class="macro-item">
+        <div class="macro-row">
+          <span class="macro-label">Fat</span>
+          <span class="macro-val" id="macro-val-fat">0g</span>
+          <span class="macro-target">/65g</span>
+        </div>
+        <div class="macro-track"><div class="macro-fill" id="macro-fill-fat"></div></div>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -517,7 +559,7 @@ main { padding: 16px; max-width: 720px; margin: 0 auto; }
   </div>
 
   <div class="pwa-hint">
-    💡 <strong>Save as iPhone app:</strong> Tap Share button in Safari → Add to Home Screen
+    📱 <strong>Save as iPhone app:</strong> Open this URL in Safari → tap Share → Add to Home Screen → tap Add
   </div>
 </main>
 
@@ -556,7 +598,8 @@ const SLOTS = {
       { id: 'a_yogurt', label: '🥄 Greek yogurt jar', sub: 'A path — overnight prep, grab & go', score: 0.75 },
       { id: 'a_eggs', label: '🥚 Boiled eggs + biscuits + cheese', sub: 'A path — pre-boiled, no cooking', score: 0.5 },
       { id: 'a_wrap', label: '🥪 Tim Hortons / Starbucks wrap', sub: 'A path — outside food, master rule applies', score: 0.25, takeout: true },
-      { id: 'chai_biscuits', label: '🫖 Chai + biscuits only', sub: 'Light — no protein, weakest option', score: 0 }
+      { id: 'chai_biscuits', label: '🫖 Chai + biscuits only', sub: 'Light — no protein, weakest option', score: 0 },
+      { id: 'silver_cottage', label: '🍞 Silver Hills + cottage cheese + honey', sub: 'High-fiber sprouted bread, 13g protein from cottage cheese, drizzle honey', score: 0.5 }
     ]
   },
   coffee1: {
@@ -691,7 +734,49 @@ const INDULGENCES = {
   ]
 };
 
-// ============ STATE ============
+// ============ MACROS LOOKUP [cal, protein, carbs, fat] ============
+const OPTION_MACROS = {
+  // Morning
+  lemon_cinnamon:[10,0,2,0], lemon_only:[10,0,2,0],
+  // Breakfast
+  c2:[500,38,42,22], a2:[422,33,47,15], b2:[610,51,70,15],
+  b:[775,55,54,37], a_yogurt:[280,22,28,8], a_eggs:[290,20,22,14],
+  a_wrap:[300,18,28,10], chai_biscuits:[275,7,42,8],
+  silver_cottage:[271,19,34,7],
+  // Coffee
+  black1:[5,0,0,0], latte1:[150,9,14,6],
+  black2:[5,0,0,0], latte2:[150,9,14,6],
+  // Kulcha block
+  pre_walk:[0,0,0,0], kulcha_meal:[820,30,122,22], post_walk:[0,0,0,0],
+  // Green tea
+  gt1:[5,0,1,0], gt2:[5,0,1,0],
+  // Lunch
+  lunch_salmon:[480,51,8,14], lunch_chicken_veg:[420,42,16,14],
+  lunch_chicken_rice:[450,45,35,9], lunch_lentil:[420,40,28,6],
+  lunch_tahini:[550,40,45,18], lunch_burrito:[580,42,52,16], lunch_skip:[0,0,0,0],
+  // Snack
+  snack_almonds:[100,4,3,9], snack_yogurt:[130,12,8,3],
+  snack_cottage:[160,15,12,6], snack_mix:[150,5,10,10],
+  snack_babybel:[160,7,22,6], snack_skip:[0,0,0,0],
+  // Pre-dinner
+  pre_water:[0,0,0,0],
+  // Dinner
+  dinner_chicken:[470,66,16,14], dinner_salmon:[550,55,8,22],
+  dinner_parm:[420,52,12,14], dinner_lentil:[420,40,28,6],
+  dinner_tahini:[520,40,42,16], dinner_burrito:[580,42,52,16], dinner_thai:[480,28,28,22],
+  // Walk & tweaks
+  walk_20:[0,0,0,0], walk_15:[0,0,0,0], walk_10:[0,0,0,0], walk_none:[0,0,0,0],
+  tweak_order:[0,0,0,0], tweak_turmeric:[0,0,0,0], tweak_water:[0,0,0,0],
+  // Indulgences
+  ind_lays_full:[270,3,29,16], ind_lays_small:[135,2,15,8],
+  ind_rice:[200,4,45,0], ind_pita:[165,6,34,1], ind_drink:[150,0,40,0]
+};
+const EXTRA_MACROS = {
+  blackCoffees:[5,0,0,0], walks:[0,0,0,0], water:[0,0,0,0],
+  chai:[85,4,10,3], fruitsLow:[60,1,14,0], fruitsMod:[65,1,16,0],
+  fruitsHigh:[70,1,18,0], lattes:[150,9,14,6], biscuits:[95,2,16,3], rice:[200,4,45,0]
+};
+const MACRO_TARGETS = { cal:1650, protein:120, carbs:120, fat:65 };
 const DEFAULT_STATE = {
   selections: {},
   extras: {
@@ -704,36 +789,35 @@ const DEFAULT_STATE = {
 let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
 let theme = 'light';
 
-// ============ STORAGE ============
+// ============ STORAGE (localStorage — works on GitHub Pages & iPhone PWA) ============
 const STORAGE_KEY = 'predia_tracker_v1';
 const THEME_KEY = 'predia_tracker_theme';
 
 async function loadState() {
   try {
-    if (window.storage && typeof window.storage.get === 'function') {
-      const result = await window.storage.get(STORAGE_KEY);
-      if (result && result.value) {
-        state = { ...DEFAULT_STATE, ...JSON.parse(result.value) };
-      }
-      const themeResult = await window.storage.get(THEME_KEY);
-      if (themeResult && themeResult.value) theme = themeResult.value;
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      state = {
+        selections: parsed.selections || {},
+        extras: { ...DEFAULT_STATE.extras, ...(parsed.extras || {}) },
+        indulgences: parsed.indulgences || []
+      };
     }
-  } catch (e) { console.log('Storage load skipped:', e); }
+    const savedTheme = localStorage.getItem(THEME_KEY);
+    if (savedTheme) theme = savedTheme;
+  } catch (e) { console.log('Storage load error:', e); }
 }
 
 async function saveState() {
   try {
-    if (window.storage && typeof window.storage.set === 'function') {
-      await window.storage.set(STORAGE_KEY, JSON.stringify(state));
-    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch (e) {}
 }
 
 async function saveTheme() {
   try {
-    if (window.storage && typeof window.storage.set === 'function') {
-      await window.storage.set(THEME_KEY, theme);
-    }
+    localStorage.setItem(THEME_KEY, theme);
   } catch (e) {}
 }
 
@@ -906,6 +990,66 @@ function getTrafficLight(slotKey, optionId) {
   return 'red';
 }
 
+// ============ MACRO CALCULATION ============
+function calculateMacros() {
+  const m = { cal:0, protein:0, carbs:0, fat:0 };
+  // Slots
+  for (const slotKey in state.selections) {
+    const slot = SLOTS[slotKey];
+    if (!slot) continue;
+    const sel = state.selections[slotKey];
+    if (slot.type === 'single' && sel) {
+      const v = OPTION_MACROS[sel];
+      if (v) { m.cal+=v[0]; m.protein+=v[1]; m.carbs+=v[2]; m.fat+=v[3]; }
+    } else if (slot.type === 'multi' && Array.isArray(sel)) {
+      sel.forEach(id => {
+        const v = OPTION_MACROS[id];
+        if (v) { m.cal+=v[0]; m.protein+=v[1]; m.carbs+=v[2]; m.fat+=v[3]; }
+      });
+    }
+  }
+  // Indulgences
+  state.indulgences.forEach(id => {
+    const v = OPTION_MACROS[id];
+    if (v) { m.cal+=v[0]; m.protein+=v[1]; m.carbs+=v[2]; m.fat+=v[3]; }
+  });
+  // Extras
+  for (const key in state.extras) {
+    const count = state.extras[key];
+    const v = EXTRA_MACROS[key];
+    if (count > 0 && v) { m.cal+=v[0]*count; m.protein+=v[1]*count; m.carbs+=v[2]*count; m.fat+=v[3]*count; }
+  }
+  return m;
+}
+
+function updateMacros() {
+  const m = calculateMacros();
+  const T = MACRO_TARGETS;
+  const items = [
+    { id:'cal',     val:Math.round(m.cal),     target:T.cal,     unit:'',  lowerBetter:false, isCalorie:true },
+    { id:'protein', val:Math.round(m.protein), target:T.protein, unit:'g', lowerBetter:false },
+    { id:'carbs',   val:Math.round(m.carbs),   target:T.carbs,   unit:'g', lowerBetter:true  },
+    { id:'fat',     val:Math.round(m.fat),     target:T.fat,     unit:'g', lowerBetter:true  },
+  ];
+  items.forEach(({ id, val, target, unit, lowerBetter, isCalorie }) => {
+    const fill = document.getElementById(`macro-fill-${id}`);
+    const valEl = document.getElementById(`macro-val-${id}`);
+    if (!fill || !valEl) return;
+    const pct = (val / target) * 100;
+    fill.style.width = Math.min(pct, 100) + '%';
+    let color;
+    if (isCalorie) {
+      color = pct < 70 ? 'var(--warning)' : pct <= 115 ? 'var(--success)' : 'var(--danger)';
+    } else if (lowerBetter) {
+      color = pct <= 80 ? 'var(--success)' : pct <= 110 ? 'var(--warning)' : 'var(--danger)';
+    } else {
+      color = pct < 50 ? 'var(--danger)' : pct < 80 ? 'var(--warning)' : 'var(--success)';
+    }
+    fill.style.background = color;
+    valEl.textContent = val + unit;
+  });
+}
+
 // ============ RENDER ============
 function renderSlot(slotKey, slot) {
   const sel = state.selections[slotKey];
@@ -1034,6 +1178,7 @@ function updateScore() {
   }
 
   updateDiagnostic(score);
+  updateMacros();
 }
 
 function updateDiagnostic(score) {
