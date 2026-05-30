@@ -1,150 +1,1332 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Whatever Food - Trackers & Tools</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .container {
-      max-width: 600px;
-      width: 100%;
-    }
-
-    .header {
-      text-align: center;
-      margin-bottom: 50px;
-      color: white;
-    }
-
-    .header h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-      font-weight: 700;
-    }
-
-    .header p {
-      font-size: 1.1rem;
-      opacity: 0.9;
-    }
-
-    .cards {
-      display: grid;
-      gap: 20px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 16px;
-      padding: 30px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-      text-decoration: none;
-      color: inherit;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-    }
-
-    .card-icon {
-      font-size: 3rem;
-      margin-bottom: 15px;
-    }
-
-    .card h2 {
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-      color: #333;
-    }
-
-    .card p {
-      color: #666;
-      line-height: 1.6;
-      margin-bottom: 20px;
-      flex-grow: 1;
-    }
-
-    .card-link {
-      display: inline-block;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 12px 24px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      align-self: flex-start;
-    }
-
-    .card-link:hover {
-      transform: scale(1.05);
-      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-    }
-
-    .footer {
-      text-align: center;
-      margin-top: 50px;
-      color: white;
-      opacity: 0.8;
-    }
-
-    .footer p {
-      font-size: 0.9rem;
-    }
-
-    @media (max-width: 600px) {
-      .header h1 {
-        font-size: 1.8rem;
-      }
-
-      .card {
-        padding: 20px;
-      }
-
-      .card h2 {
-        font-size: 1.2rem;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#16A085">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Daily Tracker">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2316A085'/%3E%3Ctext x='50' y='65' font-size='55' text-anchor='middle' fill='white'%3E🌿%3C/text%3E%3C/svg%3E">
+<title>Pre-Diabetic Daily Tracker</title>
+<style>
+:root {
+  --bg: #F5F7F8;
+  --card: #FFFFFF;
+  --card-soft: #F8FAFB;
+  --primary: #16A085;
+  --primary-soft: rgba(22, 160, 133, 0.08);
+  --primary-deep: #0E6B5A;
+  --success: #27AE60;
+  --warning: #E67E22;
+  --danger: #E74C3C;
+  --warning-soft: rgba(230, 126, 34, 0.1);
+  --danger-soft: rgba(231, 76, 60, 0.08);
+  --text: #2C3E50;
+  --text-muted: #7F8C8D;
+  --text-light: #B0BABF;
+  --border: #ECF0F1;
+  --border-strong: #DDE2E5;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+  --shadow: 0 2px 8px rgba(0,0,0,0.05);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.06);
+  --score-track: #ECF0F1;
+}
+[data-theme="dark"] {
+  --bg: #0E1419;
+  --card: #1A2128;
+  --card-soft: #232B33;
+  --primary: #1ABC9C;
+  --primary-soft: rgba(26, 188, 156, 0.12);
+  --primary-deep: #16A085;
+  --success: #2ECC71;
+  --warning: #F39C12;
+  --danger: #EC7063;
+  --warning-soft: rgba(243, 156, 18, 0.15);
+  --danger-soft: rgba(236, 112, 99, 0.12);
+  --text: #ECF0F1;
+  --text-muted: #95A5A6;
+  --text-light: #5F6B73;
+  --border: #2C353F;
+  --border-strong: #3A4651;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.2);
+  --shadow: 0 2px 8px rgba(0,0,0,0.25);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.3);
+  --score-track: #2C353F;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.5;
+  padding-bottom: 90px;
+  transition: background 0.3s ease, color 0.3s ease;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 16px 12px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.app-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.app-title {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.app-title-icon { font-size: 22px; }
+.header-actions { display: flex; gap: 8px; }
+.icon-btn {
+  background: var(--card-soft);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.icon-btn:active { transform: scale(0.95); background: var(--primary-soft); }
+.score-panel { display: flex; flex-direction: column; gap: 8px; }
+.score-row { display: flex; justify-content: space-between; align-items: baseline; }
+.score-number { font-size: 28px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; line-height: 1; }
+.score-target { font-size: 14px; color: var(--text-muted); font-weight: 500; }
+.score-bar-wrap { height: 8px; background: var(--score-track); border-radius: 100px; overflow: hidden; position: relative; }
+.score-bar {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 100px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
+  width: 0%;
+}
+.score-bar.danger { background: var(--danger); }
+.score-bar.warning { background: var(--warning); }
+.score-bar.success { background: var(--success); }
+.score-msg { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+.master-rule-badge {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+.master-rule-badge.active { display: flex; background: var(--primary-soft); color: var(--primary-deep); }
+.master-rule-badge.hint { display: flex; background: var(--warning-soft); color: var(--warning); }
+[data-theme="dark"] .master-rule-badge.active { color: var(--primary); }
+main { padding: 16px; max-width: 720px; margin: 0 auto; }
+.slot {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+}
+.slot.hidden { display: none; }
+.slot-header { margin-bottom: 12px; }
+.slot-time { font-size: 11px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 2px; }
+.slot-title { font-size: 16px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.slot-subtitle { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
+.slot-options { display: flex; flex-direction: column; gap: 8px; }
+.chip {
+  background: var(--card-soft);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text);
+  width: 100%;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  overflow: hidden;
+}
+.chip:active { transform: scale(0.98); }
+.chip.selected {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+  color: var(--text);
+}
+.chip.selected .chip-score { color: var(--primary); font-weight: 700; }
+.chip.muted { opacity: 0.55; }
+.chip.muted:active { opacity: 1; }
+.chip.indulgence { border-color: var(--danger-soft); }
+.chip.indulgence.selected { background: var(--danger-soft); border-color: var(--danger); }
+.chip.indulgence.selected .chip-score { color: var(--danger); }
+.chip-light {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--text-light);
+}
+.chip-light.green { background: var(--success); box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.15); }
+.chip-light.yellow { background: var(--warning); box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.15); }
+.chip-light.red { background: var(--danger); box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.15); }
+.chip.selected .chip-light { background: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+.chip-content { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.chip-label { font-weight: 500; line-height: 1.3; }
+.chip-sub { font-size: 11px; color: var(--text-muted); font-weight: 400; }
+.chip-score {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--card);
+  padding: 3px 8px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+.chip-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.chip.selected .chip-check { display: flex; }
+.counter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--card-soft);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+.counter-row.positive { border-color: rgba(39, 174, 96, 0.25); }
+.counter-row.caution { border-color: rgba(230, 126, 34, 0.25); background: var(--warning-soft); }
+[data-theme="dark"] .counter-row.caution { background: rgba(243, 156, 18, 0.06); }
+.counter-info { display: flex; flex-direction: column; gap: 2px; }
+.counter-label { font-size: 14px; font-weight: 500; color: var(--text); }
+.counter-sub { font-size: 11px; color: var(--text-muted); }
+.counter-controls { display: flex; align-items: center; gap: 12px; }
+.counter-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border-strong);
+  background: var(--card);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.15s ease;
+  padding: 0;
+  line-height: 1;
+}
+.counter-btn:active { transform: scale(0.92); background: var(--primary-soft); border-color: var(--primary); }
+.counter-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.counter-value { font-size: 16px; font-weight: 700; color: var(--text); min-width: 24px; text-align: center; font-variant-numeric: tabular-nums; }
+.indulgence-section { border-color: var(--danger-soft); background: var(--card); }
+.indulgence-section .slot-title { color: var(--danger); }
+.diagnostic {
+  margin-top: 16px;
+  padding: 18px;
+  border-radius: 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.diagnostic-icon { font-size: 32px; margin-bottom: 8px; }
+.diagnostic-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.diagnostic-msg { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+.reset-confirm-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.reset-confirm-modal.show { display: flex; }
+.reset-confirm-box {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 320px;
+  width: 100%;
+  text-align: center;
+}
+.reset-confirm-title { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.reset-confirm-msg { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; }
+.reset-confirm-buttons { display: flex; gap: 8px; }
+.btn {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.15s ease;
+}
+.btn:active { transform: scale(0.97); }
+.btn-cancel { background: var(--card-soft); color: var(--text); border: 1px solid var(--border); }
+.btn-danger { background: var(--danger); color: white; }
+.legend {
+  display: flex;
+  gap: 14px;
+  padding: 10px 12px;
+  background: var(--card-soft);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.legend-item { display: flex; align-items: center; gap: 5px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+.legend-dot.green { background: var(--success); }
+.legend-dot.yellow { background: var(--warning); }
+.legend-dot.red { background: var(--danger); }
+.pwa-hint {
+  margin-top: 20px;
+  padding: 14px;
+  background: var(--primary-soft);
+  border-radius: 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.5;
+}
+.pwa-hint strong { color: var(--primary-deep); }
+[data-theme="dark"] .pwa-hint strong { color: var(--primary); }
+@media (min-width: 600px) {
+  main { padding: 20px; }
+  .slot { padding: 18px; }
+  body { font-size: 15px; }
+}
+.macro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px 14px; margin-top: 10px; }
+.macro-item { display: flex; flex-direction: column; gap: 3px; }
+.macro-row { display: flex; align-items: baseline; gap: 2px; }
+.macro-label { font-size: 10px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.3px; flex: 1; text-transform: uppercase; }
+.macro-val { font-size: 11px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+.macro-target { font-size: 10px; color: var(--text-light); }
+.macro-track { height: 4px; background: var(--score-track); border-radius: 100px; overflow: hidden; }
+.macro-fill { height: 100%; border-radius: 100px; background: var(--primary); transition: width 0.45s cubic-bezier(0.4,0,0.2,1), background 0.3s ease; width: 0%; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.score-number.updating { animation: pulse 0.3s ease; }
+</style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>🍽️ Whatever Food</h1>
-      <p>Your Personal Health & Nutrition Tracking Suite</p>
-    </div>
 
-    <div class="cards">
-      <a href="food_tracker.html" class="card">
-        <div class="card-icon">🌿</div>
-        <h2>Pre-Diabetic Daily Tracker</h2>
-        <p>Track your daily food choices with an intelligent scoring system. Hit your +5.00 target with smart meal suggestions, real-time feedback, and traffic light guidance.</p>
-        <span class="card-link">Open Tracker →</span>
-      </a>
+<header class="app-header">
+  <div class="app-header-top">
+    <div class="app-title">
+      <span class="app-title-icon">🌿</span>
+      <span>Daily Tracker</span>
     </div>
-
-    <div class="footer">
-      <p>Track. Score. Improve. One meal at a time.</p>
+    <div class="header-actions">
+      <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">☀️</button>
+      <button class="icon-btn" id="resetBtn" aria-label="Reset day">↺</button>
     </div>
   </div>
+  <div class="score-panel">
+    <div class="score-row">
+      <div>
+        <span class="score-number" id="scoreNumber">+0.00</span>
+        <span class="score-target"> / +5.00</span>
+      </div>
+      <div class="score-msg" id="scoreMsg">Start your day</div>
+    </div>
+    <div class="score-bar-wrap">
+      <div class="score-bar" id="scoreBar"></div>
+    </div>
+    <div class="master-rule-badge" id="masterBadge"></div>
+    <div class="macro-grid">
+      <div class="macro-item">
+        <div class="macro-row">
+          <span class="macro-label">Calories</span>
+          <span class="macro-val" id="macro-val-cal">0</span>
+          <span class="macro-target">/1650</span>
+        </div>
+        <div class="macro-track"><div class="macro-fill" id="macro-fill-cal"></div></div>
+      </div>
+      <div class="macro-item">
+        <div class="macro-row">
+          <span class="macro-label">Protein</span>
+          <span class="macro-val" id="macro-val-protein">0g</span>
+          <span class="macro-target">/120g</span>
+        </div>
+        <div class="macro-track"><div class="macro-fill" id="macro-fill-protein"></div></div>
+      </div>
+      <div class="macro-item">
+        <div class="macro-row">
+          <span class="macro-label">Carbs</span>
+          <span class="macro-val" id="macro-val-carbs">0g</span>
+          <span class="macro-target">/120g</span>
+        </div>
+        <div class="macro-track"><div class="macro-fill" id="macro-fill-carbs"></div></div>
+      </div>
+      <div class="macro-item">
+        <div class="macro-row">
+          <span class="macro-label">Fat</span>
+          <span class="macro-val" id="macro-val-fat">0g</span>
+          <span class="macro-target">/65g</span>
+        </div>
+        <div class="macro-track"><div class="macro-fill" id="macro-fill-fat"></div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot green"></span>Hits +5 target</div>
+    <div class="legend-item"><span class="legend-dot yellow"></span>Close to target</div>
+    <div class="legend-item"><span class="legend-dot red"></span>Falls below</div>
+  </div>
+
+  <div id="slotsContainer"></div>
+
+  <section class="slot">
+    <div class="slot-header">
+      <div class="slot-time">EXTRAS · ANYTIME</div>
+      <h2 class="slot-title">➕ Extras Counter</h2>
+      <div class="slot-subtitle">Add as needed throughout the day</div>
+    </div>
+    <div class="counter-row">
+      <div class="counter-info">
+        <span class="counter-label">☕ Extra black coffees</span>
+        <span class="counter-sub">+0.25 each</span>
+      </div>
+      <div class="counter-controls">
+        <button class="counter-btn" data-counter="blackCoffees" data-delta="-1">−</button>
+        <span class="counter-value" id="counter-blackCoffees">0</span>
+        <button class="counter-btn" data-counter="blackCoffees" data-delta="1">+</button>
+      </div>
+    </div>
+    <div class="counter-row">
+      <div class="counter-info">
+        <span class="counter-label">🚶 Extra walks (10+ min)</span>
+        <span class="counter-sub">+0.25 each</span>
+      </div>
+      <div class="counter-controls">
+        <button class="counter-btn" data-counter="walks" data-delta="-1">−</button>
+        <span class="counter-value" id="counter-walks">0</span>
+        <button class="counter-btn" data-counter="walks" data-delta="1">+</button>
+      </div>
+    </div>
+    <div class="counter-row">
+      <div class="counter-info">
+        <span class="counter-label">💧 Water glasses</span>
+        <span class="counter-sub">Tracked, not scored</span>
+      </div>
+      <div class="counter-controls">
+        <button class="counter-btn" data-counter="water" data-delta="-1">−</button>
+        <span class="counter-value" id="counter-water">0</span>
+        <button class="counter-btn" data-counter="water" data-delta="1">+</button>
+      </div>
+    </div>
+    <div class="counter-row">
+      <div class="counter-info">
+        <span class="counter-label">🫖 Extra chai (no sugar)</span>
+        <span class="counter-sub">Tracked, not scored</span>
+      </div>
+      <div class="counter-controls">
+        <button class="counter-btn" data-counter="chai" data-delta="-1">−</button>
+        <span class="counter-value" id="counter-chai">0</span>
+        <button class="counter-btn" data-counter="chai" data-delta="1">+</button>
+      </div>
+    </div>
+    <div class="counter-row positive">
+      <div class="counter-info">
+        <span class="counter-label">🫐 Low-GI fruit bowl</span>
+        <span class="counter-sub">Berries, kiwi, papaya, guava, apple, pear · +0.25 each</span>
+      </div>
+      <div class="counter-controls">
+        <button class="counter-btn" data-counter="fruitsLow" data-delta="-1">−</button>
+        <span class="counter-value" id="counter-fruitsLow">0</span>
+        <button class="counter-btn" data-counter="fruitsLow" data-delta="1">+</button>
+      </div>
+    </div>
+    <div class="counter-row caution">
+      <div class="counter-info">
+        <span class="counter-label">🍊 Moderate-GI fruit bowl</span>
+        <span class="counter-sub">Mango, pineapple, orange, peach · -0.25 each</span>
+      </div>
+      <div class="counter-controls">
+        <button class="counter-btn" data-counter="fruitsMod" data-delta="-1">−</button>
+        <span class="counter-value" id="counter-fruitsMod">0</span>
+        <button class="counter-btn" data-counter="fruitsMod" data-delta="1">+</button>
+      </div>
+    </div>
+    <div class="counter-row caution">
+      <div class="counter-info">
+        <span class="counter-label">🍌 High-GI fruit bowl</span>
+        <span class="counter-sub">Banana, watermelon, grapes, dates · -1 each</span>
+      </div>
+      <div class="counter-controls">
+        <button class="counter-btn" data-counter="fruitsHigh" data-delta="-1">−</button>
+        <span class="counter-value" id="counter-fruitsHigh">0</span>
+        <button class="counter-btn" data-counter="fruitsHigh" data-delta="1">+</button>
+      </div>
+    </div>
+    <div class="counter-row caution">
+      <div class="counter-info">
+        <span class="counter-label">☕ Extra lattes (over 2)</span>
+        <span class="counter-sub">-0.5 each — milk-based insulin load</span>
+      </div>
+      <div class="counter-controls">
+        <button class="counter-btn" data-counter="lattes" data-delta="-1">−</button>
+        <span class="counter-value" id="counter-lattes">0</span>
+        <button class="counter-btn" data-counter="lattes" data-delta="1">+</button>
+      </div>
+    </div>
+    <div class="counter-row caution">
+      <div class="counter-info">
+        <span class="counter-label">🥖 Extra biscuits (per 3)</span>
+        <span class="counter-sub">Marie / bran biscuits · -0.25 each set of 3</span>
+      </div>
+      <div class="counter-controls">
+        <button class="counter-btn" data-counter="biscuits" data-delta="-1">−</button>
+        <span class="counter-value" id="counter-biscuits">0</span>
+        <button class="counter-btn" data-counter="biscuits" data-delta="1">+</button>
+      </div>
+    </div>
+    <div class="counter-row caution">
+      <div class="counter-info">
+        <span class="counter-label">🍚 Extra rice portion</span>
+        <span class="counter-sub">White or basmati · -0.5 each</span>
+      </div>
+      <div class="counter-controls">
+        <button class="counter-btn" data-counter="rice" data-delta="-1">−</button>
+        <span class="counter-value" id="counter-rice">0</span>
+        <button class="counter-btn" data-counter="rice" data-delta="1">+</button>
+      </div>
+    </div>
+  </section>
+
+  <div id="indulgenceContainer"></div>
+
+  <div class="diagnostic" id="diagnostic">
+    <div class="diagnostic-icon">🌱</div>
+    <div class="diagnostic-title">Start your day</div>
+    <div class="diagnostic-msg">Begin with morning lemon water and build from there.</div>
+  </div>
+
+  <div class="pwa-hint">
+    📱 <strong>Save as iPhone app:</strong> Open this URL in Safari → tap Share → Add to Home Screen → tap Add
+  </div>
+</main>
+
+<div class="reset-confirm-modal" id="resetModal">
+  <div class="reset-confirm-box">
+    <div class="reset-confirm-title">Reset day?</div>
+    <div class="reset-confirm-msg">This will clear all selections and counters. Cannot be undone.</div>
+    <div class="reset-confirm-buttons">
+      <button class="btn btn-cancel" id="cancelReset">Cancel</button>
+      <button class="btn btn-danger" id="confirmReset">Reset</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============ DATA MODEL ============
+const SLOTS = {
+  morning: {
+    title: '🍋 Morning Ritual',
+    time: '7:00 AM',
+    type: 'single',
+    options: [
+      { id: 'lemon_cinnamon', label: 'Lemon water + cinnamon', score: 0.5 },
+      { id: 'lemon_only', label: 'Lemon water only', score: 0.25 }
+    ]
+  },
+  breakfast: {
+    title: '🌅 Breakfast',
+    time: '7:30 - 8:30 AM',
+    type: 'single',
+    options: [
+      { id: 'c2', label: '🥣 Yogurt bowl + chai', sub: 'C2 path — 38g protein, best pre-kulcha buffer', score: 1.25 },
+      { id: 'a2', label: '🌴 Tropical smoothie', sub: 'A2 path — papaya, kiwi, mango, seeds, protein powder', score: 1.0 },
+      { id: 'b2', label: '🫐 Chai + biscuits + blueberry smoothie', sub: 'B2 path — shaker bottle version', score: 1.0 },
+      { id: 'b', label: '🍳 Chai + biscuits + omelette', sub: 'B path — hot breakfast, 10 min cook', score: 0.75 },
+      { id: 'a_yogurt', label: '🥄 Greek yogurt jar', sub: 'A path — overnight prep, grab & go', score: 0.75 },
+      { id: 'a_eggs', label: '🥚 Boiled eggs + biscuits + cheese', sub: 'A path — pre-boiled, no cooking', score: 0.5 },
+      { id: 'a_wrap', label: '🥪 Tim Hortons / Starbucks wrap', sub: 'A path — outside food, master rule applies', score: 0.25, takeout: true },
+      { id: 'chai_biscuits', label: '🫖 Chai + biscuits only', sub: 'Light — no protein, weakest option', score: 0 },
+      { id: 'silver_cottage', label: '🍞 Silver Hills + cottage cheese + honey', sub: 'High-fiber sprouted bread, 13g protein from cottage cheese, drizzle honey', score: 0.5 }
+    ]
+  },
+  coffee1: {
+    title: '☕ Coffee Slot 1',
+    time: '9:00 AM',
+    type: 'single',
+    options: [
+      { id: 'black1', label: 'Black coffee / Americano', score: 0.25, isBlack: true },
+      { id: 'latte1', label: 'Latte (oat or 2%, no sugar)', score: 0 }
+    ]
+  },
+  coffee2: {
+    title: '☕ Coffee Slot 2',
+    time: '11:00 AM',
+    type: 'single',
+    options: [
+      { id: 'black2', label: 'Black coffee / Americano', score: 0.25, isBlack: true },
+      { id: 'latte2', label: 'Latte (oat or 2%, no sugar)', score: 0 }
+    ]
+  },
+  greentea1: {
+    title: '🌿 Green Tea',
+    time: '11:30 AM - 12:00 PM',
+    type: 'single',
+    options: [
+      { id: 'gt1', label: 'Lemon ginger green tea', score: 0.25 }
+    ]
+  },
+  lunch: {
+    title: '🍽️ Lunch',
+    time: '12:30 - 1:00 PM',
+    type: 'single',
+    options: [
+      { id: 'lunch_salmon', label: '🏠 Salmon + edamame + lemon', sub: '~480 cal, 51g protein', score: 1.25 },
+      { id: 'lunch_chicken_veg', label: '🏠 Grilled chicken + veggies', sub: '~420 cal, 42g protein', score: 1.0 },
+      { id: 'lunch_chicken_rice', label: '🏠 Chicken + small rice + cucumber', sub: '~450 cal, 45g protein', score: 0.75 },
+      { id: 'lunch_lentil', label: '🏠 Lentil soup + chicken side', sub: 'Lazy option, ~420 cal', score: 0.75 },
+      { id: 'lunch_tahini', label: '🥡 Tahini shawarma (modified)', sub: 'Half rice, no pita, sauce on side', score: -0.25, takeout: true },
+      { id: 'lunch_burrito', label: '🥡 Bar Burrito bowl', sub: 'Half brown rice, double chicken, guac', score: -0.25, takeout: true },
+      { id: 'lunch_skip', label: '⏭️ Skip lunch (after kulcha)', sub: 'Only valid on C2 days', score: 0 }
+    ]
+  },
+  kulcha: {
+    title: '🫓 Kulcha Block',
+    time: '12:30 - 1:00 PM',
+    type: 'multi',
+    subtitle: 'Alternative to lunch on C2 days — track each piece',
+    options: [
+      { id: 'pre_walk', label: '🚶 Pre-kulcha 10 min walk', sub: 'Activates muscles before the carb load', score: 0.5 },
+      { id: 'kulcha_meal', label: '2 aloo kulcha + chane + onion', sub: '1 tsp butter, yogurt, onion chutney', score: -1.25 },
+      { id: 'post_walk', label: '🚶 Post-kulcha 20 min walk', sub: 'Mandatory — non-negotiable on this day', score: 1.25 }
+    ]
+  },
+  greentea2: {
+    title: '🌿 Green Tea',
+    time: '2:30 PM',
+    type: 'single',
+    options: [
+      { id: 'gt2', label: 'Lemon ginger green tea', score: 0.25 }
+    ]
+  },
+  snack: {
+    title: '🌰 Bridge Snack',
+    time: '3:00 PM',
+    type: 'single',
+    options: [
+      { id: 'snack_almonds', label: 'Almonds (15-20)', sub: 'Walnuts even better — omega-3', score: 0.5 },
+      { id: 'snack_yogurt', label: 'Plain 2% Greek yogurt small', sub: '12g protein in 130 cal', score: 0.5 },
+      { id: 'snack_cottage', label: 'Cottage cheese + berries', sub: '15g protein, low GI', score: 0.5 },
+      { id: 'snack_mix', label: 'Mixed nuts + pumpkin seeds', sub: 'Magnesium boost', score: 0.5 },
+      { id: 'snack_babybel', label: 'Babybel + 3 bran biscuits', sub: 'Lighter option', score: 0.25 },
+      { id: 'snack_skip', label: '⏭️ Skip snack', sub: 'Risks afternoon glucose crash', score: -0.25 }
+    ]
+  },
+  predinner: {
+    title: '💧 Pre-Dinner Water',
+    time: '5:45 PM',
+    type: 'single',
+    options: [
+      { id: 'pre_water', label: 'Glass of water before dinner', sub: 'Reduces meal size, pre-hydrates digestion', score: 0.25 }
+    ]
+  },
+  dinner: {
+    title: '🌙 Dinner',
+    time: '6:00 - 7:00 PM',
+    type: 'single',
+    options: [
+      { id: 'dinner_chicken', label: '🏠 Grilled chicken + veggies', sub: '~470 cal, 66g protein — best', score: 1.0 },
+      { id: 'dinner_salmon', label: '🏠 Salmon + edamame', sub: '~550 cal, 55g protein', score: 1.0 },
+      { id: 'dinner_parm', label: '🏠 Modified chicken parm + veggies', sub: 'No pasta, no breading', score: 0.75 },
+      { id: 'dinner_lentil', label: '🏠 Lentil soup + chicken side', sub: 'Lazy night option', score: 0.75 },
+      { id: 'dinner_tahini', label: '🥡 Tahini chicken plate', sub: 'Modified — half rice, no pita', score: -0.25, takeout: true },
+      { id: 'dinner_burrito', label: '🥡 Bar Burrito bowl', sub: 'Same order as lunch', score: -0.25, takeout: true },
+      { id: 'dinner_thai', label: '🥡 Thai green curry (no rice)', sub: 'Extra veggies instead of white rice', score: 0, takeout: true }
+    ]
+  },
+  walk: {
+    title: '🚶 Post-Dinner Walk',
+    time: '6:30 - 7:45 PM',
+    type: 'single',
+    options: [
+      { id: 'walk_20', label: '20+ min walk', score: 0.75 },
+      { id: 'walk_15', label: '15 min walk', score: 0.5 },
+      { id: 'walk_10', label: '10 min walk', score: 0.25 },
+      { id: 'walk_none', label: 'No walk', score: 0 }
+    ]
+  },
+  tweaks: {
+    title: '✨ Daily Tweaks',
+    time: 'THROUGHOUT THE DAY',
+    type: 'multi',
+    subtitle: 'Tap each one as you apply it',
+    options: [
+      { id: 'tweak_order', label: 'Eating order followed', sub: 'Veggies → protein → carbs', score: 0.5 },
+      { id: 'tweak_turmeric', label: 'Garlic + turmeric + black pepper', sub: 'Added to at least one meal', score: 0.5 },
+      { id: 'tweak_water', label: 'Water before each major meal', sub: 'Glass before lunch & dinner', score: 0.25 }
+    ]
+  }
+};
+
+const INDULGENCES = {
+  title: '⚠️ Indulgences',
+  time: 'IF HAPPENED TODAY',
+  type: 'multi',
+  subtitle: 'Honesty helps — tap if it happened',
+  options: [
+    { id: 'ind_lays_full', label: 'Masala Lays full bag (alone)', sub: 'High-GI starch on empty stomach', score: -3 },
+    { id: 'ind_lays_small', label: 'Lays handful with protein meal', sub: 'Protein buffers the spike', score: -0.5 },
+    { id: 'ind_rice', label: 'White rice added to a meal', sub: 'Bumps GI of the whole meal', score: -1 },
+    { id: 'ind_pita', label: 'Pita added to shawarma', sub: 'Extra refined carbs', score: -0.5 },
+    { id: 'ind_drink', label: 'Sweetened juice / soda', sub: 'Worst single-item carb hit', score: -2 }
+  ]
+};
+
+// ============ MACROS LOOKUP [cal, protein, carbs, fat] ============
+const OPTION_MACROS = {
+  // Morning
+  lemon_cinnamon:[10,0,2,0], lemon_only:[10,0,2,0],
+  // Breakfast
+  c2:[500,38,42,22], a2:[422,33,47,15], b2:[610,51,70,15],
+  b:[775,55,54,37], a_yogurt:[280,22,28,8], a_eggs:[290,20,22,14],
+  a_wrap:[300,18,28,10], chai_biscuits:[275,7,42,8],
+  silver_cottage:[271,19,34,7],
+  // Coffee
+  black1:[5,0,0,0], latte1:[150,9,14,6],
+  black2:[5,0,0,0], latte2:[150,9,14,6],
+  // Kulcha block
+  pre_walk:[0,0,0,0], kulcha_meal:[820,30,122,22], post_walk:[0,0,0,0],
+  // Green tea
+  gt1:[5,0,1,0], gt2:[5,0,1,0],
+  // Lunch
+  lunch_salmon:[480,51,8,14], lunch_chicken_veg:[420,42,16,14],
+  lunch_chicken_rice:[450,45,35,9], lunch_lentil:[420,40,28,6],
+  lunch_tahini:[550,40,45,18], lunch_burrito:[580,42,52,16], lunch_skip:[0,0,0,0],
+  // Snack
+  snack_almonds:[100,4,3,9], snack_yogurt:[130,12,8,3],
+  snack_cottage:[160,15,12,6], snack_mix:[150,5,10,10],
+  snack_babybel:[160,7,22,6], snack_skip:[0,0,0,0],
+  // Pre-dinner
+  pre_water:[0,0,0,0],
+  // Dinner
+  dinner_chicken:[470,66,16,14], dinner_salmon:[550,55,8,22],
+  dinner_parm:[420,52,12,14], dinner_lentil:[420,40,28,6],
+  dinner_tahini:[520,40,42,16], dinner_burrito:[580,42,52,16], dinner_thai:[480,28,28,22],
+  // Walk & tweaks
+  walk_20:[0,0,0,0], walk_15:[0,0,0,0], walk_10:[0,0,0,0], walk_none:[0,0,0,0],
+  tweak_order:[0,0,0,0], tweak_turmeric:[0,0,0,0], tweak_water:[0,0,0,0],
+  // Indulgences
+  ind_lays_full:[270,3,29,16], ind_lays_small:[135,2,15,8],
+  ind_rice:[200,4,45,0], ind_pita:[165,6,34,1], ind_drink:[150,0,40,0]
+};
+const EXTRA_MACROS = {
+  blackCoffees:[5,0,0,0], walks:[0,0,0,0], water:[0,0,0,0],
+  chai:[85,4,10,3], fruitsLow:[60,1,14,0], fruitsMod:[65,1,16,0],
+  fruitsHigh:[70,1,18,0], lattes:[150,9,14,6], biscuits:[95,2,16,3], rice:[200,4,45,0]
+};
+const MACRO_TARGETS = { cal:1650, protein:120, carbs:120, fat:65 };
+const DEFAULT_STATE = {
+  selections: {},
+  extras: {
+    blackCoffees: 0, walks: 0, water: 0, chai: 0,
+    fruitsLow: 0, fruitsMod: 0, fruitsHigh: 0,
+    lattes: 0, biscuits: 0, rice: 0
+  },
+  indulgences: []
+};
+let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+let theme = 'light';
+
+// ============ STORAGE (localStorage — works on GitHub Pages & iPhone PWA) ============
+const STORAGE_KEY = 'predia_tracker_v1';
+const THEME_KEY = 'predia_tracker_theme';
+
+async function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      state = {
+        selections: parsed.selections || {},
+        extras: { ...DEFAULT_STATE.extras, ...(parsed.extras || {}) },
+        indulgences: parsed.indulgences || []
+      };
+    }
+    const savedTheme = localStorage.getItem(THEME_KEY);
+    if (savedTheme) theme = savedTheme;
+  } catch (e) { console.log('Storage load error:', e); }
+}
+
+async function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) {}
+}
+
+async function saveTheme() {
+  try {
+    localStorage.setItem(THEME_KEY, theme);
+  } catch (e) {}
+}
+
+// ============ SCORING ============
+function getOption(slotKey, optionId, isIndulgence = false) {
+  const slot = isIndulgence ? INDULGENCES : SLOTS[slotKey];
+  if (!slot) return null;
+  return slot.options.find(o => o.id === optionId);
+}
+
+function calculateScore() {
+  let score = 0;
+  for (const slotKey in state.selections) {
+    const slot = SLOTS[slotKey];
+    if (!slot) continue;
+    const sel = state.selections[slotKey];
+    if (slot.type === 'single' && sel) {
+      const opt = slot.options.find(o => o.id === sel);
+      if (opt) score += opt.score;
+    } else if (slot.type === 'multi' && Array.isArray(sel)) {
+      sel.forEach(id => {
+        const opt = slot.options.find(o => o.id === id);
+        if (opt) score += opt.score;
+      });
+    }
+  }
+  state.indulgences.forEach(id => {
+    const opt = INDULGENCES.options.find(o => o.id === id);
+    if (opt) score += opt.score;
+  });
+  score += state.extras.blackCoffees * 0.25;
+  score += state.extras.walks * 0.25;
+  score += state.extras.fruitsLow * 0.25;
+  score += state.extras.fruitsMod * -0.25;
+  score += state.extras.fruitsHigh * -1;
+  score += state.extras.lattes * -0.5;
+  score += state.extras.biscuits * -0.25;
+  score += state.extras.rice * -0.5;
+  // water and chai not scored — tracked only
+  if (checkMasterRule()) score += 0.5;
+  return Math.round(score * 100) / 100;
+}
+
+function hasTakeoutOrIndulgence() {
+  if (state.indulgences.length > 0) return true;
+  const breakfastSel = state.selections.breakfast;
+  const lunchSel = state.selections.lunch;
+  const dinnerSel = state.selections.dinner;
+  const bOpt = breakfastSel && SLOTS.breakfast.options.find(o => o.id === breakfastSel);
+  const lOpt = lunchSel && SLOTS.lunch.options.find(o => o.id === lunchSel);
+  const dOpt = dinnerSel && SLOTS.dinner.options.find(o => o.id === dinnerSel);
+  return !!(bOpt?.takeout || lOpt?.takeout || dOpt?.takeout);
+}
+
+function checkMasterRule() {
+  if (!hasTakeoutOrIndulgence()) return false;
+  const c1 = state.selections.coffee1;
+  const c2 = state.selections.coffee2;
+  const c1Black = c1 && SLOTS.coffee1.options.find(o => o.id === c1)?.isBlack;
+  const c2Black = c2 && SLOTS.coffee2.options.find(o => o.id === c2)?.isBlack;
+  // Need both coffees to be black (or both unfilled which won't happen if they had takeout meals)
+  return c1Black && c2Black;
+}
+
+function maxPossibleForSlot(slotKey) {
+  const slot = SLOTS[slotKey];
+  if (!slot) return 0;
+  if (slot.type === 'single') {
+    const positives = slot.options.filter(o => o.score > 0).map(o => o.score);
+    return positives.length > 0 ? Math.max(...positives) : 0;
+  } else {
+    return slot.options.filter(o => o.score > 0).reduce((s, o) => s + o.score, 0);
+  }
+}
+
+function getTrafficLight(slotKey, optionId) {
+  const slot = SLOTS[slotKey];
+  const opt = slot.options.find(o => o.id === optionId);
+  if (!opt) return 'red';
+
+  // Hypothetical score: apply this choice + max possible from all OTHER unselected slots
+  let hypothetical = 0;
+
+  // Add existing selections (except current slot)
+  for (const sKey in state.selections) {
+    if (sKey === slotKey) continue;
+    const s = SLOTS[sKey];
+    if (!s) continue;
+    const sel = state.selections[sKey];
+    if (s.type === 'single' && sel) {
+      const o = s.options.find(x => x.id === sel);
+      if (o) hypothetical += o.score;
+    } else if (s.type === 'multi' && Array.isArray(sel)) {
+      sel.forEach(id => {
+        const o = s.options.find(x => x.id === id);
+        if (o) hypothetical += o.score;
+      });
+    }
+  }
+
+  // Indulgences (negative)
+  state.indulgences.forEach(id => {
+    const o = INDULGENCES.options.find(x => x.id === id);
+    if (o) hypothetical += o.score;
+  });
+
+  // Extras
+  hypothetical += state.extras.blackCoffees * 0.25;
+  hypothetical += state.extras.walks * 0.25;
+
+  // Apply this hypothetical choice
+  if (slot.type === 'multi') {
+    // For multi, add this option's score
+    hypothetical += opt.score;
+    // Plus existing selections in this slot (if any others)
+    const currentMulti = state.selections[slotKey] || [];
+    currentMulti.forEach(id => {
+      if (id !== optionId) {
+        const o = slot.options.find(x => x.id === id);
+        if (o) hypothetical += o.score;
+      }
+    });
+  } else {
+    hypothetical += opt.score;
+  }
+
+  // Add max possible from unselected slots
+  for (const sKey in SLOTS) {
+    if (sKey === slotKey) continue;
+    if (state.selections[sKey] !== undefined && state.selections[sKey] !== null) {
+      const sel = state.selections[sKey];
+      if (Array.isArray(sel) && sel.length === 0) {
+        // multi with nothing picked yet, add max
+        hypothetical += maxPossibleForSlot(sKey);
+      } else if (!Array.isArray(sel)) {
+        // already counted above
+        continue;
+      } else {
+        // multi with some picked — add max of remaining
+        const slotData = SLOTS[sKey];
+        const remainingPositives = slotData.options
+          .filter(o => o.score > 0 && !sel.includes(o.id))
+          .map(o => o.score);
+        if (remainingPositives.length > 0) {
+          hypothetical += remainingPositives.reduce((s, v) => s + v, 0);
+        }
+      }
+    } else {
+      hypothetical += maxPossibleForSlot(sKey);
+    }
+  }
+
+  // Master rule bonus possible?
+  // If choosing this option creates takeout possibility but coffees not yet black, assume best case
+  const futureTakeout = hasTakeoutOrIndulgence() || opt.takeout;
+  if (futureTakeout) {
+    // Can still earn the 0.5 bonus if coffee slots become black
+    const c1Sel = state.selections.coffee1;
+    const c2Sel = state.selections.coffee2;
+    const c1IsBlack = c1Sel && SLOTS.coffee1.options.find(o => o.id === c1Sel)?.isBlack;
+    const c2IsBlack = c2Sel && SLOTS.coffee2.options.find(o => o.id === c2Sel)?.isBlack;
+    // If both possible to make black, can get bonus
+    if ((!c1Sel || c1IsBlack) && (!c2Sel || c2IsBlack)) {
+      hypothetical += 0.5;
+    }
+  }
+
+  if (hypothetical >= 5) return 'green';
+  if (hypothetical >= 3.5) return 'yellow';
+  return 'red';
+}
+
+// ============ MACRO CALCULATION ============
+function calculateMacros() {
+  const m = { cal:0, protein:0, carbs:0, fat:0 };
+  // Slots
+  for (const slotKey in state.selections) {
+    const slot = SLOTS[slotKey];
+    if (!slot) continue;
+    const sel = state.selections[slotKey];
+    if (slot.type === 'single' && sel) {
+      const v = OPTION_MACROS[sel];
+      if (v) { m.cal+=v[0]; m.protein+=v[1]; m.carbs+=v[2]; m.fat+=v[3]; }
+    } else if (slot.type === 'multi' && Array.isArray(sel)) {
+      sel.forEach(id => {
+        const v = OPTION_MACROS[id];
+        if (v) { m.cal+=v[0]; m.protein+=v[1]; m.carbs+=v[2]; m.fat+=v[3]; }
+      });
+    }
+  }
+  // Indulgences
+  state.indulgences.forEach(id => {
+    const v = OPTION_MACROS[id];
+    if (v) { m.cal+=v[0]; m.protein+=v[1]; m.carbs+=v[2]; m.fat+=v[3]; }
+  });
+  // Extras
+  for (const key in state.extras) {
+    const count = state.extras[key];
+    const v = EXTRA_MACROS[key];
+    if (count > 0 && v) { m.cal+=v[0]*count; m.protein+=v[1]*count; m.carbs+=v[2]*count; m.fat+=v[3]*count; }
+  }
+  return m;
+}
+
+function updateMacros() {
+  const m = calculateMacros();
+  const T = MACRO_TARGETS;
+  const items = [
+    { id:'cal',     val:Math.round(m.cal),     target:T.cal,     unit:'',  lowerBetter:false, isCalorie:true },
+    { id:'protein', val:Math.round(m.protein), target:T.protein, unit:'g', lowerBetter:false },
+    { id:'carbs',   val:Math.round(m.carbs),   target:T.carbs,   unit:'g', lowerBetter:true  },
+    { id:'fat',     val:Math.round(m.fat),     target:T.fat,     unit:'g', lowerBetter:true  },
+  ];
+  items.forEach(({ id, val, target, unit, lowerBetter, isCalorie }) => {
+    const fill = document.getElementById(`macro-fill-${id}`);
+    const valEl = document.getElementById(`macro-val-${id}`);
+    if (!fill || !valEl) return;
+    const pct = (val / target) * 100;
+    fill.style.width = Math.min(pct, 100) + '%';
+    let color;
+    if (isCalorie) {
+      color = pct < 70 ? 'var(--warning)' : pct <= 115 ? 'var(--success)' : 'var(--danger)';
+    } else if (lowerBetter) {
+      color = pct <= 80 ? 'var(--success)' : pct <= 110 ? 'var(--warning)' : 'var(--danger)';
+    } else {
+      color = pct < 50 ? 'var(--danger)' : pct < 80 ? 'var(--warning)' : 'var(--success)';
+    }
+    fill.style.background = color;
+    valEl.textContent = val + unit;
+  });
+}
+
+// ============ RENDER ============
+function renderSlot(slotKey, slot) {
+  const sel = state.selections[slotKey];
+  const isMulti = slot.type === 'multi';
+  const hasSelection = isMulti ? (Array.isArray(sel) && sel.length > 0) : !!sel;
+
+  const optionsHtml = slot.options.map(opt => {
+    let isSelected = false;
+    let isMuted = false;
+    if (isMulti) {
+      isSelected = Array.isArray(sel) && sel.includes(opt.id);
+    } else {
+      isSelected = sel === opt.id;
+      isMuted = hasSelection && !isSelected;
+    }
+
+    const lightClass = isSelected ? '' : getTrafficLight(slotKey, opt.id);
+    const scoreStr = (opt.score >= 0 ? '+' : '') + opt.score.toFixed(opt.score % 1 === 0 ? 1 : 2);
+    const subHtml = opt.sub ? `<span class="chip-sub">${opt.sub}</span>` : '';
+
+    return `
+      <button class="chip ${isSelected ? 'selected' : ''} ${isMuted ? 'muted' : ''}"
+        data-slot="${slotKey}" data-id="${opt.id}" data-multi="${isMulti}">
+        <span class="chip-light ${lightClass}"></span>
+        <span class="chip-content">
+          <span class="chip-label">${opt.label}</span>
+          ${subHtml}
+        </span>
+        <span class="chip-score">${scoreStr}</span>
+        <span class="chip-check">✓</span>
+      </button>
+    `;
+  }).join('');
+
+  const subtitleHtml = slot.subtitle ? `<div class="slot-subtitle">${slot.subtitle}</div>` : '';
+
+  return `
+    <section class="slot" data-slot-key="${slotKey}">
+      <div class="slot-header">
+        <div class="slot-time">${slot.time}</div>
+        <h2 class="slot-title">${slot.title}</h2>
+        ${subtitleHtml}
+      </div>
+      <div class="slot-options">${optionsHtml}</div>
+    </section>
+  `;
+}
+
+function renderIndulgences() {
+  const optionsHtml = INDULGENCES.options.map(opt => {
+    const isSelected = state.indulgences.includes(opt.id);
+    const scoreStr = opt.score.toFixed(opt.score % 1 === 0 ? 1 : 2);
+    const subHtml = opt.sub ? `<span class="chip-sub">${opt.sub}</span>` : '';
+    return `
+      <button class="chip indulgence ${isSelected ? 'selected' : ''}"
+        data-indulgence="${opt.id}">
+        <span class="chip-light"></span>
+        <span class="chip-content">
+          <span class="chip-label">${opt.label}</span>
+          ${subHtml}
+        </span>
+        <span class="chip-score">${scoreStr}</span>
+        <span class="chip-check">✓</span>
+      </button>
+    `;
+  }).join('');
+
+  return `
+    <section class="slot indulgence-section">
+      <div class="slot-header">
+        <div class="slot-time">${INDULGENCES.time}</div>
+        <h2 class="slot-title">${INDULGENCES.title}</h2>
+        <div class="slot-subtitle">${INDULGENCES.subtitle}</div>
+      </div>
+      <div class="slot-options">${optionsHtml}</div>
+    </section>
+  `;
+}
+
+function renderAll() {
+  const container = document.getElementById('slotsContainer');
+  container.innerHTML = Object.keys(SLOTS).map(k => renderSlot(k, SLOTS[k])).join('');
+  document.getElementById('indulgenceContainer').innerHTML = renderIndulgences();
+  attachListeners();
+  updateScore();
+  updateCounters();
+}
+
+function updateScore() {
+  const score = calculateScore();
+  const scoreEl = document.getElementById('scoreNumber');
+  const sign = score >= 0 ? '+' : '';
+  scoreEl.textContent = sign + score.toFixed(2);
+  scoreEl.classList.add('updating');
+  setTimeout(() => scoreEl.classList.remove('updating'), 300);
+
+  // Progress bar
+  const bar = document.getElementById('scoreBar');
+  const pct = Math.max(0, Math.min(100, (score / 5) * 100));
+  bar.style.width = pct + '%';
+  bar.className = 'score-bar';
+  if (score >= 5) bar.classList.add('success');
+  else if (score >= 3.5) bar.classList.add('warning');
+  else if (score >= 1) bar.classList.add('warning');
+  else bar.classList.add('danger');
+
+  // Message
+  const msg = document.getElementById('scoreMsg');
+  if (score >= 5) msg.textContent = '✓ Target hit!';
+  else {
+    const need = (5 - score).toFixed(2);
+    msg.textContent = `Need +${need} more`;
+  }
+
+  // Master rule badge
+  const badge = document.getElementById('masterBadge');
+  badge.className = 'master-rule-badge';
+  if (hasTakeoutOrIndulgence()) {
+    if (checkMasterRule()) {
+      badge.classList.add('active');
+      badge.innerHTML = '✓ Master Rule active — +0.5 bonus applied';
+    } else {
+      badge.classList.add('hint');
+      badge.innerHTML = '💡 Master Rule available: swap lattes → black coffee for +0.5';
+    }
+  }
+
+  updateDiagnostic(score);
+  updateMacros();
+}
+
+function updateDiagnostic(score) {
+  const el = document.getElementById('diagnostic');
+  let icon, title, msg;
+  if (score >= 6) {
+    icon = '🏆'; title = 'Exceptional day';
+    msg = 'Bonus territory — your friend is doing the work.';
+  } else if (score >= 5) {
+    icon = '🟢'; title = 'Target hit';
+    msg = 'Successful pre-diabetic day. Keep this pattern going.';
+  } else if (score >= 3.5) {
+    icon = '🟡'; title = 'Close to target';
+    msg = 'Add 1-2 small wins — extra walk, water tweak, or fire the Master Rule.';
+  } else if (score >= 1) {
+    icon = '🟠'; title = 'Below target';
+    msg = 'Tomorrow: fire the Master Rule + lock in the walks + tweaks.';
+  } else if (score > 0) {
+    icon = '🌱'; title = 'Building up';
+    msg = 'Keep going — every selection moves you closer.';
+  } else if (score < 0) {
+    icon = '🔴'; title = 'Bad day';
+    msg = 'Review what slipped. Restart clean tomorrow with the master rule active.';
+  } else {
+    icon = '🌱'; title = 'Start your day';
+    msg = 'Begin with morning lemon water and build from there.';
+  }
+  el.innerHTML = `
+    <div class="diagnostic-icon">${icon}</div>
+    <div class="diagnostic-title">${title}</div>
+    <div class="diagnostic-msg">${msg}</div>
+  `;
+}
+
+function updateCounters() {
+  document.getElementById('counter-blackCoffees').textContent = state.extras.blackCoffees;
+  document.getElementById('counter-walks').textContent = state.extras.walks;
+  document.getElementById('counter-water').textContent = state.extras.water;
+  document.getElementById('counter-chai').textContent = state.extras.chai;
+  document.getElementById('counter-fruitsLow').textContent = state.extras.fruitsLow;
+  document.getElementById('counter-fruitsMod').textContent = state.extras.fruitsMod;
+  document.getElementById('counter-fruitsHigh').textContent = state.extras.fruitsHigh;
+  document.getElementById('counter-lattes').textContent = state.extras.lattes;
+  document.getElementById('counter-biscuits').textContent = state.extras.biscuits;
+  document.getElementById('counter-rice').textContent = state.extras.rice;
+}
+
+// ============ EVENT HANDLERS ============
+function attachListeners() {
+  // Slot chips
+  document.querySelectorAll('.chip[data-slot]').forEach(chip => {
+    chip.addEventListener('click', handleChipClick);
+  });
+  // Indulgence chips
+  document.querySelectorAll('.chip[data-indulgence]').forEach(chip => {
+    chip.addEventListener('click', handleIndulgenceClick);
+  });
+}
+
+function handleChipClick(e) {
+  const chip = e.currentTarget;
+  const slotKey = chip.dataset.slot;
+  const optId = chip.dataset.id;
+  const isMulti = chip.dataset.multi === 'true';
+  const slot = SLOTS[slotKey];
+
+  if (isMulti) {
+    if (!Array.isArray(state.selections[slotKey])) {
+      state.selections[slotKey] = [];
+    }
+    const idx = state.selections[slotKey].indexOf(optId);
+    if (idx >= 0) {
+      state.selections[slotKey].splice(idx, 1);
+      if (state.selections[slotKey].length === 0) delete state.selections[slotKey];
+    } else {
+      state.selections[slotKey].push(optId);
+    }
+  } else {
+    // Single: toggle if same, replace if different
+    if (state.selections[slotKey] === optId) {
+      delete state.selections[slotKey];
+    } else {
+      state.selections[slotKey] = optId;
+    }
+  }
+  renderAll();
+  saveState();
+}
+
+function handleIndulgenceClick(e) {
+  const optId = e.currentTarget.dataset.indulgence;
+  const idx = state.indulgences.indexOf(optId);
+  if (idx >= 0) state.indulgences.splice(idx, 1);
+  else state.indulgences.push(optId);
+  renderAll();
+  saveState();
+}
+
+// Counter buttons
+document.querySelectorAll('.counter-btn').forEach(btn => {
+  btn.addEventListener('click', e => {
+    const counter = btn.dataset.counter;
+    const delta = parseInt(btn.dataset.delta, 10);
+    state.extras[counter] = Math.max(0, state.extras[counter] + delta);
+    updateCounters();
+    updateScore();
+    saveState();
+  });
+});
+
+// Theme toggle
+document.getElementById('themeBtn').addEventListener('click', () => {
+  theme = theme === 'light' ? 'dark' : 'light';
+  applyTheme();
+  saveTheme();
+});
+
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('themeBtn').textContent = theme === 'light' ? '☀️' : '🌙';
+  document.querySelector('meta[name="theme-color"]').setAttribute('content', theme === 'light' ? '#16A085' : '#0E1419');
+}
+
+// Reset
+document.getElementById('resetBtn').addEventListener('click', () => {
+  document.getElementById('resetModal').classList.add('show');
+});
+document.getElementById('cancelReset').addEventListener('click', () => {
+  document.getElementById('resetModal').classList.remove('show');
+});
+document.getElementById('confirmReset').addEventListener('click', () => {
+  state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+  document.getElementById('resetModal').classList.remove('show');
+  renderAll();
+  saveState();
+});
+document.getElementById('resetModal').addEventListener('click', e => {
+  if (e.target.id === 'resetModal') {
+    document.getElementById('resetModal').classList.remove('show');
+  }
+});
+
+// ============ INIT ============
+(async function init() {
+  await loadState();
+  applyTheme();
+  renderAll();
+})();
+</script>
 </body>
 </html>
