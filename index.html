@@ -321,14 +321,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
 //  Rules: { "rules": { ".read": true, ".write": true } }
 //  Project Settings → Web app → Copy config here
 // ═══════════════════════════════════════════════════
-const FIREBASE_CONFIG = {
-  apiKey:            "YOUR_API_KEY",
-  authDomain:        "YOUR_PROJECT.firebaseapp.com",
-  databaseURL:       "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-  projectId:         "YOUR_PROJECT_ID",
-  storageBucket:     "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId:             "YOUR_APP_ID"
+const FIREBASE_CONFIG = = {
+  apiKey: "AIzaSyDmZStC-d8Vo92XfPnXA-nOPnzDTFGMdvI",
+  authDomain: "whateverfood-3863a.firebaseapp.com",
+  databaseURL: "https://whateverfood-3863a-default-rtdb.firebaseio.com",
+  projectId: "whateverfood-3863a",
+  storageBucket: "whateverfood-3863a.firebasestorage.app",
+  messagingSenderId: "164590977645",
+  appId: "1:164590977645:web:4c136c3aa53ed938d5b564"
 };
 // ═══════════════════════════════════════════════════
 
@@ -602,7 +602,7 @@ function updateVisibility(sel) {
 
 // ═══ FIREBASE ═══
 function initFirebase() {
-  if (FIREBASE_CONFIG.apiKey==='YOUR_API_KEY') return;
+  if (FIREBASE_CONFIG.apiKey==='AIzaSyDmZStC-d8Vo92XfPnXA-nOPnzDTFGMdvI') return;
   const load = (src, cb) => { const s=document.createElement('script'); s.src=src; s.onload=cb; document.head.appendChild(s); };
   load('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js', () => {
     load('https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js', () => {
