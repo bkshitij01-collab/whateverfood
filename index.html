@@ -28,7 +28,7 @@
   --shadow:0 1px 4px rgba(0,0,0,.3);--shadow2:0 4px 16px rgba(0,0,0,.35);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;padding-bottom:50px}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;padding-bottom:105px}
 
 /* ── HEADER ── */
 .app-header{position:sticky;top:0;z-index:90;background:var(--card);border-bottom:1px solid var(--border);padding:10px 14px 12px;box-shadow:var(--shadow2)}
@@ -233,6 +233,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
 .plan-score{color:var(--green);font-weight:700;font-size:11px;flex-shrink:0;font-variant-numeric:tabular-nums}
 .plan-totals{margin-top:10px;padding-top:10px;border-top:1px dashed var(--border);font-size:11.5px;color:var(--muted);display:flex;justify-content:space-between}
 .plan-totals strong{color:var(--text);font-weight:700}
+
+/* ── FIXED FOOTER NAV ── */
+.footer-outer{position:fixed;bottom:0;left:0;right:0;z-index:80;pointer-events:none}
+.footer-nav{max-width:720px;margin:0 auto;background:var(--card);border-top:1px solid var(--border);border-radius:14px 14px 0 0;box-shadow:0 -4px 20px rgba(0,0,0,.08);pointer-events:all;transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.footer-nav.collapsed{transform:translateY(calc(100% - 26px))}
+.footer-handle{display:flex;justify-content:center;align-items:center;padding:9px 0 5px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+.footer-pill{width:38px;height:4px;background:var(--border2);border-radius:100px;transition:background .2s,width .2s}
+.footer-handle:active .footer-pill{background:var(--him);width:48px}
+.footer-items{display:grid;grid-template-columns:repeat(4,1fr);padding:2px 8px 8px;gap:4px}
+.fnav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px 8px;border-radius:10px;background:transparent;border:none;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent;transition:all .15s;width:100%}
+.fnav-btn:active{transform:scale(.92)}
+.fnav-btn.fn-him:active{background:var(--him-soft)}
+.fnav-btn.fn-her:active{background:var(--her-soft)}
+.fnav-icon{font-size:19px;line-height:1}
+.fnav-lbl{font-size:10px;font-weight:600;color:var(--muted);white-space:nowrap;letter-spacing:-.1px}
 </style>
 </head>
 <body>
@@ -1302,11 +1317,36 @@ function generateRecommendation() {
   return { tier, avgToday, targetAvg, tomorrowNeed, himPlan, herPlan, himToday, herToday };
 }
 
+function getTodayRemainingPlan(person) {
+  const cfg = CONFIGS[person];
+  const currentScore = calcScore(person);
+  const items = [];
+  for (const sk in cfg.slots) {
+    const slot = cfg.slots[sk];
+    if (!slot?.opts) continue;
+    if (sk === 'kulcha') continue; // optional block
+    const anySelected = slot.opts.some(o => getCount(person, `${sk}__${o.id}`) > 0);
+    if (anySelected) continue;
+    const best = [...slot.opts].filter(o => o.score > 0 && !o.takeout).sort((a,b)=>b.score-a.score)[0];
+    if (best) items.push({time:slot.time, title:slot.title, opt:best});
+  }
+  const extraScore = items.reduce((s,i)=>s+i.opt.score,0);
+  return {
+    items,
+    currentScore,
+    projectedScore: Math.round((currentScore+extraScore)*100)/100,
+    extraCal: items.reduce((s,i)=>s+(i.opt.m?.[0]||0),0),
+    extraProtein: items.reduce((s,i)=>s+(i.opt.m?.[1]||0),0)
+  };
+}
+
 function renderInfoModal() {
   const rec = generateRecommendation();
   const himM = calcMacros('him'); const himBurn = getTotalBurn('him'); const himNetCal = himM.cal - himBurn;
   const herM = calcMacros('her'); const herBurn = getTotalBurn('her'); const herNetCal = herM.cal - herBurn;
   const HT = HIM.targets, RT = HER.targets;
+  const himRem = getTodayRemainingPlan('him');
+  const herRem = getTodayRemainingPlan('her');
 
   const renderToday = (name, score, m, netCal, T, cls, hasFiber) => `
     <div class="report-card ${cls}">
@@ -1323,16 +1363,35 @@ function renderInfoModal() {
       </div>
     </div>`;
 
+  const renderRemaining = (name, cls, data) => {
+    const done = data.items.length === 0;
+    return done
+      ? `<div class="plan-card ${cls}"><div class="plan-name">${name}</div><div style="font-size:12px;color:var(--muted);padding:6px 0">🎉 All slots filled — nothing more needed today!</div></div>`
+      : `<div class="plan-card ${cls}">
+          <div class="plan-name">${name}</div>
+          <div class="plan-items">
+            ${data.items.map(i=>`<div class="plan-item">
+              <span class="plan-time">${i.time.split('–')[0].trim()}</span>
+              <span class="plan-label">${i.opt.label}</span>
+              <span class="plan-score">${oStr(i.opt.score)}</span>
+            </div>`).join('')}
+          </div>
+          <div class="plan-totals">
+            <span>Now: <strong>${sStr(data.currentScore)}</strong></span>
+            <span>If done: <strong>${sStr(data.projectedScore)}</strong> &nbsp;(+${data.extraCal} cal, +${data.extraProtein}g pro)</span>
+          </div>
+        </div>`;
+  };
+
   const renderPlan = (name, plan, cls) => `
     <div class="plan-card ${cls}">
       <div class="plan-name">${name}</div>
       <div class="plan-items">
-        ${plan.plan.map(p => `
-          <div class="plan-item">
-            <span class="plan-time">${p.time.split('–')[0].trim()}</span>
-            <span class="plan-label">${p.opt.label}</span>
-            <span class="plan-score">${oStr(p.opt.score)}</span>
-          </div>`).join('')}
+        ${plan.plan.map(p=>`<div class="plan-item">
+          <span class="plan-time">${p.time.split('–')[0].trim()}</span>
+          <span class="plan-label">${p.opt.label}</span>
+          <span class="plan-score">${oStr(p.opt.score)}</span>
+        </div>`).join('')}
       </div>
       <div class="plan-totals">
         <span>Projected: <strong>${sStr(plan.totalScore)}</strong></span>
@@ -1345,17 +1404,21 @@ function renderInfoModal() {
       <h3>📍 Today's Progress</h3>
       ${renderToday('👨 Him', rec.himToday, himM, himNetCal, HT, 'him', false)}
       ${renderToday('👩 Her', rec.herToday, herM, herNetCal, RT, 'her', true)}
-      <div class="tier-summary">
-        Today's combined average: <strong>${rec.avgToday.toFixed(2)}</strong>
-      </div>
+      <div class="tier-summary">Combined average today: <strong>${rec.avgToday.toFixed(2)}</strong></div>
+    </div>
+    <div class="info-section">
+      <h3>✅ Still To Do Today</h3>
+      <div class="tier-summary">Best remaining picks to improve today's score right now.</div>
+      ${renderRemaining('👨 His remaining', 'him', himRem)}
+      ${renderRemaining('👩 Her remaining', 'her', herRem)}
     </div>
     <div class="info-section">
       <h3>🔮 Recommended for Tomorrow</h3>
       <span class="tier-badge ${rec.tier.cls}">${rec.tier.label} tier</span>
       <div class="tier-summary">
         ${rec.tier.desc}.<br>
-        Target 2-day avg: <strong>${rec.tier.minAvg}–${rec.tier.maxAvg}</strong>.
-        Tomorrow needs a score of <strong>${sStr(rec.tomorrowNeed)}</strong> to hit the band.
+        Target 2-day avg: <strong>${rec.tier.minAvg}–${rec.tier.maxAvg}</strong> ·
+        Tomorrow needs <strong>${sStr(rec.tomorrowNeed)}</strong> to hit the band.
       </div>
       ${renderPlan('👨 His plan', rec.himPlan, 'him')}
       ${renderPlan('👩 Her plan', rec.herPlan, 'her')}
@@ -1369,6 +1432,24 @@ document.getElementById('infoBtn').addEventListener('click', () => {
 });
 document.getElementById('regenPlanBtn').addEventListener('click', renderInfoModal);
 
+// ── FOOTER NAV ──
+let footerCollapsed = false;
+document.getElementById('footerHandle').addEventListener('click', () => {
+  footerCollapsed = !footerCollapsed;
+  document.getElementById('footerNav').classList.toggle('collapsed', footerCollapsed);
+});
+function navScroll(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  // If section is hidden, reveal it first by switching to 'both'
+  if (el.style.display === 'none') {
+    document.getElementById('personSel').value = '';
+    updateVisibility('');
+    currentView = '';
+  }
+  setTimeout(() => el.scrollIntoView({behavior:'smooth', block:'start'}), 80);
+}
+
 // ═══ INIT ═══
 (function init(){
   try{theme=localStorage.getItem(LST)||'light';}catch(e){}
@@ -1379,5 +1460,32 @@ document.getElementById('regenPlanBtn').addEventListener('click', renderInfoModa
   initFirebase();
 })();
 </script>
+<!-- ══ FIXED FOOTER NAV ══ -->
+<div class="footer-outer">
+  <div class="footer-nav" id="footerNav">
+    <div class="footer-handle" id="footerHandle">
+      <div class="footer-pill"></div>
+    </div>
+    <div class="footer-items">
+      <button class="fnav-btn fn-him" onclick="navScroll('himFoodSection')">
+        <span class="fnav-icon">🥗</span>
+        <span class="fnav-lbl">His Food</span>
+      </button>
+      <button class="fnav-btn fn-her" onclick="navScroll('herFoodSection')">
+        <span class="fnav-icon">🥙</span>
+        <span class="fnav-lbl">Her Food</span>
+      </button>
+      <button class="fnav-btn fn-him" onclick="navScroll('himWorkout')">
+        <span class="fnav-icon">🏋️</span>
+        <span class="fnav-lbl">His Workout</span>
+      </button>
+      <button class="fnav-btn fn-her" onclick="navScroll('herWorkout')">
+        <span class="fnav-icon">🏃</span>
+        <span class="fnav-lbl">Her Workout</span>
+      </button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
