@@ -435,6 +435,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
   </div>
 </div>
 
+<!-- ══ FIXED FOOTER NAV ══ -->
+<div class="footer-outer">
+  <div class="footer-nav" id="footerNav">
+    <div class="footer-handle" id="footerHandle">
+      <div class="footer-pill"></div>
+    </div>
+    <div class="footer-items">
+      <button class="fnav-btn fn-him" onclick="navScroll('himFoodSection')">
+        <span class="fnav-icon">🥗</span>
+        <span class="fnav-lbl">His Food</span>
+      </button>
+      <button class="fnav-btn fn-her" onclick="navScroll('herFoodSection')">
+        <span class="fnav-icon">🥙</span>
+        <span class="fnav-lbl">Her Food</span>
+      </button>
+      <button class="fnav-btn fn-him" onclick="navScroll('himWorkout')">
+        <span class="fnav-icon">🏋️</span>
+        <span class="fnav-lbl">His Workout</span>
+      </button>
+      <button class="fnav-btn fn-her" onclick="navScroll('herWorkout')">
+        <span class="fnav-icon">🏃</span>
+        <span class="fnav-lbl">Her Workout</span>
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ═══════════════════════════════════════════════════
 //  🔥 FIREBASE — FILL IN YOUR CONFIG BELOW
@@ -1434,10 +1461,14 @@ document.getElementById('regenPlanBtn').addEventListener('click', renderInfoModa
 
 // ── FOOTER NAV ──
 let footerCollapsed = false;
-document.getElementById('footerHandle').addEventListener('click', () => {
-  footerCollapsed = !footerCollapsed;
-  document.getElementById('footerNav').classList.toggle('collapsed', footerCollapsed);
-});
+const footerHandleEl = document.getElementById('footerHandle');
+const footerNavEl = document.getElementById('footerNav');
+if (footerHandleEl && footerNavEl) {
+  footerHandleEl.addEventListener('click', () => {
+    footerCollapsed = !footerCollapsed;
+    footerNavEl.classList.toggle('collapsed', footerCollapsed);
+  });
+}
 function navScroll(id) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -1460,32 +1491,5 @@ function navScroll(id) {
   initFirebase();
 })();
 </script>
-<!-- ══ FIXED FOOTER NAV ══ -->
-<div class="footer-outer">
-  <div class="footer-nav" id="footerNav">
-    <div class="footer-handle" id="footerHandle">
-      <div class="footer-pill"></div>
-    </div>
-    <div class="footer-items">
-      <button class="fnav-btn fn-him" onclick="navScroll('himFoodSection')">
-        <span class="fnav-icon">🥗</span>
-        <span class="fnav-lbl">His Food</span>
-      </button>
-      <button class="fnav-btn fn-her" onclick="navScroll('herFoodSection')">
-        <span class="fnav-icon">🥙</span>
-        <span class="fnav-lbl">Her Food</span>
-      </button>
-      <button class="fnav-btn fn-him" onclick="navScroll('himWorkout')">
-        <span class="fnav-icon">🏋️</span>
-        <span class="fnav-lbl">His Workout</span>
-      </button>
-      <button class="fnav-btn fn-her" onclick="navScroll('herWorkout')">
-        <span class="fnav-icon">🏃</span>
-        <span class="fnav-lbl">Her Workout</span>
-      </button>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
