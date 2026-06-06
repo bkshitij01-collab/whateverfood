@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1a6b52">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Weekly Summary · Food Tracker</title>
+<style>
+:root{
+  --bg:#F4F6F7;--card:#FFF;--soft:#F8FAFB;
+  --him:#1a6b52;--him-soft:rgba(26,107,82,.09);--him-light:#e7f4ef;
+  --her:#8B3A6B;--her-soft:rgba(139,58,107,.09);--her-light:#f4eaf1;
+  --green:#27AE60;--yellow:#E67E22;--red:#E74C3C;
+  --text:#2C3E50;--muted:#7F8C8D;--light:#BDC3C7;
+  --border:#ECF0F1;--border2:#DDE2E5;
+  --shadow:0 1px 4px rgba(0,0,0,.05);--shadow2:0 4px 16px rgba(0,0,0,.07);
+  --r:14px;
+}
+[data-theme=dark]{
+  --bg:#0d1117;--card:#161b22;--soft:#1c2128;
+  --him:#2ECC71;--him-soft:rgba(46,204,113,.1);--him-light:rgba(46,204,113,.07);
+  --her:#c77daa;--her-soft:rgba(199,125,170,.1);--her-light:rgba(199,125,170,.07);
+  --green:#2ECC71;--yellow:#F39C12;--red:#EC7063;
+  --text:#e6edf3;--muted:#8B949E;--light:#484F58;
+  --border:#21262D;--border2:#30363D;
+  --shadow:0 1px 4px rgba(0,0,0,.3);--shadow2:0 4px 16px rgba(0,0,0,.35);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;padding-bottom:40px}
+.header{position:sticky;top:0;z-index:90;background:var(--card);border-bottom:1px solid var(--border);padding:12px 16px;box-shadow:var(--shadow2);display:flex;align-items:center;gap:10px}
+.back-btn{width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border2);background:var(--soft);cursor:pointer;font-size:18px;color:var(--text);display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.back-btn:active{transform:scale(.93)}
+.header-title{font-size:16px;font-weight:800;flex:1}
+.theme-btn{width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border2);background:var(--soft);cursor:pointer;font-size:16px;color:var(--text);display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--light);display:inline-block;transition:background .3s;margin-left:4px}
+.sync-dot.live{background:var(--green);box-shadow:0 0 0 2px rgba(39,174,96,.25)}
+/* AVERAGES CARD */
+.avg-wrap{padding:16px 16px 0;max-width:720px;margin:0 auto}
+.avg-card{background:linear-gradient(135deg,var(--him),#0f4a38);border-radius:var(--r);padding:18px;color:#fff;box-shadow:var(--shadow2)}
+.avg-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;opacity:.7;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.avg-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.avg-person{background:rgba(255,255,255,.1);border-radius:10px;padding:12px}
+.avg-person-label{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;opacity:.7;margin-bottom:6px}
+.avg-score-big{font-size:32px;font-weight:800;line-height:1;margin-bottom:4px;font-variant-numeric:tabular-nums}
+.avg-streak{font-size:11px;opacity:.7;display:flex;align-items:center;gap:4px}
+.avg-streak-dots{display:flex;gap:3px;margin-top:6px}
+.streak-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25)}
+.streak-dot.hit{background:rgba(255,255,255,.85)}
+.avg-macros{margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.15);display:grid;grid-template-columns:repeat(4,1fr);gap:8px;font-size:10.5px}
+.avg-macro-item{text-align:center}
+.avg-macro-val{font-weight:700;font-size:13px;font-variant-numeric:tabular-nums}
+.avg-macro-lbl{opacity:.6;margin-top:2px}
+/* LOADING */
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:12px}
+.loading-spin{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--him);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:13px;color:var(--muted)}
+/* DAY LIST */
+.days-wrap{padding:12px 16px 0;max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:8px}
+.day-card{background:var(--card);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
+.day-header{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+.day-header:active{background:var(--soft)}
+.day-label-col{flex:1}
+.day-label{font-size:14px;font-weight:700}
+.day-sub{font-size:10.5px;color:var(--muted);margin-top:1px;font-variant-numeric:tabular-nums}
+.score-chips{display:flex;gap:6px;flex-shrink:0}
+.score-chip{padding:5px 10px;border-radius:100px;font-size:12px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sc-him{background:var(--him-light);color:var(--him);border:1px solid var(--him)}
+.sc-her{background:var(--her-light);color:var(--her);border:1px solid var(--her)}
+.sc-empty{background:var(--soft);color:var(--light);border:1px solid var(--border)}
+.sc-red{background:rgba(231,76,60,.08);color:var(--red);border:1px solid rgba(231,76,60,.25)}
+.sc-yellow{background:rgba(230,126,34,.08);color:var(--yellow);border:1px solid rgba(230,126,34,.25)}
+.day-chevron{font-size:14px;color:var(--muted);transition:transform .25s;flex-shrink:0}
+.day-card.open .day-chevron{transform:rotate(180deg)}
+.day-details{max-height:0;overflow:hidden;transition:max-height .3s ease}
+.day-card.open .day-details{max-height:600px}
+.detail-inner{padding:0 14px 14px;border-top:1px solid var(--border)}
+.detail-section{margin-top:12px}
+.detail-section-title{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.detail-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.detail-person-card{background:var(--soft);border-radius:10px;padding:10px 12px;border:1.5px solid var(--border)}
+.detail-person-card.him{border-color:rgba(26,107,82,.3)}
+.detail-person-card.her{border-color:rgba(139,58,107,.3)}
+.dp-name{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.detail-person-card.him .dp-name{color:var(--him)}
+.detail-person-card.her .dp-name{color:var(--her)}
+.dp-score{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;margin-bottom:8px}
+.detail-person-card.him .dp-score{color:var(--him)}
+.detail-person-card.her .dp-score{color:var(--her)}
+.dp-macros{display:flex;flex-direction:column;gap:3px}
+.dp-macro{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+.dp-macro strong{color:var(--text);font-weight:600;font-variant-numeric:tabular-nums}
+.dp-empty{font-size:12px;color:var(--light);font-style:italic;padding:8px 0}
+.go-day-btn{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:10px;padding:8px;border-radius:9px;background:var(--soft);border:1.5px solid var(--border2);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;text-decoration:none;-webkit-tap-highlight-color:transparent;transition:all .15s}
+.go-day-btn:active{background:var(--him-soft);border-color:var(--him);color:var(--him)}
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:48px 24px}
+.empty-icon{font-size:40px;margin-bottom:12px}
+.empty-title{font-size:16px;font-weight:700;margin-bottom:6px}
+.empty-msg{font-size:13px;color:var(--muted);line-height:1.6}
+/* NO FIREBASE */
+.no-firebase{background:rgba(230,126,34,.08);border:1px solid rgba(230,126,34,.2);border-radius:10px;padding:14px;margin:16px;font-size:13px;color:var(--yellow);text-align:center;line-height:1.6;max-width:720px;margin:16px auto}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a href="index.html" class="back-btn">←</a>
+  <div class="header-title">📅 Weekly Summary <span class="sync-dot" id="syncDot"></span></div>
+  <button class="theme-btn" id="themeBtn">☀️</button>
+</div>
+
+<div id="appContent">
+  <div class="loading" id="loadingEl">
+    <div class="loading-spin"></div>
+    <div class="loading-text">Loading weekly data…</div>
+  </div>
+</div>
+
+<script>
+const FIREBASE_CONFIG={apiKey:"AIzaSyDmZStC-d8Vo92XfPnXA-nOPnzDTFGMdvI",authDomain:"whateverfood-3863a.firebaseapp.com",databaseURL:"https://whateverfood-3863a-default-rtdb.firebaseio.com",projectId:"whateverfood-3863a",storageBucket:"whateverfood-3863a.firebasestorage.app",messagingSenderId:"164590977645",appId:"1:164590977645:web:4c136c3aa53ed938d5b564"};
+const SYNC_KEY='family-food-tracker-2026';
+const LST='dft_theme';
+let theme='light';
+
+// Theme
+try{theme=localStorage.getItem(LST)||'light';}catch(e){}
+document.documentElement.setAttribute('data-theme',theme);
+document.getElementById('themeBtn').textContent=theme==='light'?'☀️':'🌙';
+document.getElementById('themeBtn').addEventListener('click',()=>{theme=theme==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',theme);document.getElementById('themeBtn').textContent=theme==='light'?'☀️':'🌙';try{localStorage.setItem(LST,theme);}catch(e){}});
+
+// Generate last 7 dates
+function getLast7Dates(){
+  const dates=[];
+  for(let i=0;i<7;i++){const d=new Date();d.setDate(d.getDate()-i);dates.push(d.toISOString().split('T')[0]);}
+  return dates; // newest first
+}
+
+function formatDayLabel(dateStr){
+  const d=new Date(dateStr+'T12:00:00');
+  const today=new Date().toISOString().split('T')[0];
+  const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
+  const yd=yesterday.toISOString().split('T')[0];
+  if(dateStr===today)return{main:'Today',sub:d.toLocaleDateString('en-CA',{weekday:'long',month:'long',day:'numeric'})};
+  if(dateStr===yd)return{main:'Yesterday',sub:d.toLocaleDateString('en-CA',{weekday:'long',month:'long',day:'numeric'})};
+  return{main:d.toLocaleDateString('en-CA',{weekday:'long'}),sub:d.toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'})};
+}
+
+function scoreColor(s){
+  if(s===null||s===undefined)return'sc-empty';
+  if(s>=5)return'sc-him'; // green = him colour
+  if(s>=3)return'sc-yellow';
+  return'sc-red';
+}
+
+function sStr(s){if(s===null||s===undefined)return'—';return(s>=0?'+':'')+s.toFixed(2);}
+
+function scoreEmoji(s){if(s===null)return'';if(s>=5)return'✓';if(s>=3)return'~';return'✗';}
+
+function renderAvgCard(days, data){
+  let himScores=[],herScores=[];
+  let himCal=0,himP=0,himC=0,himF=0;
+  let herCal=0,herP=0,herC=0,herF=0;
+  let himStreak=0,herStreak=0;
+
+  days.forEach((d,idx)=>{
+    const h=data[d]?.him?.summary;
+    const r=data[d]?.her?.summary;
+    if(h?.score!==undefined){himScores.push(h.score);himCal+=h.cal||0;himP+=h.protein||0;himC+=h.carbs||0;himF+=h.fat||0;if(h.score>=5&&idx===himStreak)himStreak++;}
+    if(r?.score!==undefined){herScores.push(r.score);herCal+=r.cal||0;herP+=r.protein||0;herC+=r.carbs||0;herF+=r.fat||0;if(r.score>=5&&idx===herStreak)herStreak++;}
+  });
+
+  const himAvg=himScores.length?himScores.reduce((a,b)=>a+b,0)/himScores.length:null;
+  const herAvg=herScores.length?herScores.reduce((a,b)=>a+b,0)/herScores.length:null;
+  const n=Math.max(himScores.length,1);
+
+  const dot=(hit)=>`<div class="streak-dot ${hit?'hit':''}"></div>`;
+  const himDots=days.slice(0,7).reverse().map(d=>{const s=data[d]?.him?.summary?.score;return dot(s!==undefined&&s>=5);}).join('');
+  const herDots=days.slice(0,7).reverse().map(d=>{const s=data[d]?.her?.summary?.score;return dot(s!==undefined&&s>=5);}).join('');
+
+  return`<div class="avg-wrap">
+    <div class="avg-card">
+      <div class="avg-title">📊 7-Day Average · ${days[6]} → ${days[0]}</div>
+      <div class="avg-grid">
+        <div class="avg-person">
+          <div class="avg-person-label">👨 Him</div>
+          <div class="avg-score-big">${himAvg!==null?sStr(himAvg):'—'}</div>
+          <div class="avg-streak">🔥 ${himStreak} day streak</div>
+          <div class="avg-streak-dots">${himDots}</div>
+        </div>
+        <div class="avg-person">
+          <div class="avg-person-label">👩 Her</div>
+          <div class="avg-score-big">${herAvg!==null?sStr(herAvg):'—'}</div>
+          <div class="avg-streak">🔥 ${herStreak} day streak</div>
+          <div class="avg-streak-dots">${herDots}</div>
+        </div>
+      </div>
+      <div class="avg-macros">
+        <div class="avg-macro-item"><div class="avg-macro-val">${himScores.length?Math.round(himCal/himScores.length):'—'}</div><div class="avg-macro-lbl">cal/day</div></div>
+        <div class="avg-macro-item"><div class="avg-macro-val">${himScores.length?Math.round(himP/himScores.length)+'g':'—'}</div><div class="avg-macro-lbl">protein</div></div>
+        <div class="avg-macro-item"><div class="avg-macro-val">${herScores.length?Math.round(herCal/herScores.length):'—'}</div><div class="avg-macro-lbl">her cal</div></div>
+        <div class="avg-macro-item"><div class="avg-macro-val">${herScores.length?Math.round(herP/herScores.length)+'g':'—'}</div><div class="avg-macro-lbl">her prot</div></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderDayCard(dateStr, dayData, index){
+  const lbl=formatDayLabel(dateStr);
+  const him=dayData?.him?.summary;
+  const her=dayData?.her?.summary;
+  const himScore=him?.score!==undefined?him.score:null;
+  const herScore=her?.score!==undefined?her.score:null;
+  const hasData=himScore!==null||herScore!==null;
+  const id=`day-${index}`;
+
+  const himChip=`<span class="score-chip ${scoreColor(himScore)}">👨 ${sStr(himScore)}</span>`;
+  const herChip=`<span class="score-chip ${scoreColor(herScore)}"  style="${herScore>=5?'background:var(--her-light);border-color:var(--her);color:var(--her)':''}">👩 ${sStr(herScore)}</span>`;
+
+  const renderPersonDetail=(p,summary,cls,name)=>{
+    if(!summary||summary.score===undefined)return`<div class="detail-person-card ${cls}"><div class="dp-name">${name}</div><div class="dp-empty">No data logged</div></div>`;
+    return`<div class="detail-person-card ${cls}">
+      <div class="dp-name">${name}</div>
+      <div class="dp-score">${sStr(summary.score)}</div>
+      <div class="dp-macros">
+        <div class="dp-macro"><span>Net cal</span><strong>${summary.cal||'—'} kcal</strong></div>
+        <div class="dp-macro"><span>Protein</span><strong>${summary.protein||'—'}g</strong></div>
+        <div class="dp-macro"><span>Carbs</span><strong>${summary.carbs||'—'}g</strong></div>
+        <div class="dp-macro"><span>Fat</span><strong>${summary.fat||'—'}g</strong></div>
+        ${summary.fiber!==undefined?`<div class="dp-macro"><span>Fiber</span><strong>${summary.fiber}g</strong></div>`:''}
+      </div>
+    </div>`;
+  };
+
+  return`<div class="day-card" id="${id}">
+    <div class="day-header" onclick="toggleDay('${id}')">
+      <div class="day-label-col">
+        <div class="day-label">${lbl.main}</div>
+        <div class="day-sub">${lbl.sub}</div>
+      </div>
+      <div class="score-chips">${himChip}${herChip}</div>
+      <div class="day-chevron">▾</div>
+    </div>
+    <div class="day-details">
+      <div class="detail-inner">
+        <div class="detail-section">
+          <div class="detail-section-title">Scores & Macros</div>
+          <div class="detail-row">
+            ${renderPersonDetail('him',him,'him','👨 Him')}
+            ${renderPersonDetail('her',her,'her','👩 Her')}
+          </div>
+        </div>
+        <a href="index.html?date=${dateStr}" class="go-day-btn" onclick="goToDay(event,'${dateStr}')">
+          📝 Open this day in tracker →
+        </a>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleDay(id){
+  const card=document.getElementById(id);
+  card.classList.toggle('open');
+}
+
+function goToDay(e,dateStr){
+  e.preventDefault();
+  // Store target date in sessionStorage then navigate
+  try{sessionStorage.setItem('gotoDate',dateStr);}catch(err){}
+  window.location.href='index.html';
+}
+
+function renderAll(dates, data){
+  const content=document.getElementById('appContent');
+  const hasSomeData=dates.some(d=>data[d]?.him?.summary||data[d]?.her?.summary);
+
+  let html=renderAvgCard(dates,data);
+  html+=`<div class="days-wrap">`;
+
+  if(!hasSomeData){
+    html+=`<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-title">No weekly data yet</div><div class="empty-msg">Start logging food in the tracker. Scores are saved automatically each session.</div></div>`;
+  } else {
+    dates.forEach((d,i)=>{ html+=renderDayCard(d,data[d]||{},i); });
+  }
+  html+=`</div>`;
+  content.innerHTML=html;
+}
+
+// Handle navigation from goToDay
+(function checkGoToDate(){
+  try{
+    const d=sessionStorage.getItem('gotoDate');
+    if(d){sessionStorage.removeItem('gotoDate');}
+  }catch(e){}
+})();
+
+// Firebase load
+function loadWeeklyData(){
+  const dates=getLast7Dates();
+
+  if(FIREBASE_CONFIG.apiKey==='YOUR_API_KEY'||!FIREBASE_CONFIG.apiKey){
+    document.getElementById('appContent').innerHTML=`<div class="no-firebase">🔥 Firebase not configured.<br>Connect Firebase in index.html to see weekly history.</div>`;
+    return;
+  }
+
+  const load=(src,cb)=>{const s=document.createElement('script');s.src=src;s.onload=cb;s.onerror=()=>{document.getElementById('appContent').innerHTML=`<div class="no-firebase">⚠️ Could not load Firebase scripts. Check your internet connection.</div>`;};document.head.appendChild(s);};
+
+  load('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js',()=>{
+    load('https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js',()=>{
+      try{
+        if(!firebase.apps.length)firebase.initializeApp(FIREBASE_CONFIG);
+        const db=firebase.database();
+        document.getElementById('syncDot').classList.add('live');
+
+        // Read all 7 days in parallel
+        const promises=dates.map(d=>
+          db.ref(`trackers/${SYNC_KEY}/dt/${d}`).once('value').then(snap=>({date:d,data:snap.val()||{}}))
+        );
+
+        Promise.all(promises).then(results=>{
+          const data={};
+          results.forEach(r=>data[r.date]=r.data);
+          renderAll(dates,data);
+
+          // Also set up live listener for today so current day updates
+          db.ref(`trackers/${SYNC_KEY}/dt/${dates[0]}`).on('value',snap=>{
+            data[dates[0]]=snap.val()||{};
+            renderAll(dates,data);
+          });
+        }).catch(err=>{
+          document.getElementById('appContent').innerHTML=`<div class="no-firebase">⚠️ Error loading data: ${err.message}</div>`;
+        });
+      }catch(e){
+        document.getElementById('appContent').innerHTML=`<div class="no-firebase">⚠️ Firebase error: ${e.message}</div>`;
+      }
+    });
+  });
+}
+
+loadWeeklyData();
+
+// Handle date navigation from index.html via sessionStorage
+window.addEventListener('pageshow',()=>{
+  try{
+    const d=sessionStorage.getItem('gotoDate');
+    if(d){
+      // This is handled by index.html reading it
+    }
+  }catch(e){}
+});
+</script>
+</body>
+</html>
