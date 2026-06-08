@@ -251,7 +251,41 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
 .fnav-btn.fn-her:active{background:var(--her-soft)}
 .fnav-icon{font-size:19px;line-height:1}
 .fnav-lbl{font-size:10px;font-weight:600;color:var(--muted);white-space:nowrap;letter-spacing:-.1px}
-</style>
+.add-dish-btn{padding:7px 12px;border-radius:10px;border:1.5px solid var(--him);background:var(--him-soft);font-size:12px;font-weight:700;color:var(--him);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.add-dish-btn.her{border-color:var(--her);background:var(--her-soft);color:var(--her)}
+.add-dish-btn:active{transform:scale(.95)}
+.opt-star{background:none;border:none;font-size:15px;cursor:pointer;padding:0 2px;line-height:1;-webkit-tap-highlight-color:transparent;opacity:.32;flex-shrink:0;filter:grayscale(1)}
+.opt-star.on{opacity:1;filter:none}
+.opt-star:active{transform:scale(1.25)}
+.fav-badge{display:inline-block;font-size:9px;font-weight:800;color:var(--yellow);background:rgba(230,126,34,.12);padding:2px 6px;border-radius:100px;text-transform:uppercase;letter-spacing:.3px}
+.userdish-badge{display:inline-block;font-size:9px;font-weight:800;color:var(--muted);background:var(--border);padding:2px 6px;border-radius:100px;text-transform:uppercase;letter-spacing:.3px}
+.slot.fav-slot{border-color:rgba(230,126,34,.35);background:linear-gradient(180deg,rgba(230,126,34,.05),transparent 60%)}
+.dish-del{margin-top:10px;width:100%;padding:8px;border-radius:9px;border:1.5px solid rgba(231,76,60,.3);background:rgba(231,76,60,.06);color:var(--red);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+/* dish modal form */
+.form-box{max-width:380px;text-align:left}
+.form-row{margin-bottom:12px}
+.form-row label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
+.form-input,.form-select{width:100%;border:1.5px solid var(--border2);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;background:var(--soft);color:var(--text);outline:none;-webkit-appearance:none}
+.form-input:focus,.form-select:focus{border-color:var(--him);box-shadow:0 0 0 3px var(--him-soft)}
+.form-macros{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.form-macros .fm-cell label{font-size:10px}
+.form-macros .form-input{padding:8px;text-align:center;font-variant-numeric:tabular-nums}
+.form-hint{font-size:11px;color:var(--muted);line-height:1.5;margin-top:-4px;margin-bottom:10px}
+.form-err{font-size:12px;color:var(--red);font-weight:600;min-height:16px;margin-bottom:8px}
+/* reminders modal */
+.rem-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)}
+.rem-row:last-of-type{border-bottom:none}
+.rem-info{flex:1;min-width:0}
+.rem-name{font-size:13.5px;font-weight:600}
+.rem-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.rem-time{border:1.5px solid var(--border2);border-radius:9px;padding:7px 9px;font-size:13px;font-family:inherit;background:var(--soft);color:var(--text);outline:none}
+.rem-toggle{position:relative;width:44px;height:26px;border-radius:100px;background:var(--border2);border:none;cursor:pointer;flex-shrink:0;transition:background .2s;-webkit-tap-highlight-color:transparent}
+.rem-toggle.on{background:var(--him)}
+.rem-toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
+.rem-toggle.on::after{transform:translateX(18px)}
+.rem-perm-note{font-size:11.5px;color:var(--muted);line-height:1.6;background:var(--soft);border-radius:10px;padding:10px 12px;margin-top:6px}
+.rem-master{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0 12px;margin-bottom:8px;border-bottom:1.5px solid var(--border)}
+
 </head>
 <body>
 
@@ -262,12 +296,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
   <div class="hdr-top">
     <div class="app-title">🌿 Daily Food Tracker <span class="sync-dot" id="syncDot"></span></div>
     <div class="hdr-right">
-      <select class="person-sel" id="personSel">
-        <option value="">👥 Both</option>
-        <option value="him">👨 His view</option>
-        <option value="her">👩 Her view</option>
-      </select>
       <button class="icon-btn is-locked" id="lockBtn" title="Unlock editing">🔒</button>
+      <button class="icon-btn" id="remindBtn" title="Reminders">⏰</button>
       <button class="icon-btn" id="infoBtn" title="Today's report & tomorrow's plan">📊</button>
       <button class="icon-btn" id="resetAllBtn" title="Reset both trackers">↺</button>
       <button class="icon-btn" id="themeBtn">☀️</button>
@@ -316,7 +346,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
 </div></div>
 
 <div id="himFoodSection" class="person-section">
-  <div class="section-head"><div class="section-title" style="color:var(--him)">👨 His Food Log</div></div>
+  <div class="section-head"><div class="section-title" style="color:var(--him)">👨 His Food Log</div><button class="add-dish-btn" onclick="openDishModal('him')">➕ Add dish</button></div>
   <div class="legend">
     <div class="leg-item"><span class="leg-dot" style="background:var(--green)"></span>Helps +5</div>
     <div class="leg-item"><span class="leg-dot" style="background:var(--yellow)"></span>Neutral</div>
@@ -331,6 +361,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
   <div class="divider-line" style="background:var(--her)"></div>
 </div>
 <div id="herFoodSection" class="person-section her-section">
+  <div class="section-head"><div class="section-title" style="color:var(--her)">👩 Her Food Log</div><button class="add-dish-btn her" onclick="openDishModal('her')">➕ Add dish</button></div>
   <div id="herSlots"></div><div id="herExtras"></div>
 </div>
 <div class="cal-section-head"><div class="cal-section-line"></div><span class="cal-section-lbl">📈 Calorie Trackers</span><div class="cal-section-line"></div></div>
@@ -394,7 +425,43 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
   </div>
 </div></div>
 
-<div class="footer-outer"><div class="footer-nav" id="footerNav">
+<!-- CUSTOM DISH MODAL -->
+<div class="modal" id="dishModal"><div class="modal-box form-box">
+  <div class="modal-title" id="dishModalTitle">➕ Add custom dish</div>
+  <div class="form-hint">Saved to your menu and synced across devices. It shows up in the slot you pick, with its own counter.</div>
+  <div class="form-err" id="dishErr"></div>
+  <div class="form-row"><label>Dish name</label><input type="text" class="form-input" id="dishName" placeholder="e.g. 🍞 Bread pizza (heavy cheese)" maxlength="60"></div>
+  <div class="form-row"><label>Meal slot</label><select class="form-select" id="dishSlot"></select></div>
+  <div class="form-row"><label>Score (−3 to +1.5)</label><input type="number" class="form-input" id="dishScore" placeholder="e.g. 0.5" step="0.25" min="-3" max="2"></div>
+  <div class="form-row"><label>Macros per serving</label>
+    <div class="form-macros">
+      <div class="fm-cell"><label>Cal</label><input type="number" class="form-input" id="dishCal" placeholder="0" min="0"></div>
+      <div class="fm-cell"><label>Protein</label><input type="number" class="form-input" id="dishP" placeholder="0" min="0"></div>
+      <div class="fm-cell"><label>Carbs</label><input type="number" class="form-input" id="dishC" placeholder="0" min="0"></div>
+      <div class="fm-cell"><label>Fat</label><input type="number" class="form-input" id="dishF" placeholder="0" min="0"></div>
+      <div class="fm-cell"><label>Fiber</label><input type="number" class="form-input" id="dishFib" placeholder="0" min="0"></div>
+    </div>
+  </div>
+  <div class="modal-btns">
+    <button class="btn btn-cancel" onclick="document.getElementById('dishModal').classList.remove('show')">Cancel</button>
+    <button class="btn" id="dishSaveBtn" style="background:var(--him);color:#fff">Save dish</button>
+  </div>
+</div></div>
+
+<!-- REMINDERS MODAL -->
+<div class="modal" id="remindModal"><div class="modal-box form-box">
+  <div class="modal-title">⏰ Reminders</div>
+  <div class="rem-master">
+    <div class="rem-info"><div class="rem-name">Enable reminders</div><div class="rem-sub">Allow notifications on this device</div></div>
+    <button class="rem-toggle" id="remMaster"></button>
+  </div>
+  <div id="remList"></div>
+  <div class="rem-perm-note" id="remNote">Reminders fire while the app is open or recently backgrounded. On iPhone, add the app to your Home Screen first (Share → Add to Home Screen) for the most reliable delivery.</div>
+  <div class="modal-btns" style="margin-top:14px">
+    <button class="btn btn-cancel" onclick="document.getElementById('remindModal').classList.remove('show')">Close</button>
+    <button class="btn" id="remTestBtn" style="background:var(--him);color:#fff">🔔 Test</button>
+  </div>
+</div></div>
   <div class="footer-handle" id="footerHandle"><div class="footer-pill"></div></div>
   <div class="footer-items">
     <button class="fnav-btn fn-him" onclick="navScroll('himFoodSection')"><span class="fnav-icon">🥗</span><span class="fnav-lbl">His Food</span></button>
@@ -494,6 +561,7 @@ function initFirebase(){
         document.getElementById('syncDot').classList.add('live');
         firebaseReady=true;
         startListeners();
+        startPrefListeners();
       }catch(e){document.getElementById('syncDot').classList.remove('live');firebaseReady=false;loadLocal();}
     });
   });
@@ -529,6 +597,15 @@ const HER={id:'her',burnCap:400,targets:{cal:2100,protein:200,carbs:175,fat:90,f
 const CONFIGS={him:HIM,her:HER};
 function defaultState(cfg){const e={},w={};cfg.extras.forEach(x=>e[x.id]=0);cfg.workout.forEach(x=>w[x.id]=0);return{counts:{},extras:e,inds:{},workout:w,customs:{}};}
 let allState={him:defaultState(HIM),her:defaultState(HER)};
+let customDishes={him:{},her:{}};
+let favorites={him:{},her:{}};
+function slotOpts(p,sk){
+  const base=CONFIGS[p].slots[sk]?.opts||[];
+  const cd=customDishes[p]||{};
+  const extra=Object.keys(cd).filter(id=>cd[id]&&cd[id].slot===sk).map(id=>{const d=cd[id];return{id,label:d.label,sub:d.sub||'',score:Number(d.score)||0,m:d.m||[0,0,0,0,0],userDish:true};});
+  return base.concat(extra);
+}
+function isFav(p,key){return !!(favorites[p]&&favorites[p][key]);}
 let expandedIds=new Set();
 let theme='light',currentView='',resetTarget=null,footerCollapsed=false;
 
@@ -541,21 +618,21 @@ function getInd(p,id){return Math.max(0,allState[p].inds[id]||0);}
 function getWkt(p,id){return Math.max(0,allState[p].workout[id]||0);}
 function getEffectiveMacros(p,slotKey,opt){if(!opt.ingr)return opt.m||[0,0,0,0,0];const dishKey=`${slotKey}__${opt.id}`,custom=allState[p].customs?.[dishKey];if(!custom||Object.keys(custom).length===0)return opt.m||[0,0,0,0,0];const m=[0,0,0,0,0];opt.ingr.forEach((ingr,i)=>{const mult=custom[i]!==undefined?Number(custom[i]):1;if(mult<=0)return;for(let j=0;j<5;j++)m[j]+=(ingr.m[j]||0)*mult;});return m;}
 function isCustomized(p,slotKey,optId){const c=allState[p].customs?.[`${slotKey}__${optId}`];return c&&Object.keys(c).length>0;}
-function calcMacros(p){const m={cal:0,protein:0,carbs:0,fat:0,fiber:0},cfg=CONFIGS[p];for(const sk in cfg.slots)cfg.slots[sk].opts.forEach(o=>{const cnt=getCount(p,`${sk}__${o.id}`);if(cnt<=0)return;const mac=getEffectiveMacros(p,sk,o);m.cal+=mac[0]*cnt;m.protein+=mac[1]*cnt;m.carbs+=mac[2]*cnt;m.fat+=mac[3]*cnt;m.fiber+=(mac[4]||0)*cnt;});cfg.indulgences.opts.forEach(o=>{const cnt=getInd(p,o.id);if(cnt<=0||!o.m)return;m.cal+=o.m[0]*cnt;m.protein+=o.m[1]*cnt;m.carbs+=o.m[2]*cnt;m.fat+=o.m[3]*cnt;m.fiber+=(o.m[4]||0)*cnt;});cfg.extras.forEach(e=>{const cnt=getExtra(p,e.id);if(cnt<=0||!e.m)return;m.cal+=e.m[0]*cnt;m.protein+=e.m[1]*cnt;m.carbs+=e.m[2]*cnt;m.fat+=e.m[3]*cnt;m.fiber+=(e.m[4]||0)*cnt;});return m;}
+function calcMacros(p){const m={cal:0,protein:0,carbs:0,fat:0,fiber:0},cfg=CONFIGS[p];for(const sk in cfg.slots)slotOpts(p,sk).forEach(o=>{const cnt=getCount(p,`${sk}__${o.id}`);if(cnt<=0)return;const mac=getEffectiveMacros(p,sk,o);m.cal+=mac[0]*cnt;m.protein+=mac[1]*cnt;m.carbs+=mac[2]*cnt;m.fat+=mac[3]*cnt;m.fiber+=(mac[4]||0)*cnt;});cfg.indulgences.opts.forEach(o=>{const cnt=getInd(p,o.id);if(cnt<=0||!o.m)return;m.cal+=o.m[0]*cnt;m.protein+=o.m[1]*cnt;m.carbs+=o.m[2]*cnt;m.fat+=o.m[3]*cnt;m.fiber+=(o.m[4]||0)*cnt;});cfg.extras.forEach(e=>{const cnt=getExtra(p,e.id);if(cnt<=0||!e.m)return;m.cal+=e.m[0]*cnt;m.protein+=e.m[1]*cnt;m.carbs+=e.m[2]*cnt;m.fat+=e.m[3]*cnt;m.fiber+=(e.m[4]||0)*cnt;});return m;}
 function getTotalBurn(p){return Math.min(CONFIGS[p].workout.reduce((t,w)=>t+getWkt(p,w.id)*w.burn,0),CONFIGS[p].burnCap);}
 function calPenalty(n,t,g){const x=n-(t+g);return x<=0?0:-Math.min(3,x/200);}
 function carbPenalty(c,t,g){const x=c-(t+g);return x<=0?0:-Math.min(2.5,x/15);}
-function hasTakeout(p){const cfg=CONFIGS[p];for(const sk in cfg.slots)for(const o of cfg.slots[sk].opts)if(o.takeout&&getCount(p,`${sk}__${o.id}`)>0)return true;return Object.values(allState[p].inds).some(v=>v>0);}
+function hasTakeout(p){const cfg=CONFIGS[p];for(const sk in cfg.slots)for(const o of slotOpts(p,sk))if(o.takeout&&getCount(p,`${sk}__${o.id}`)>0)return true;return Object.values(allState[p].inds).some(v=>v>0);}
 function masterActive(p){if(!hasTakeout(p))return false;const c=allState[p].counts;return((c['coffee1__black1']||0)+(c['coffee1__black1_h']||0))>0&&((c['coffee2__black2']||0)+(c['coffee2__black2_h']||0))>0;}
-function calcScore(p){const cfg=CONFIGS[p];let s=0;for(const sk in cfg.slots)cfg.slots[sk].opts.forEach(o=>{const c=getCount(p,`${sk}__${o.id}`);if(c>0)s+=c*o.score;});cfg.indulgences.opts.forEach(o=>{const c=getInd(p,o.id);if(c>0)s+=c*o.score;});cfg.extras.forEach(e=>{const c=getExtra(p,e.id);if(c>0)s+=c*e.score;});const mac=calcMacros(p),burn=getTotalBurn(p),netCal=mac.cal-burn;s+=calPenalty(netCal,cfg.targets.cal,cfg.grace.cal);s+=carbPenalty(mac.carbs,cfg.targets.carbs,cfg.grace.carb);if(masterActive(p))s+=0.5;return Math.round(s*100)/100;}
+function calcScore(p){const cfg=CONFIGS[p];let s=0;for(const sk in cfg.slots)slotOpts(p,sk).forEach(o=>{const c=getCount(p,`${sk}__${o.id}`);if(c>0)s+=c*o.score;});cfg.indulgences.opts.forEach(o=>{const c=getInd(p,o.id);if(c>0)s+=c*o.score;});cfg.extras.forEach(e=>{const c=getExtra(p,e.id);if(c>0)s+=c*e.score;});const mac=calcMacros(p),burn=getTotalBurn(p),netCal=mac.cal-burn;s+=calPenalty(netCal,cfg.targets.cal,cfg.grace.cal);s+=carbPenalty(mac.carbs,cfg.targets.carbs,cfg.grace.carb);if(masterActive(p))s+=0.5;return Math.round(s*100)/100;}
 function getLight(p,optScore,optM){const cfg=CONFIGS[p],mac=calcMacros(p),burn=getTotalBurn(p),om=optM||[0,0,0,0],netCur=mac.cal-burn,netNew=mac.cal+om[0]-burn;const calD=calPenalty(netNew,cfg.targets.cal,cfg.grace.cal)-calPenalty(netCur,cfg.targets.cal,cfg.grace.cal),carbD=carbPenalty(mac.carbs+om[2],cfg.targets.carbs,cfg.grace.carb)-carbPenalty(mac.carbs,cfg.targets.carbs,cfg.grace.carb);const net=optScore+calD+carbD;return net>=0.5?'g':net>=0?'y':'r';}
 
 // ═══ RENDER ═══
 function sStr(s){return(s>=0?'+':'')+s.toFixed(2);}
 function oStr(s){return(s>=0?'+':'')+s.toFixed(s%1===0?1:2);}
 function renderIngredients(p,slotKey,opt){const dishKey=`${slotKey}__${opt.id}`,custom=allState[p].customs?.[dishKey]||{},hasCustom=Object.keys(custom).length>0;return`<div class="ingr-list"><div class="ingr-head"><span class="ingr-title">🧪 Ingredients · tap −/+ to customize</span>${hasCustom?`<button class="ingr-reset" onclick="resetDishCustom('${p}','${dishKey}')">↺ Reset</button>`:''}</div>${opt.ingr.map((ingr,i)=>{const mult=custom[i]!==undefined?Number(custom[i]):1;const macStr=`${ingr.m[0]}c · ${ingr.m[1]}p · ${ingr.m[2]}ca · ${ingr.m[3]}f${ingr.m[4]?` · ${ingr.m[4]}fib`:''}`;return`<div class="ingr-row ${mult===0?'skipped':''}"><div class="ingr-info"><div class="ingr-name">${ingr.n}</div><div class="ingr-macros">${macStr}</div></div><div class="ingr-ctr"><button class="cnt-btn ingr-btn" data-p="${p}" data-dk="${dishKey}" data-i="${i}" data-d="-1">−</button><span class="cnt-val">${mult}</span><button class="cnt-btn ingr-btn" data-p="${p}" data-dk="${dishKey}" data-i="${i}" data-d="1">+</button></div></div>`;}).join('')}</div>`;}
-function renderOptRow(p,slotKey,opt,isInd=false){const key=isInd?opt.id:`${slotKey}__${opt.id}`,rowId=`${p}|${key}`;const cnt=isInd?getInd(p,opt.id):getCount(p,key),active=cnt>0;const customized=!isInd&&isCustomized(p,slotKey,opt.id);const effM=isInd?(opt.m||[0,0,0,0,0]):getEffectiveMacros(p,slotKey,opt);const light=active?'on':getLight(p,opt.score,effM);const cls=active?(isInd?'ind-active':'active'):(opt.isTofu&&p==='him'?'muted-opt':'');const exp=expandedIds.has(rowId)?'expanded':'';const dtype=isInd?'ind':'count';const[cal,prot,carbs,fat,fiber]=effM,showFiber=p==='her',hasIngr=!isInd&&opt.ingr;return`<div class="opt-row ${cls} ${exp}" data-row-id="${rowId}"><span class="opt-dot ${light}"></span><span class="opt-info" data-expand="${rowId}"><span class="opt-lbl">${opt.label} ${hasIngr?'<span class="customizable-badge">🧪 Custom</span>':''} ${customized?'<span class="custom-badge">Modified</span>':''}</span>${opt.sub?`<span class="opt-sub">${opt.sub}</span>`:''}</span><span class="opt-score">${oStr(opt.score)}</span><div class="opt-ctr"><button class="cnt-btn" data-p="${p}" data-t="${dtype}" data-k="${key}" data-oid="${opt.id}" data-d="-1">−</button><span class="cnt-val">${cnt}</span><button class="cnt-btn" data-p="${p}" data-t="${dtype}" data-k="${key}" data-oid="${opt.id}" data-d="1">+</button></div><div class="opt-details"><div class="detail-macros"><div class="dm-item"><div class="dm-val">${Math.round(cal)}</div><div class="dm-lbl">cal</div></div><div class="dm-item"><div class="dm-val">${Math.round(prot)}g</div><div class="dm-lbl">protein</div></div><div class="dm-item"><div class="dm-val">${Math.round(carbs)}g</div><div class="dm-lbl">carbs</div></div><div class="dm-item"><div class="dm-val">${Math.round(fat)}g</div><div class="dm-lbl">fat</div></div>${showFiber?`<div class="dm-item"><div class="dm-val">${Math.round(fiber||0)}g</div><div class="dm-lbl">fiber</div></div>`:''}</div><div class="detail-text">Score: <strong>${oStr(opt.score)}</strong> per serving · Tap again to collapse</div>${hasIngr?renderIngredients(p,slotKey,opt):''}</div></div>`;}
-function renderSlots(p){const cfg=CONFIGS[p];return Object.entries(cfg.slots).map(([sk,slot])=>`<div class="slot"><div class="slot-hdr"><div class="slot-time">${slot.time}</div><div class="slot-title">${slot.title}</div>${slot.subtitle?`<div class="slot-sub">${slot.subtitle}</div>`:''}</div><div class="opts">${slot.opts.map(o=>renderOptRow(p,sk,o)).join('')}</div></div>`).join('');}
+function renderOptRow(p,slotKey,opt,isInd=false){const key=isInd?opt.id:`${slotKey}__${opt.id}`,rowId=`${p}|${key}`;const cnt=isInd?getInd(p,opt.id):getCount(p,key),active=cnt>0;const customized=!isInd&&isCustomized(p,slotKey,opt.id);const effM=isInd?(opt.m||[0,0,0,0,0]):getEffectiveMacros(p,slotKey,opt);const light=active?'on':getLight(p,opt.score,effM);const cls=active?(isInd?'ind-active':'active'):(opt.isTofu&&p==='him'?'muted-opt':'');const exp=expandedIds.has(rowId)?'expanded':'';const dtype=isInd?'ind':'count';const[cal,prot,carbs,fat,fiber]=effM,showFiber=p==='her',hasIngr=!isInd&&opt.ingr;const fav=!isInd&&isFav(p,key);const star=isInd?'':`<button class="opt-star ${fav?'on':''}" data-fav="${rowId}" title="Pin to favorites">⭐</button>`;const badges=`${hasIngr?'<span class="customizable-badge">🧪 Custom</span>':''} ${opt.userDish?'<span class="userdish-badge">My dish</span>':''} ${customized?'<span class="custom-badge">Modified</span>':''}`;const delBtn=opt.userDish?`<button class="dish-del" data-deldish="${p}|${opt.id}">🗑 Delete this dish</button>`:'';return`<div class="opt-row ${cls} ${exp}" data-row-id="${rowId}"><span class="opt-dot ${light}"></span><span class="opt-info" data-expand="${rowId}"><span class="opt-lbl">${opt.label} ${badges}</span>${opt.sub?`<span class="opt-sub">${opt.sub}</span>`:''}</span><span class="opt-score">${oStr(opt.score)}</span>${star}<div class="opt-ctr"><button class="cnt-btn" data-p="${p}" data-t="${dtype}" data-k="${key}" data-oid="${opt.id}" data-d="-1">−</button><span class="cnt-val">${cnt}</span><button class="cnt-btn" data-p="${p}" data-t="${dtype}" data-k="${key}" data-oid="${opt.id}" data-d="1">+</button></div><div class="opt-details"><div class="detail-macros"><div class="dm-item"><div class="dm-val">${Math.round(cal)}</div><div class="dm-lbl">cal</div></div><div class="dm-item"><div class="dm-val">${Math.round(prot)}g</div><div class="dm-lbl">protein</div></div><div class="dm-item"><div class="dm-val">${Math.round(carbs)}g</div><div class="dm-lbl">carbs</div></div><div class="dm-item"><div class="dm-val">${Math.round(fat)}g</div><div class="dm-lbl">fat</div></div>${showFiber?`<div class="dm-item"><div class="dm-val">${Math.round(fiber||0)}g</div><div class="dm-lbl">fiber</div></div>`:''}</div><div class="detail-text">Score: <strong>${oStr(opt.score)}</strong> per serving · Tap again to collapse</div>${hasIngr?renderIngredients(p,slotKey,opt):''}${delBtn}</div></div>`;}
+function renderSlots(p){const cfg=CONFIGS[p];const favRows=[];for(const sk in cfg.slots)slotOpts(p,sk).forEach(o=>{if(isFav(p,`${sk}__${o.id}`))favRows.push(renderOptRow(p,sk,o));});const favHtml=favRows.length?`<div class="slot fav-slot"><div class="slot-hdr"><div class="slot-time">Pinned</div><div class="slot-title">⭐ Favorites</div></div><div class="opts">${favRows.join('')}</div></div>`:'';const slotsHtml=Object.entries(cfg.slots).map(([sk,slot])=>{const opts=slotOpts(p,sk).slice().sort((a,b)=>(isFav(p,`${sk}__${b.id}`)?1:0)-(isFav(p,`${sk}__${a.id}`)?1:0));return`<div class="slot"><div class="slot-hdr"><div class="slot-time">${slot.time}</div><div class="slot-title">${slot.title}</div>${slot.subtitle?`<div class="slot-sub">${slot.subtitle}</div>`:''}</div><div class="opts">${opts.map(o=>renderOptRow(p,sk,o)).join('')}</div></div>`;}).join('');return favHtml+slotsHtml;}
 function renderExtras(p){const cfg=CONFIGS[p];const rows=cfg.extras.map(e=>{const cnt=getExtra(p,e.id),cls=e.score>0?'pos':e.score<0?'neg':'';return`<div class="counter-row ${cls}"><div class="ctr-info"><div class="ctr-lbl">${e.label}</div><div class="ctr-sub">${e.sub}</div></div><div class="ctr-right"><button class="cnt-btn" data-p="${p}" data-t="extra" data-k="${e.id}" data-oid="${e.id}" data-d="-1">−</button><span class="cnt-val">${cnt}</span><button class="cnt-btn" data-p="${p}" data-t="extra" data-k="${e.id}" data-oid="${e.id}" data-d="1">+</button></div></div>`;}).join('');return`<div class="slot"><div class="slot-hdr"><div class="slot-time">ANYTIME</div><div class="slot-title">➕ Extras & Tracking</div></div>${rows}</div>`;}
 function renderWorkout(p){const cfg=CONFIGS[p],burn=getTotalBurn(p),capped=burn>=cfg.burnCap;const rows=cfg.workout.map(w=>{const cnt=getWkt(p,w.id);return`<div class="counter-row ${cnt>0?'pos':''}"><div class="ctr-info"><div class="ctr-lbl">${w.label}</div><div class="ctr-sub">~${w.burn} cal each</div></div><div class="ctr-right"><button class="cnt-btn" data-p="${p}" data-t="workout" data-k="${w.id}" data-oid="${w.id}" data-d="-1">−</button><span class="cnt-val">${cnt}</span><button class="cnt-btn" data-p="${p}" data-t="workout" data-k="${w.id}" data-oid="${w.id}" data-d="1">+</button></div></div>`;}).join('');return`<div class="slot"><div class="slot-hdr"><div class="slot-time">END OF DAY</div><div class="slot-title">🏋️ Workout</div></div>${rows}<div class="workout-total">🔥 Burned: <strong>${burn} cal</strong> ${capped?`· 🔒 Cap (${cfg.burnCap})`:`· Cap: ${cfg.burnCap}`}</div></div>`;}
 function renderInds(p){const cfg=CONFIGS[p];return`<div class="slot" style="border-color:rgba(231,76,60,.25)"><div class="slot-hdr"><div class="slot-time">IF HAPPENED</div><div class="slot-title" style="color:var(--red)">${cfg.indulgences.title}</div><div class="slot-sub">${cfg.indulgences.subtitle}</div></div><div class="opts">${cfg.indulgences.opts.map(o=>renderOptRow(p,'inds',o,true)).join('')}</div></div>`;}
@@ -565,7 +642,7 @@ function renderDiagnostic(p){const s=calcScore(p);const[icon,title,msg]=s>=6?['�
 function renderMasterBadge(p){const el=document.getElementById(`${p}Master`);if(!el||p==='her'){if(el)el.style.display='none';return;}const active=masterActive(p),has=hasTakeout(p);el.className='master-badge';if(has&&active){el.className='master-badge active';el.textContent='✓ Master Rule active — +0.5 bonus applied';}else if(has){el.className='master-badge hint';el.textContent='💡 Master Rule: swap lattes to black coffee for +0.5';}}
 function renderAnalytics(){['him','her'].forEach(p=>{const cfg=CONFIGS[p],m=calcMacros(p),burn=getTotalBurn(p),netCal=m.cal-burn,T=cfg.targets;[{key:'cal',val:netCal,target:T.cal,isCalorie:true},{key:'protein',val:m.protein,target:T.protein,lowerBetter:false},{key:'carbs',val:m.carbs,target:T.carbs,lowerBetter:true},{key:'fat',val:m.fat,target:T.fat,lowerBetter:true},{key:'fiber',val:m.fiber,target:T.fiber||35,lowerBetter:false}].forEach(({key,val,target,isCalorie,lowerBetter})=>{const el=document.getElementById(`an-${p}-${key}`);if(!el)return;const pct=Math.round((val/target)*100),fill=Math.min(100,pct);const c=isCalorie?(pct<70?'var(--yellow)':pct<=115?'var(--green)':'var(--red)'):lowerBetter===false?(pct<50?'var(--red)':pct<80?'var(--yellow)':'var(--green)'):(pct<=80?'var(--green)':pct<=110?'var(--yellow)':'var(--red)');el.innerHTML=`<div class="an-pct-row"><span class="an-pct" style="color:${c}">${pct}%</span><span class="an-sub">${Math.round(val)}/${target}</span></div><div class="an-bar-track"><div class="an-bar-fill" style="width:${fill}%;background:${c}"></div></div>`;});});}
 function updateHeaderScore(p){const s=calcScore(p),el=document.getElementById(`${p}Score`),bar=document.getElementById(`${p}Bar`),msg=document.getElementById(`${p}Msg`);if(!el)return;el.textContent=sStr(s);el.classList.add('updating');setTimeout(()=>el.classList.remove('updating'),300);const pct=Math.max(0,Math.min(100,(s/5)*100));bar.style.width=pct+'%';bar.style.background=s>=5?'var(--green)':s>=3.5?'var(--yellow)':'var(--red)';msg.textContent=s>=5?'✓ Target!':s>=0?`Need +${(5-s).toFixed(2)}`:'Off track';}
-function renderAll(){['him','her'].forEach(p=>{document.getElementById(`${p}Slots`).innerHTML=renderSlots(p);document.getElementById(`${p}Extras`).innerHTML=renderExtras(p);document.getElementById(`${p}Workout`).innerHTML=renderWorkout(p);document.getElementById(`${p}Inds`).innerHTML=renderInds(p);document.getElementById(`${p}Macros`).innerHTML=renderMacros(p);document.getElementById(`${p}Penalty`).textContent=renderPenalty(p);document.getElementById(`${p}Diag`).innerHTML=renderDiagnostic(p);renderMasterBadge(p);updateHeaderScore(p);});renderAnalytics();document.querySelectorAll('.cnt-btn').forEach(b=>b.addEventListener('click',handleCnt));attachExpansion();const q=document.getElementById('searchInput')?.value||'';if(q)applySearch(q);}
+function renderAll(){['him','her'].forEach(p=>{document.getElementById(`${p}Slots`).innerHTML=renderSlots(p);document.getElementById(`${p}Extras`).innerHTML=renderExtras(p);document.getElementById(`${p}Workout`).innerHTML=renderWorkout(p);document.getElementById(`${p}Inds`).innerHTML=renderInds(p);document.getElementById(`${p}Macros`).innerHTML=renderMacros(p);document.getElementById(`${p}Penalty`).textContent=renderPenalty(p);document.getElementById(`${p}Diag`).innerHTML=renderDiagnostic(p);renderMasterBadge(p);updateHeaderScore(p);});renderAnalytics();document.querySelectorAll('.cnt-btn').forEach(b=>b.addEventListener('click',handleCnt));attachExpansion();document.querySelectorAll('[data-fav]').forEach(b=>b.addEventListener('click',handleFav));document.querySelectorAll('[data-deldish]').forEach(b=>b.addEventListener('click',handleDelDish));const q=document.getElementById('searchInput')?.value||'';if(q)applySearch(q);}
 function attachExpansion(){document.querySelectorAll('[data-expand]').forEach(el=>{el.addEventListener('click',e=>{e.stopPropagation();const id=el.dataset.expand,row=el.closest('.opt-row');if(!row)return;if(expandedIds.has(id)){expandedIds.delete(id);row.classList.remove('expanded');}else{expandedIds.add(id);row.classList.add('expanded');}});});}
 function applySearch(query){const q=query.toLowerCase().trim();const clear=document.getElementById('searchClear');if(clear)clear.style.display=q?'flex':'none';document.querySelectorAll('.slot').forEach(slot=>{let has=false;slot.querySelectorAll('.opt-row,.counter-row').forEach(row=>{const match=!q||row.textContent.toLowerCase().includes(q);row.style.display=match?'':'none';if(match)has=true;});slot.style.display=(has||!q)?'':'none';});}
 
@@ -573,7 +650,37 @@ function applySearch(query){const q=query.toLowerCase().trim();const clear=docum
 function handleCnt(e){e.stopPropagation();const b=e.currentTarget;if(b.classList.contains('ingr-btn')){handleIngrCnt(e);return;}if(!isUnlocked){showLockPrompt();return;}const p=b.dataset.p,t=b.dataset.t,k=b.dataset.k,oid=b.dataset.oid,d=parseInt(b.dataset.d);if(t==='count'){const nv=Math.max(0,(allState[p].counts[k]||0)+d);if(nv===0)delete allState[p].counts[k];else allState[p].counts[k]=nv;writeDb(p,'counts',k,nv);}else if(t==='ind'){const nv=Math.max(0,(allState[p].inds[oid]||0)+d);allState[p].inds[oid]=nv;writeDb(p,'inds',oid,nv);}else if(t==='extra'){const nv=Math.max(0,(allState[p].extras[k]||0)+d);allState[p].extras[k]=nv;writeDb(p,'extras',k,nv);}else if(t==='workout'){const nv=Math.max(0,(allState[p].workout[k]||0)+d);allState[p].workout[k]=nv;writeDb(p,'workout',k,nv);}if(!firebaseReady)saveLocal();renderAll();}
 function handleIngrCnt(e){const b=e.currentTarget;if(!isUnlocked){showLockPrompt();return;}const p=b.dataset.p,dk=b.dataset.dk,i=parseInt(b.dataset.i),d=parseInt(b.dataset.d);if(!allState[p].customs)allState[p].customs={};if(!allState[p].customs[dk])allState[p].customs[dk]={};const cur=allState[p].customs[dk][i]!==undefined?Number(allState[p].customs[dk][i]):1;const nv=Math.max(0,cur+d);allState[p].customs[dk][i]=nv;if(firebaseReady&&db)db.ref(firebasePath(p,'customs',`${dk}/${i}`)).set(nv);else saveLocal();renderAll();}
 function resetDishCustom(p,dishKey){if(!isUnlocked){showLockPrompt();return;}if(!allState[p].customs?.[dishKey])return;delete allState[p].customs[dishKey];if(firebaseReady&&db)db.ref(firebasePath(p,'customs',dishKey)).remove();else saveLocal();renderAll();}
-document.getElementById('personSel').addEventListener('change',function(){currentView=this.value;updateVisibility(currentView);if(currentView){const t=currentView==='him'?'himFoodSection':'herFoodSection';setTimeout(()=>document.getElementById(t)?.scrollIntoView({behavior:'smooth',block:'start'}),50);}});
+
+// ═══ FAVORITES (preference — no lock needed; synced globally) ═══
+const LSFAV='dft_favorites',LSCD='dft_customdishes';
+function handleFav(e){e.stopPropagation();const b=e.currentTarget;const[p,key]=b.dataset.fav.split('|');if(!favorites[p])favorites[p]={};if(favorites[p][key]){delete favorites[p][key];if(firebaseReady&&db)db.ref(`trackers/${SYNC_KEY}/favorites/${p}/${key}`).remove();}else{favorites[p][key]=true;if(firebaseReady&&db)db.ref(`trackers/${SYNC_KEY}/favorites/${p}/${key}`).set(true);}try{localStorage.setItem(LSFAV,JSON.stringify(favorites));}catch(e){}renderAll();}
+
+// ═══ CUSTOM DISH BUILDER ═══
+let dishPerson='him';
+function openDishModal(p){if(!isUnlocked){showLockPrompt();return;}dishPerson=p;const cfg=CONFIGS[p];const sel=document.getElementById('dishSlot');sel.innerHTML=Object.entries(cfg.slots).filter(([sk])=>sk!=='kulcha').map(([sk,s])=>`<option value="${sk}">${s.title}</option>`).join('');document.getElementById('dishModalTitle').textContent=p==='him'?'➕ Add dish — 👨 Him':'➕ Add dish — 👩 Her';['dishName','dishScore','dishCal','dishP','dishC','dishF','dishFib'].forEach(id=>document.getElementById(id).value='');document.getElementById('dishErr').textContent='';const sb=document.getElementById('dishSaveBtn');sb.style.background=p==='him'?'var(--him)':'var(--her)';document.getElementById('dishModal').classList.add('show');setTimeout(()=>document.getElementById('dishName').focus(),150);}
+function saveDish(){if(!isUnlocked){showLockPrompt();return;}const p=dishPerson;const name=document.getElementById('dishName').value.trim();const slot=document.getElementById('dishSlot').value;const score=parseFloat(document.getElementById('dishScore').value);const cal=parseFloat(document.getElementById('dishCal').value)||0;const pr=parseFloat(document.getElementById('dishP').value)||0;const cb=parseFloat(document.getElementById('dishC').value)||0;const ft=parseFloat(document.getElementById('dishF').value)||0;const fib=parseFloat(document.getElementById('dishFib').value)||0;const err=document.getElementById('dishErr');if(!name){err.textContent='✗ Give the dish a name';return;}if(isNaN(score)){err.textContent='✗ Enter a score (e.g. 0.5)';return;}const id='cust_'+Date.now().toString(36);const dish={label:name,slot,score:Math.round(score*100)/100,m:[cal,pr,cb,ft,fib],created:Date.now()};if(!customDishes[p])customDishes[p]={};customDishes[p][id]=dish;if(firebaseReady&&db)db.ref(`trackers/${SYNC_KEY}/customDishes/${p}/${id}`).set(dish);try{localStorage.setItem(LSCD,JSON.stringify(customDishes));}catch(e){}document.getElementById('dishModal').classList.remove('show');renderAll();}
+function handleDelDish(e){e.stopPropagation();const b=e.currentTarget;const[p,id]=b.dataset.deldish.split('|');if(!isUnlocked){showLockPrompt();return;}if(customDishes[p])delete customDishes[p][id];if(firebaseReady&&db){db.ref(`trackers/${SYNC_KEY}/customDishes/${p}/${id}`).remove();}try{localStorage.setItem(LSCD,JSON.stringify(customDishes));}catch(e){}renderAll();}
+document.getElementById('dishSaveBtn').addEventListener('click',saveDish);
+document.addEventListener('click',e=>{if(e.target.id==='dishModal')document.getElementById('dishModal').classList.remove('show');if(e.target.id==='remindModal')document.getElementById('remindModal').classList.remove('show');});
+
+// ═══ REMINDERS (Notification API; fires while app open/backgrounded) ═══
+const LSREM='dft_reminders';
+const REM_DEFS=[{id:'water',name:'💧 Drink water',sub:'Stay hydrated',def:'11:00'},{id:'lunch',name:'🍽️ Log lunch',sub:'Don\'t forget to track',def:'13:00'},{id:'protein',name:'💪 Protein check',sub:'Are you on pace?',def:'16:00'},{id:'dinner',name:'🌙 Log dinner',sub:'Track your evening meal',def:'19:30'}];
+let reminders={enabled:false,items:{}};
+function loadReminders(){try{const r=localStorage.getItem(LSREM);if(r)reminders=JSON.parse(r);}catch(e){}REM_DEFS.forEach(d=>{if(!reminders.items[d.id])reminders.items[d.id]={on:false,time:d.def};});}
+function saveReminders(){try{localStorage.setItem(LSREM,JSON.stringify(reminders));}catch(e){}}
+function renderReminders(){const master=document.getElementById('remMaster');master.className='rem-toggle'+(reminders.enabled?' on':'');document.getElementById('remList').innerHTML=REM_DEFS.map(d=>{const it=reminders.items[d.id];return`<div class="rem-row"><div class="rem-info"><div class="rem-name">${d.name}</div><div class="rem-sub">${d.sub}</div></div><input type="time" class="rem-time" value="${it.time}" data-remtime="${d.id}"><button class="rem-toggle ${it.on?'on':''}" data-remtog="${d.id}"></button></div>`;}).join('');document.querySelectorAll('[data-remtog]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.remtog;reminders.items[id].on=!reminders.items[id].on;saveReminders();renderReminders();}));document.querySelectorAll('[data-remtime]').forEach(inp=>inp.addEventListener('change',()=>{reminders.items[inp.dataset.remtime].time=inp.value;saveReminders();}));}
+async function toggleMasterReminders(){if(!reminders.enabled){if('Notification'in window){let perm=Notification.permission;if(perm!=='granted')perm=await Notification.requestPermission();if(perm!=='granted'){document.getElementById('remNote').innerHTML='⚠️ Notifications are blocked. Enable them for this site in your browser/phone settings, then try again.';return;}}else{document.getElementById('remNote').innerHTML='⚠️ This browser doesn\'t support notifications.';return;}reminders.enabled=true;}else{reminders.enabled=false;}saveReminders();renderReminders();}
+function fireNotification(title,body){try{if('Notification'in window&&Notification.permission==='granted'){new Notification(title,{body,icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><text y="48" font-size="48">🌿</text></svg>'});}}catch(e){}}
+let lastRemCheck='';
+function checkReminders(){if(!reminders.enabled)return;const now=new Date();const hhmm=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');const dayKey=now.toISOString().split('T')[0];REM_DEFS.forEach(d=>{const it=reminders.items[d.id];if(it.on&&it.time===hhmm){const fireKey=`${dayKey}_${d.id}_${it.time}`;if(it.lastFired!==fireKey){it.lastFired=fireKey;saveReminders();fireNotification(d.name,d.sub);}}});}
+document.getElementById('remindBtn').addEventListener('click',()=>{renderReminders();document.getElementById('remindModal').classList.add('show');});
+document.getElementById('remMaster').addEventListener('click',toggleMasterReminders);
+document.getElementById('remTestBtn').addEventListener('click',()=>{if('Notification'in window&&Notification.permission==='granted'){fireNotification('🔔 Test reminder','Reminders are working!');}else{toggleMasterReminders().then(()=>fireNotification('🔔 Test reminder','Reminders are working!'));}});
+
+// ═══ load favorites + custom dishes (local first, then Firebase listeners) ═══
+function loadPrefsLocal(){try{const f=localStorage.getItem(LSFAV);if(f)favorites=JSON.parse(f);}catch(e){}try{const c=localStorage.getItem(LSCD);if(c)customDishes=JSON.parse(c);}catch(e){}if(!favorites.him)favorites.him={};if(!favorites.her)favorites.her={};if(!customDishes.him)customDishes.him={};if(!customDishes.her)customDishes.her={};}
+function startPrefListeners(){if(!firebaseReady||!db)return;db.ref(`trackers/${SYNC_KEY}/favorites`).on('value',snap=>{const v=snap.val()||{};favorites={him:v.him||{},her:v.her||{}};try{localStorage.setItem(LSFAV,JSON.stringify(favorites));}catch(e){}renderAll();});db.ref(`trackers/${SYNC_KEY}/customDishes`).on('value',snap=>{const v=snap.val()||{};customDishes={him:v.him||{},her:v.her||{}};try{localStorage.setItem(LSCD,JSON.stringify(customDishes));}catch(e){}renderAll();});}
 document.getElementById('themeBtn').addEventListener('click',()=>{theme=theme==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',theme);document.getElementById('themeBtn').textContent=theme==='light'?'☀️':'🌙';try{localStorage.setItem(LST,theme);}catch(e){}});
 document.getElementById('searchInput').addEventListener('input',e=>applySearch(e.target.value));
 document.getElementById('searchClear').addEventListener('click',()=>{const inp=document.getElementById('searchInput');inp.value='';applySearch('');inp.focus();});
@@ -588,14 +695,14 @@ function pickTier(){const r=Math.random();if(r<0.40)return{tier:'ultra',minAvg:5
 function pickFromSlot(slot,tier){if(!slot?.opts)return null;const positive=slot.opts.filter(o=>o.score>0&&!o.takeout);if(!positive.length)return null;const sorted=[...positive].sort((a,b)=>b.score-a.score);if(tier==='ultra')return sorted[Math.floor(Math.random()*Math.max(1,Math.ceil(sorted.length*0.3)))];if(tier==='neat'){const top=sorted.slice(0,Math.max(1,Math.ceil(sorted.length*0.6)));return top[Math.floor(Math.random()*top.length)];}return sorted[Math.floor(Math.random()*sorted.length)];}
 function buildPlan(person,tier){const cfg=CONFIGS[person];const plan=[];let totalScore=0,totalCal=0,totalP=0,totalC=0,totalF=0;const slotOrder=['morning','breakfast','coffee1','greentea1','lunch','greentea2','snack','predinner','dinner','postdinner','tweaks','coffee2','afternoon_tea'];slotOrder.forEach(sk=>{if(!cfg.slots[sk])return;const slot=cfg.slots[sk];let pick=null;if(sk==='morning'||sk==='predinner'||sk==='postdinner')pick=pickFromSlot(slot,'ultra');else if(sk==='coffee1'||sk==='coffee2')pick=slot.opts.find(o=>o.isBlack||o.id.includes('spearmint'));else if(sk==='tweaks'){const n=tier==='ultra'?slot.opts.length:tier==='neat'?Math.ceil(slot.opts.length*0.6):Math.ceil(slot.opts.length*0.3);slot.opts.slice(0,n).forEach(o=>{plan.push({slot:'Tweaks',time:slot.time,opt:o});totalScore+=o.score;if(o.m){totalCal+=o.m[0];totalP+=o.m[1];totalC+=o.m[2];totalF+=o.m[3];}});return;}else pick=pickFromSlot(slot,tier);if(pick){plan.push({slot:slot.title,time:slot.time,opt:pick});totalScore+=pick.score;if(pick.m){totalCal+=pick.m[0];totalP+=pick.m[1];totalC+=pick.m[2];totalF+=pick.m[3];}}});return{plan,totalScore:Math.round(totalScore*100)/100,totals:{cal:totalCal,protein:totalP,carbs:totalC,fat:totalF}};}
 function generateRecommendation(){const himToday=calcScore('him'),herToday=calcScore('her'),avgToday=(himToday+herToday)/2,tier=pickTier(),targetAvg=(tier.minAvg+tier.maxAvg)/2,tomorrowNeed=(2*targetAvg)-avgToday;return{tier,avgToday,targetAvg,tomorrowNeed,himPlan:buildPlan('him',tier.tier),herPlan:buildPlan('her',tier.tier),himToday,herToday};}
-function getTodayRemainingPlan(person){const cfg=CONFIGS[person],currentScore=calcScore(person),items=[];for(const sk in cfg.slots){const slot=cfg.slots[sk];if(!slot?.opts||sk==='kulcha')continue;if(slot.opts.some(o=>getCount(person,`${sk}__${o.id}`)>0))continue;const best=[...slot.opts].filter(o=>o.score>0&&!o.takeout).sort((a,b)=>b.score-a.score)[0];if(best)items.push({time:slot.time,title:slot.title,opt:best});}const extraScore=items.reduce((s,i)=>s+i.opt.score,0);return{items,currentScore,projectedScore:Math.round((currentScore+extraScore)*100)/100,extraCal:items.reduce((s,i)=>s+(i.opt.m?.[0]||0),0),extraProtein:items.reduce((s,i)=>s+(i.opt.m?.[1]||0),0)};}
+function getTodayRemainingPlan(person){const cfg=CONFIGS[person],currentScore=calcScore(person),items=[];for(const sk in cfg.slots){const slot=cfg.slots[sk];if(!slot?.opts||sk==='kulcha')continue;const opts=slotOpts(person,sk);if(opts.some(o=>getCount(person,`${sk}__${o.id}`)>0))continue;const best=[...opts].filter(o=>o.score>0&&!o.takeout).sort((a,b)=>b.score-a.score)[0];if(best)items.push({time:slot.time,title:slot.title,opt:best});}const extraScore=items.reduce((s,i)=>s+i.opt.score,0);return{items,currentScore,projectedScore:Math.round((currentScore+extraScore)*100)/100,extraCal:items.reduce((s,i)=>s+(i.opt.m?.[0]||0),0),extraProtein:items.reduce((s,i)=>s+(i.opt.m?.[1]||0),0)};}
 function renderInfoModal(){const rec=generateRecommendation(),himM=calcMacros('him'),himBurn=getTotalBurn('him'),himNetCal=himM.cal-himBurn,herM=calcMacros('her'),herBurn=getTotalBurn('her'),herNetCal=herM.cal-herBurn,HT=HIM.targets,RT=HER.targets,himRem=getTodayRemainingPlan('him'),herRem=getTodayRemainingPlan('her');const rT=(name,score,m,netCal,T,cls,hasFiber)=>`<div class="report-card ${cls}"><div class="rc-top"><span class="rc-name">${name}</span><span class="rc-score">${sStr(score)}</span></div><div class="rc-grid"><div class="rcg-item"><span>Net cal</span><strong>${Math.round(netCal)}/${T.cal}</strong></div><div class="rcg-item"><span>Protein</span><strong>${Math.round(m.protein)}g/${T.protein}g</strong></div><div class="rcg-item"><span>Carbs</span><strong>${Math.round(m.carbs)}g/${T.carbs}g</strong></div><div class="rcg-item"><span>Fat</span><strong>${Math.round(m.fat)}g/${T.fat}g</strong></div>${hasFiber?`<div class="rcg-item"><span>Fiber</span><strong>${Math.round(m.fiber)}g/${T.fiber}g</strong></div>`:''}</div></div>`;const rR=(name,cls,data)=>data.items.length===0?`<div class="plan-card ${cls}"><div class="plan-name">${name}</div><div style="font-size:12px;color:var(--muted);padding:6px 0">🎉 All slots filled!</div></div>`:`<div class="plan-card ${cls}"><div class="plan-name">${name}</div><div class="plan-items">${data.items.map(i=>`<div class="plan-item"><span class="plan-time">${i.time.split('–')[0].trim()}</span><span class="plan-label">${i.opt.label}</span><span class="plan-score">${oStr(i.opt.score)}</span></div>`).join('')}</div><div class="plan-totals"><span>Now: <strong>${sStr(data.currentScore)}</strong></span><span>If done: <strong>${sStr(data.projectedScore)}</strong> (+${data.extraCal}c, +${data.extraProtein}p)</span></div></div>`;const rP=(name,plan,cls)=>`<div class="plan-card ${cls}"><div class="plan-name">${name}</div><div class="plan-items">${plan.plan.map(p=>`<div class="plan-item"><span class="plan-time">${p.time.split('–')[0].trim()}</span><span class="plan-label">${p.opt.label}</span><span class="plan-score">${oStr(p.opt.score)}</span></div>`).join('')}</div><div class="plan-totals"><span>Projected: <strong>${sStr(plan.totalScore)}</strong></span><span><strong>${plan.totals.cal}</strong>c · <strong>${plan.totals.protein}g</strong>p</span></div></div>`;document.getElementById('infoBody').innerHTML=`<div class="info-section"><h3>📍 Today's Progress</h3>${rT('👨 Him',rec.himToday,himM,himNetCal,HT,'him',false)}${rT('👩 Her',rec.herToday,herM,herNetCal,RT,'her',true)}<div class="tier-summary">Combined avg today: <strong>${rec.avgToday.toFixed(2)}</strong></div></div><div class="info-section"><h3>✅ Still To Do Today</h3><div class="tier-summary">Best remaining picks to improve today's score.</div>${rR('👨 His remaining','him',himRem)}${rR('👩 Her remaining','her',herRem)}</div><div class="info-section"><h3>🔮 Recommended for Tomorrow</h3><span class="tier-badge ${rec.tier.cls}">${rec.tier.label} tier</span><div class="tier-summary">${rec.tier.desc}.<br>Target avg: <strong>${rec.tier.minAvg}–${rec.tier.maxAvg}</strong> · Tomorrow needs <strong>${sStr(rec.tomorrowNeed)}</strong></div>${rP('👨 His plan',rec.himPlan,'him')}${rP('👩 Her plan',rec.herPlan,'her')}</div>`;}
 document.getElementById('infoBtn').addEventListener('click',()=>{renderInfoModal();document.getElementById('infoModal').classList.add('show');});
 document.getElementById('regenPlanBtn').addEventListener('click',renderInfoModal);
 
 // ═══ FOOTER NAV ═══
 document.getElementById('footerHandle').addEventListener('click',()=>{footerCollapsed=!footerCollapsed;document.getElementById('footerNav').classList.toggle('collapsed',footerCollapsed);});
-function navScroll(id){const el=document.getElementById(id);if(!el)return;if(el.style.display==='none'){document.getElementById('personSel').value='';updateVisibility('');currentView='';}setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),80);}
+function navScroll(id){const el=document.getElementById(id);if(!el)return;setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),80);}
 
 // ═══ INIT ═══
 (function init(){
@@ -610,8 +717,11 @@ function navScroll(id){const el=document.getElementById(id);if(!el)return;if(el.
   }catch(e){}
   setDateUI(activeDate);
   updateVisibility('');
+  loadPrefsLocal();
+  loadReminders();
   loadLocal();
   initFirebase();
+  setInterval(checkReminders,30000);
 })();
 </script>
 </body>
