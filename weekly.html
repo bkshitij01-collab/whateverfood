@@ -77,6 +77,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
 .empty-title{font-size:16px;font-weight:700;margin-bottom:6px}
 .empty-msg{font-size:13px;color:var(--muted);line-height:1.6}
 .no-firebase{background:rgba(230,126,34,.08);border:1px solid rgba(230,126,34,.2);border-radius:10px;padding:14px;font-size:13px;color:var(--yellow);text-align:center;line-height:1.6;max-width:720px;margin:16px auto}
+.section{background:var(--card);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--shadow)}
+.trend-card{padding:14px 16px}
+.trend-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.trend-title{font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+.trend-legend{display:flex;gap:10px;font-size:10px;font-weight:700}
+.trend-legend .lg{display:flex;align-items:center;gap:4px;color:var(--muted)}
+.trend-legend .lg::before{content:'';width:9px;height:9px;border-radius:3px;display:inline-block}
+.trend-legend .lg.him::before{background:var(--him)}
+.trend-legend .lg.her::before{background:var(--her)}
+.trend-chart{position:relative;display:flex;align-items:flex-end;gap:6px}
+.trend-target{position:absolute;left:0;right:0;border-top:1px dashed var(--light);pointer-events:none}
+.trend-target span{position:absolute;right:0;top:-8px;font-size:8px;color:var(--light);background:var(--card);padding:0 3px}
+.tr-col{flex:1;display:flex;align-items:flex-end;justify-content:center;gap:2px;height:100%}
+.tr-bar{width:10px;border-radius:3px 3px 0 0;min-height:2px;transition:height .4s ease}
+.tr-bar.him{background:var(--him)}
+.tr-bar.her{background:var(--her)}
+.trend-labels{display:flex;gap:6px;margin-top:5px}
+.trend-labels span{flex:1;text-align:center;font-size:9px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -107,6 +125,7 @@ const SHARED_SNACKS=[{id:'pumpkin_walnut',score:.75,m:[180,7,8,15,2]},{id:'apple
 const HIM={id:'him',burnCap:500,targets:{cal:3000,protein:240,carbs:300,fat:90},grace:{cal:250,carb:20},slots:{morning:{opts:[{id:'lemon_cinn',score:.5,m:[10,0,2,0]},{id:'lemon_only',score:.25,m:[10,0,2,0]}]},breakfast:{opts:[{id:'c2',score:1.25,m:[500,38,42,22],ingr:[{m:[150,23,10,4]},{m:[40,1,10,0]},{m:[20,0,5,0]},{m:[50,1,1,5]},{m:[50,3,2,4]},{m:[50,2,3,4]},{m:[140,8,11,5]}]},{id:'a2',score:1.0,m:[422,33,47,15],ingr:[{m:[60,1,15,0]},{m:[45,1,11,0]},{m:[50,1,12,0]},{m:[120,25,3,2]},{m:[50,3,2,4]},{m:[60,2,3,5]},{m:[37,0,1,4]}]},{id:'b2',score:1.0,m:[610,51,70,15]},{id:'b_omelette',score:.75,m:[775,55,54,37],ingr:[{m:[210,18,2,15]},{m:[80,5,1,7]},{m:[7,1,1,0]},{m:[20,1,4,0]},{m:[40,0,0,5]},{m:[95,2,16,3]},{m:[100,12,4,4]},{m:[140,8,11,5]},{m:[80,1,4,7]}]},{id:'a_yogurt',score:.75,m:[280,22,28,8]},{id:'silver_honey',score:.5,m:[271,19,34,7]},{id:'boiled_eggs',score:.25,m:[78,6,0,5],ingr:[{m:[78,6,0,5]}]},{id:'eggs_biscuits',score:.25,m:[203,13,22,11],ingr:[{m:[78,6,0,5]},{m:[80,5,1,7]},{m:[45,1,8,1]}]},{id:'wrap',score:.25,m:[300,18,28,10],takeout:true},{id:'chai_bis',score:0,m:[275,7,42,8],ingr:[{m:[140,4,11,5]},{m:[45,1,8,1]}]}]},coffee1:{opts:[{id:'black1',score:.25,m:[5,0,0,0],isBlack:true},{id:'latte1',score:0,m:[150,9,14,6]}]},coffee2:{opts:[{id:'black2',score:.25,m:[5,0,0,0],isBlack:true},{id:'latte2',score:0,m:[150,9,14,6]}]},greentea1:{opts:[{id:'gt1',score:.25,m:[5,0,1,0]}]},lunch:{opts:[{id:'salmon_l',score:1.25,m:[480,51,8,14],ingr:[{m:[290,40,0,12]},{m:[120,11,8,5]},{m:[5,0,1,0]},{m:[40,0,0,5]},{m:[25,0,4,0]}]},{id:'chk_veg_l',score:1.0,m:[420,42,16,14],ingr:[{m:[280,42,0,6]},{m:[100,4,16,3]},{m:[40,0,0,5]}]},{id:'chk_rice_l',score:.75,m:[450,45,35,9]},{id:'lentil_l',score:.75,m:[420,40,28,6]},{id:'tahini_l',score:-.25,m:[550,40,45,18],takeout:true},{id:'burrito_l',score:-.25,m:[580,42,52,16],takeout:true},{id:'skip_l',score:0,m:[0,0,0,0]},{id:'tofu_veg_l',score:1.25,m:[380,22,20,16]},{id:'tofu_quin_l',score:1.0,m:[400,24,35,14]},{id:'tofu_tikka_l',score:1.0,m:[350,20,18,16]}]},kulcha:{opts:[{id:'pre_walk_k',score:.5,m:[0,0,0,0]},{id:'kulcha_meal',score:-1.25,m:[820,30,122,22]},{id:'post_walk_k',score:1.25,m:[0,0,0,0]}]},greentea2:{opts:[{id:'gt2',score:.25,m:[5,0,1,0]}]},snack:{opts:[{id:'almonds_s',score:.5,m:[100,4,3,9]},{id:'yogurt_s',score:.5,m:[130,12,8,3]},{id:'cottage_s',score:.5,m:[160,15,12,6]},{id:'nuts_s',score:.5,m:[150,5,10,10]},{id:'babybel_s',score:.25,m:[160,7,22,6]},...SHARED_SNACKS,{id:'skip_s',score:-.25,m:[0,0,0,0]}]},predinner:{opts:[{id:'pre_water',score:.25,m:[0,0,0,0]}]},dinner:{opts:[{id:'chk_veg_d',score:1.0,m:[470,66,16,14],ingr:[{m:[360,56,0,8]},{m:[110,5,15,4]},{m:[40,0,0,5]},{m:[0,0,0,0]}]},{id:'salmon_d',score:1.0,m:[550,55,8,22]},{id:'parm_d',score:.75,m:[420,52,12,14]},{id:'lentil_d',score:.75,m:[420,40,28,6]},{id:'tahini_d',score:-.25,m:[520,40,42,16],takeout:true},{id:'burrito_d',score:-.25,m:[580,42,52,16],takeout:true},{id:'thai_d',score:0,m:[480,28,28,22],takeout:true},{id:'tofu_veg_d',score:1.0,m:[380,20,18,16]},{id:'tofu_pep_d',score:1.0,m:[400,22,30,16]},{id:'tofu_stir_d',score:1.0,m:[340,18,22,14]},{id:'chickpea_sal_d',score:1.0,m:[380,18,42,10],ingr:[{m:[270,15,45,4]},{m:[140,9,1,11]},{m:[27,2,5,0]},{m:[20,1,4,0]},{m:[8,0,2,0]},{m:[16,1,3,0]},{m:[28,2,6,0]},{m:[40,0,0,5]},{m:[5,0,1,0]}]}]},postdinner:{opts:[{id:'acv_water',score:.25,m:[5,0,1,0]},{id:'plain_water',score:.1,m:[0,0,0,0]}]},tweaks:{opts:[{id:'eat_order',score:.5,m:[0,0,0,0]},{id:'turmeric',score:.5,m:[0,0,0,0]},{id:'water_meals',score:.25,m:[0,0,0,0]}]}},indulgences:{opts:[{id:'lays_full',score:-3,m:[270,3,29,16]},{id:'lays_small',score:-.5,m:[135,2,15,8]},{id:'white_rice',score:-1,m:[200,4,45,0]},{id:'pita',score:-.5,m:[165,6,34,1]},{id:'sweet_drk',score:-2,m:[150,0,40,0]},{id:'ice_cream',score:-1,m:[280,4,36,14]}]},extras:[{id:'xblack',score:.25,m:[5,0,0,0]},{id:'xwalks',score:.25,m:[0,0,0,0]},{id:'xwater',score:0,m:[0,0,0,0]},{id:'xchai',score:0,m:[85,4,10,3]},{id:'xchaach',score:.5,m:[55,3,5,2]},{id:'xbubly',score:0,m:[0,0,0,0]},{id:'xflo',score:.25,m:[60,1,14,0]},{id:'xfmod',score:-.25,m:[65,1,16,0]},{id:'xfhi',score:-1,m:[70,1,18,0]},{id:'xlatte',score:-.5,m:[150,9,14,6]},{id:'xbiscuit',score:-.25,m:[95,2,16,3]},{id:'xrice',score:-.5,m:[200,4,45,0]}],workout:[{id:'badminton',burn:220},{id:'muaythai',burn:300},{id:'weights',burn:45},{id:'walk10',burn:40},{id:'walk20',burn:75},{id:'walk30',burn:110}]};
 const HER={id:'her',burnCap:400,targets:{cal:2100,protein:200,carbs:175,fat:90,fiber:40},grace:{cal:150,carb:10},slots:{morning:{opts:[{id:'spearmint_lem',score:.75,m:[15,0,3,0,0]},{id:'lemon_cinn_h',score:.5,m:[10,0,2,0,0]},{id:'lemon_only_h',score:.25,m:[10,0,2,0,0]}]},breakfast:{opts:[{id:'spinach_oml',score:1.25,m:[380,30,8,22,5],ingr:[{m:[210,18,2,15,0]},{m:[15,2,2,0,2]},{m:[5,0,1,0,0]},{m:[55,2,3,4,3]},{m:[40,0,0,5,0]},{m:[20,1,4,0,1]},{m:[35,0,2,3,2]}]},{id:'yogurt_ber_h',score:1.25,m:[320,22,35,10,9],ingr:[{m:[150,23,10,4,0]},{m:[75,2,18,0,4]},{m:[55,2,3,4,3]},{m:[60,2,3,5,5]},{m:[5,0,1,0,0]},{m:[20,0,5,0,0]}]},{id:'green_smth',score:1.0,m:[380,30,40,12,10],ingr:[{m:[15,2,2,0,2]},{m:[75,2,18,0,4]},{m:[55,2,3,4,3]},{m:[120,25,3,2,0]},{m:[40,1,2,3,0]},{m:[100,4,3,8,2]},{m:[5,0,1,0,0]}]},{id:'oats_h',score:.75,m:[350,12,55,8,8]},{id:'silver_alm_h',score:.5,m:[280,12,28,14,5]},{id:'silver_cot_h',score:.5,m:[250,17,28,5,4]},{id:'boiled_egg_h',score:.25,m:[78,6,0,5,0],ingr:[{m:[78,6,0,5,0]}]},{id:'chai_bis_h',score:0,m:[275,7,42,8,2],ingr:[{m:[140,4,11,5,0]},{m:[45,1,8,1,0]}]}]},coffee1:{opts:[{id:'spearmint1_h',score:.5,m:[5,0,1,0,0]},{id:'green1_h',score:.25,m:[5,0,1,0,0]},{id:'black1_h',score:.25,m:[5,0,0,0,0],isBlack:true},{id:'latte1_h',score:0,m:[130,5,18,5,0]}]},coffee2:{opts:[{id:'spearmint2_h',score:.5,m:[5,0,1,0,0]},{id:'green2_h',score:.25,m:[5,0,1,0,0]},{id:'black2_h',score:.25,m:[5,0,0,0,0],isBlack:true},{id:'latte2_h',score:0,m:[130,5,18,5,0]}]},afternoon_tea:{opts:[{id:'spearmint_pm',score:.5,m:[5,0,1,0,0]},{id:'gt_pm_h',score:.25,m:[5,0,1,0,0]}]},lunch:{opts:[{id:'turmeric_chk',score:1.25,m:[420,45,15,14,6],ingr:[{m:[280,42,0,6,0]},{m:[10,0,2,0,1]},{m:[90,2,11,3,5]},{m:[40,0,0,5,0]}]},{id:'chk_quinoa_h',score:1.0,m:[450,48,30,12,6]},{id:'chk_tikka_h',score:1.0,m:[400,42,12,16,4]},{id:'chk_avo_h',score:1.0,m:[430,40,10,22,7]},{id:'chk_soup_h',score:.75,m:[320,35,20,8,5]},{id:'chickpea_h',score:.75,m:[350,14,45,10,12]},{id:'lentil_h',score:.75,m:[380,18,50,8,15]},{id:'tofu_turm_h',score:1.25,m:[380,22,20,16,6]},{id:'tofu_quin_h',score:1.0,m:[400,24,35,14,6]},{id:'tofu_tikk_h',score:1.0,m:[350,20,18,16,5]},{id:'tofu_avo_h',score:1.0,m:[370,18,15,22,7]},{id:'tofu_soup_h',score:.75,m:[280,16,25,10,5]},{id:'takeout_l_h',score:-.25,m:[550,38,45,18,3],takeout:true}]},snack:{opts:[{id:'protein_water',score:1.0,m:[110,25,2,1,0],ingr:[{m:[110,25,2,1,0]},{m:[0,0,0,0,0]},{m:[5,0,1,0,0]},{m:[0,0,0,0,0]}]},...SHARED_SNACKS,{id:'yogurt_cinn_h',score:.5,m:[130,12,8,3,0]},{id:'skip_s_h',score:-.25,m:[0,0,0,0,0]}]},predinner:{opts:[{id:'pre_water_h',score:.25,m:[0,0,0,0,0]}]},dinner:{opts:[{id:'stuffed_pep',score:1.25,m:[450,48,28,14,7],ingr:[{m:[280,42,0,6,0]},{m:[60,2,12,0,4]},{m:[60,3,11,1,2]},{m:[20,1,4,0,1]},{m:[40,0,0,5,0]},{m:[0,0,0,0,0]}]},{id:'chk_avo_d_h',score:1.25,m:[430,44,12,22,8]},{id:'turm_cauli',score:1.0,m:[380,44,15,14,6]},{id:'chk_stir_h',score:1.0,m:[400,42,20,14,6]},{id:'salmon_d_h',score:1.0,m:[520,52,12,22,5],ingr:[{m:[290,40,0,12,0]},{m:[120,11,8,5,4]},{m:[30,2,4,0,1]},{m:[40,0,0,5,0]},{m:[10,0,1,0,0]},{m:[30,0,1,2,1]}]},{id:'lentil_c_h',score:.75,m:[420,18,55,8,12]},{id:'tofu_pep_h',score:1.25,m:[400,22,30,16,8]},{id:'tofu_avo_d_h',score:1.0,m:[380,20,16,22,7]},{id:'tofu_caul_h',score:1.0,m:[320,20,18,16,5]},{id:'tofu_stir_h',score:1.0,m:[340,18,22,14,6]},{id:'chickpea_sal_d_h',score:1.25,m:[380,18,42,10,14],ingr:[{m:[270,15,45,4,12]},{m:[140,9,1,11,0]},{m:[27,2,5,0,3]},{m:[20,1,4,0,1]},{m:[8,0,2,0,0]},{m:[16,1,3,0,1]},{m:[28,2,6,0,3]},{m:[40,0,0,5,0]},{m:[5,0,1,0,0]}]},{id:'takeout_d_h',score:-.25,m:[520,38,42,16,3],takeout:true}]},postdinner:{opts:[{id:'acv_h',score:.25,m:[5,0,1,0,0]},{id:'plain_h',score:.1,m:[0,0,0,0,0]}]},tweaks:{opts:[{id:'flaxseed_h',score:.5,m:[37,1,2,3,3]},{id:'spearmint_tw',score:.5,m:[0,0,0,0,0]},{id:'inositol_h',score:.5,m:[0,0,0,0,0]},{id:'eat_ord_h',score:.5,m:[0,0,0,0,0]},{id:'zinc_h',score:.25,m:[0,0,0,0,0]}]}},indulgences:{opts:[{id:'dairy_h',score:-.5,m:[80,5,5,6,0]},{id:'sweet_h',score:-2,m:[150,0,40,0,0]},{id:'refined_h',score:-1,m:[300,8,60,4,2]},{id:'processed_h',score:-1.5,m:[250,4,35,12,1]},{id:'caffeine_h',score:-.75,m:[0,0,0,0,0]}]},extras:[{id:'spearmint_x',score:.5,m:[5,0,1,0,0]},{id:'chaach_hx',score:.25,m:[55,3,5,2,0]},{id:'bubly_hx',score:0,m:[0,0,0,0,0]},{id:'walks_hx',score:.5,m:[0,0,0,0,0]},{id:'water_hx',score:0,m:[0,0,0,0,0]},{id:'flo_hx',score:.25,m:[60,1,14,0,3]},{id:'fmod_hx',score:-.25,m:[65,1,16,0,2]},{id:'fhi_hx',score:-1,m:[70,1,18,0,1]},{id:'dairy_hx',score:-.5,m:[80,5,5,6,0]},{id:'lattes_hx',score:-.5,m:[130,5,18,5,0]},{id:'biscuits_hx',score:-.25,m:[95,2,16,3,1]}],workout:[{id:'badminton_h',burn:200},{id:'muaythai_h',burn:270},{id:'weights_h',burn:40},{id:'walk10_h',burn:35},{id:'walk20_h',burn:65},{id:'walk30_h',burn:95}]};
 const CONFIGS={him:HIM,her:HER};
+let CUSTOM={him:{},her:{}};
 
 /* ═══ SCORING (pure — takes raw state object from Firebase) ═══ */
 function effMacros(sk,o,st){
@@ -121,7 +140,7 @@ function dayMacros(cfg,st){
   const m={cal:0,protein:0,carbs:0,fat:0,fiber:0};
   for(const sk in cfg.slots)cfg.slots[sk].opts.forEach(o=>{const cnt=Math.max(0,st.counts?.[`${sk}__${o.id}`]||0);if(cnt<=0)return;const ma=effMacros(sk,o,st);m.cal+=ma[0]*cnt;m.protein+=ma[1]*cnt;m.carbs+=ma[2]*cnt;m.fat+=ma[3]*cnt;m.fiber+=(ma[4]||0)*cnt;});
   cfg.indulgences.opts.forEach(o=>{const cnt=Math.max(0,st.inds?.[o.id]||0);if(cnt<=0||!o.m)return;m.cal+=o.m[0]*cnt;m.protein+=o.m[1]*cnt;m.carbs+=o.m[2]*cnt;m.fat+=o.m[3]*cnt;m.fiber+=(o.m[4]||0)*cnt;});
-  cfg.extras.forEach(e=>{const cnt=Math.max(0,st.extras?.[e.id]||0);if(cnt<=0||!e.m)return;m.cal+=e.m[0]*cnt;m.protein+=e.m[1]*cnt;m.carbs+=e.m[2]*cnt;m.fat+=e.m[3]*cnt;m.fiber+=(e.m[4]||0)*cnt;});
+  cfg.extras.forEach(e=>{const cnt=Math.max(0,st.extras?.[e.id]||0);if(cnt<=0||!e.m)return;m.cal+=e.m[0]*cnt;m.protein+=e.m[1]*cnt;m.carbs+=e.m[2]*cnt;m.fat+=e.m[3]*cnt;m.fiber+=(e.m[4]||0)*cnt;});const cd=CUSTOM[cfg.id]||{};for(const id in cd){const d=cd[id];if(!d)continue;const cnt=Math.max(0,st.counts?.[`${d.slot}__${id}`]||0);if(cnt<=0||!d.m)continue;m.cal+=(d.m[0]||0)*cnt;m.protein+=(d.m[1]||0)*cnt;m.carbs+=(d.m[2]||0)*cnt;m.fat+=(d.m[3]||0)*cnt;m.fiber+=(d.m[4]||0)*cnt;}
   return m;
 }
 function dayBurn(cfg,st){return Math.min(cfg.workout.reduce((t,w)=>t+Math.max(0,st.workout?.[w.id]||0)*w.burn,0),cfg.burnCap);}
@@ -133,7 +152,7 @@ function dayScore(cfg,st){
   let s=0;
   for(const sk in cfg.slots)cfg.slots[sk].opts.forEach(o=>{const c=Math.max(0,st.counts?.[`${sk}__${o.id}`]||0);if(c>0)s+=c*o.score;});
   cfg.indulgences.opts.forEach(o=>{const c=Math.max(0,st.inds?.[o.id]||0);if(c>0)s+=c*o.score;});
-  cfg.extras.forEach(e=>{const c=Math.max(0,st.extras?.[e.id]||0);if(c>0)s+=c*e.score;});
+  cfg.extras.forEach(e=>{const c=Math.max(0,st.extras?.[e.id]||0);if(c>0)s+=c*e.score;});const cds=CUSTOM[cfg.id]||{};for(const id in cds){const d=cds[id];if(!d)continue;const c=Math.max(0,st.counts?.[`${d.slot}__${id}`]||0);if(c>0)s+=c*(Number(d.score)||0);}
   const m=dayMacros(cfg,st),b=dayBurn(cfg,st),net=m.cal-b;
   s+=calPen(net,cfg.targets.cal,cfg.grace.cal);
   s+=carbPen(m.carbs,cfg.targets.carbs,cfg.grace.carb);
@@ -214,9 +233,28 @@ function renderDay(ds,dayData,i){
 
 function goToDay(ds){try{sessionStorage.setItem('gotoDate',ds);}catch(e){}window.location.href='index.html';}
 
+function renderTrend(dates,data){
+  const ordered=dates.slice().reverse();
+  const comps=ordered.map(d=>({d,c:compute(data[d])}));
+  if(!comps.some(x=>x.c.him.has||x.c.her.has))return'';
+  const H=72,clamp=s=>Math.max(0,Math.min(6,s));
+  const cols=comps.map(({d,c})=>{
+    const hh=c.him.has?Math.max(2,clamp(c.him.score)/6*H):0;
+    const rh=c.her.has?Math.max(2,clamp(c.her.score)/6*H):0;
+    return`<div class="tr-col">${c.him.has?`<div class="tr-bar him" style="height:${hh}px" title="Him ${sStr(c.him.score)}"></div>`:''}${c.her.has?`<div class="tr-bar her" style="height:${rh}px" title="Her ${sStr(c.her.score)}"></div>`:''}</div>`;
+  }).join('');
+  const labels=ordered.map(d=>`<span>${['S','M','T','W','T','F','S'][new Date(d+'T12:00:00').getDay()]}</span>`).join('');
+  const tgt=H-(5/6*H);
+  return`<div class="avg-wrap"><div class="section trend-card">
+    <div class="trend-head"><span class="trend-title">📈 Score Trend · 7 days</span><span class="trend-legend"><span class="lg him">Him</span><span class="lg her">Her</span></span></div>
+    <div class="trend-chart" style="height:${H}px"><div class="trend-target" style="top:${tgt}px"><span>+5</span></div>${cols}</div>
+    <div class="trend-labels">${labels}</div>
+  </div></div>`;
+}
+
 function renderAll(dates,data){
   const has=dates.some(d=>{const c=compute(data[d]);return c.him.has||c.her.has;});
-  let html=renderAvg(dates,data)+`<div class="days-wrap">`;
+  let html=renderAvg(dates,data)+renderTrend(dates,data)+`<div class="days-wrap">`;
   if(!has)html+=`<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-title">No data in the last 7 days</div><div class="empty-msg">Log food in the tracker — scores appear here automatically.</div></div>`;
   else dates.forEach((d,i)=>html+=renderDay(d,data[d]||{},i));
   html+=`</div>`;
@@ -235,7 +273,9 @@ function loadData(){
         const db=firebase.database();
         document.getElementById('syncDot').classList.add('live');
         const data={};
-        Promise.all(dates.map(d=>db.ref(`trackers/${SYNC_KEY}/dt/${d}`).once('value').then(s=>{data[d]=s.val()||{};}))).then(()=>{
+        const pAll=dates.map(d=>db.ref(`trackers/${SYNC_KEY}/dt/${d}`).once('value').then(s=>{data[d]=s.val()||{};}));
+        pAll.push(db.ref(`trackers/${SYNC_KEY}/customDishes`).once('value').then(s=>{const v=s.val()||{};CUSTOM={him:v.him||{},her:v.her||{}};}));
+        Promise.all(pAll).then(()=>{
           renderAll(dates,data);
           db.ref(`trackers/${SYNC_KEY}/dt/${dates[0]}`).on('value',s=>{data[dates[0]]=s.val()||{};renderAll(dates,data);});
         }).catch(e=>{document.getElementById('appContent').innerHTML=`<div class="no-firebase">⚠️ ${e.message}</div>`;});
