@@ -412,10 +412,17 @@ let activeDate=TODAY_DATE;
 
 // ═══ LOCK ═══
 const SECRET='mujhe khana do';
+const LSU='dft_unlock';            // device unlock-expiry timestamp
+const UNLOCK_DAYS=90;              // stays unlocked this long; refreshes on each open
 let isUnlocked=false;
+function persistUnlock(){try{localStorage.setItem(LSU,String(Date.now()+UNLOCK_DAYS*86400000));}catch(e){}}
+function clearUnlock(){try{localStorage.removeItem(LSU);}catch(e){}}
+function applyUnlockedUI(){isUnlocked=true;document.getElementById('lockBtn').textContent='🔓';document.getElementById('lockBtn').title='Tap to lock editing';document.getElementById('lockBtn').className='icon-btn is-unlocked';document.getElementById('lockBanner').classList.add('hidden');}
+function applyLockedUI(){isUnlocked=false;document.getElementById('lockBtn').textContent='🔒';document.getElementById('lockBtn').title='Tap to unlock editing';document.getElementById('lockBtn').className='icon-btn is-locked';document.getElementById('lockBanner').classList.remove('hidden');}
+function tryAutoUnlock(){try{const v=Number(localStorage.getItem(LSU)||0);if(v>Date.now()){applyUnlockedUI();persistUnlock();return true;}if(v)clearUnlock();}catch(e){}return false;}
 function showLockPrompt(){if(isUnlocked)return;document.getElementById('lockInput').value='';document.getElementById('lockError').textContent='';document.getElementById('lockModal').classList.add('show');setTimeout(()=>document.getElementById('lockInput').focus(),150);}
-function doUnlock(){const val=document.getElementById('lockInput').value.trim().toLowerCase();if(val===SECRET){isUnlocked=true;document.getElementById('lockModal').classList.remove('show');document.getElementById('lockBtn').textContent='🔓';document.getElementById('lockBtn').title='Tap to lock editing';document.getElementById('lockBtn').className='icon-btn is-unlocked';document.getElementById('lockBanner').classList.add('hidden');}else{document.getElementById('lockError').textContent='✗ Wrong passphrase — try again';document.getElementById('lockInput').value='';document.getElementById('lockInput').focus();document.getElementById('lockInput').style.borderColor='var(--red)';setTimeout(()=>document.getElementById('lockInput').style.borderColor='',800);}}
-function doLock(){isUnlocked=false;document.getElementById('lockBtn').textContent='🔒';document.getElementById('lockBtn').title='Tap to unlock editing';document.getElementById('lockBtn').className='icon-btn is-locked';document.getElementById('lockBanner').classList.remove('hidden');}
+function doUnlock(){const val=document.getElementById('lockInput').value.trim().toLowerCase();if(val===SECRET){document.getElementById('lockModal').classList.remove('show');applyUnlockedUI();persistUnlock();}else{document.getElementById('lockError').textContent='✗ Wrong passphrase — try again';document.getElementById('lockInput').value='';document.getElementById('lockInput').focus();document.getElementById('lockInput').style.borderColor='var(--red)';setTimeout(()=>document.getElementById('lockInput').style.borderColor='',800);}}
+function doLock(){applyLockedUI();clearUnlock();}
 document.getElementById('lockBtn').addEventListener('click',()=>{if(isUnlocked)doLock();else showLockPrompt();});
 document.getElementById('unlockBtn').addEventListener('click',doUnlock);
 document.getElementById('lockInput').addEventListener('keydown',e=>{if(e.key==='Enter')doUnlock();});
@@ -595,7 +602,7 @@ function navScroll(id){const el=document.getElementById(id);if(!el)return;if(el.
   try{theme=localStorage.getItem(LST)||'light';}catch(e){}
   document.documentElement.setAttribute('data-theme',theme);
   document.getElementById('themeBtn').textContent=theme==='light'?'☀️':'🌙';
-  // Jump to a specific date if arriving from the weekly page
+  tryAutoUnlock();
   try{
     const goto=sessionStorage.getItem('gotoDate');
     if(goto&&/^\d{4}-\d{2}-\d{2}$/.test(goto)&&goto<=TODAY_DATE){activeDate=goto;}
