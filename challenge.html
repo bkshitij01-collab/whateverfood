@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1a6b52">
+<title>Challenge · Food Tracker</title>
+<style>
+:root{--bg:#F4F6F7;--card:#FFF;--soft:#F8FAFB;--him:#1a6b52;--him-soft:rgba(26,107,82,.09);--him-light:#e7f4ef;--her:#8B3A6B;--her-soft:rgba(139,58,107,.09);--her-light:#f4eaf1;--green:#27AE60;--yellow:#E67E22;--red:#E74C3C;--gold:#D4A017;--text:#2C3E50;--muted:#7F8C8D;--light:#BDC3C7;--border:#ECF0F1;--border2:#DDE2E5;--shadow:0 1px 4px rgba(0,0,0,.05);--shadow2:0 4px 16px rgba(0,0,0,.07);--r:14px}
+[data-theme=dark]{--bg:#0d1117;--card:#161b22;--soft:#1c2128;--him:#2ECC71;--him-soft:rgba(46,204,113,.1);--him-light:rgba(46,204,113,.07);--her:#c77daa;--her-soft:rgba(199,125,170,.1);--her-light:rgba(199,125,170,.07);--green:#2ECC71;--yellow:#F39C12;--red:#EC7063;--gold:#E9B949;--text:#e6edf3;--muted:#8B949E;--light:#484F58;--border:#21262D;--border2:#30363D;--shadow:0 1px 4px rgba(0,0,0,.3);--shadow2:0 4px 16px rgba(0,0,0,.35)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;padding-bottom:40px}
+.header{position:sticky;top:0;z-index:90;background:var(--card);border-bottom:1px solid var(--border);padding:12px 16px;box-shadow:var(--shadow2);display:flex;align-items:center;gap:10px}
+.back-btn,.theme-btn{width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border2);background:var(--soft);cursor:pointer;font-size:17px;color:var(--text);display:flex;align-items:center;justify-content:center;text-decoration:none;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.back-btn:active,.theme-btn:active{transform:scale(.93)}
+.header-title{font-size:16px;font-weight:800;flex:1}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--light);display:inline-block;transition:background .3s;margin-left:4px}
+.sync-dot.live{background:var(--green);box-shadow:0 0 0 2px rgba(39,174,96,.25)}
+.wrap{max-width:720px;margin:0 auto;padding:16px 16px 0;display:flex;flex-direction:column;gap:14px}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;gap:12px}
+.loading-spin{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--him);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:13px;color:var(--muted)}
+/* CHAMPION */
+.champ-card{border-radius:var(--r);padding:18px;box-shadow:var(--shadow2);text-align:center;position:relative;overflow:hidden}
+.champ-card.him{background:linear-gradient(135deg,var(--him),#0f4a38);color:#fff}
+.champ-card.her{background:linear-gradient(135deg,var(--her),#5e2649);color:#fff}
+.champ-card.draw{background:linear-gradient(135deg,#6b7884,#4a535c);color:#fff}
+.champ-eyebrow{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;opacity:.8;margin-bottom:8px}
+.champ-trophy{font-size:42px;line-height:1;margin-bottom:6px}
+.champ-name{font-size:24px;font-weight:800;letter-spacing:-.3px;margin-bottom:6px}
+.champ-record{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.15);padding:6px 14px;border-radius:100px;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums}
+.champ-dates{font-size:11px;opacity:.75;margin-top:10px}
+/* SECTION */
+.section{background:var(--card);border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--shadow);padding:16px}
+.section-title{font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.live-pill{font-size:9px;font-weight:800;letter-spacing:.5px;color:#fff;background:var(--red);padding:2px 7px;border-radius:100px;animation:blink 1.5s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.45}}
+/* SCOREBOARD */
+.scoreboard{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin-bottom:8px}
+.sb-side{text-align:center}
+.sb-avatar{font-size:30px;line-height:1;margin-bottom:4px}
+.sb-name{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.sb-side.him .sb-name{color:var(--him)}
+.sb-side.her .sb-name{color:var(--her)}
+.sb-wins{font-size:46px;font-weight:800;line-height:.9;font-variant-numeric:tabular-nums}
+.sb-side.him .sb-wins{color:var(--him)}
+.sb-side.her .sb-wins{color:var(--her)}
+.sb-wins-lbl{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+.sb-vs{font-size:15px;font-weight:800;color:var(--light);padding:0 2px}
+.sb-leader{text-align:center;font-size:12px;font-weight:700;padding:8px;border-radius:9px;margin-top:6px}
+.sb-leader.him{background:var(--him-soft);color:var(--him)}
+.sb-leader.her{background:var(--her-soft);color:var(--her)}
+.sb-leader.tie{background:var(--soft);color:var(--muted)}
+/* DAY LIST */
+.daylog{margin-top:14px;display:flex;flex-direction:column;gap:6px}
+.daylog-row{display:grid;grid-template-columns:46px 1fr 22px 1fr;align-items:center;gap:8px;padding:7px 10px;border-radius:9px;background:var(--soft);border:1px solid var(--border)}
+.dl-day{font-size:11px;font-weight:700;color:var(--muted)}
+.dl-chip{font-size:12px;font-weight:800;font-variant-numeric:tabular-nums;text-align:center;padding:4px 6px;border-radius:7px;position:relative}
+.dl-chip.him{background:var(--him-soft);color:var(--him)}
+.dl-chip.her{background:var(--her-soft);color:var(--her)}
+.dl-chip.win{box-shadow:0 0 0 2px currentColor}
+.dl-chip.empty{background:transparent;color:var(--light)}
+.dl-vs{font-size:9px;color:var(--light);text-align:center;font-weight:700}
+.dl-crown{position:absolute;top:-9px;right:-4px;font-size:12px}
+.upcoming-note{text-align:center;font-size:11px;color:var(--muted);margin-top:10px;font-style:italic}
+/* MACRO FACEOFF */
+.mf-table{display:flex;flex-direction:column;gap:0}
+.mf-head{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding-bottom:8px;border-bottom:1.5px solid var(--border);margin-bottom:6px}
+.mf-head>div{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;text-align:center}
+.mf-head .mf-h-him{color:var(--him)}
+.mf-head .mf-h-her{color:var(--her)}
+.mf-head .mf-h-lbl{text-align:left;color:var(--muted)}
+.mf-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.mf-row:last-child{border-bottom:none}
+.mf-lbl{font-size:12px;font-weight:600;color:var(--text)}
+.mf-cell{text-align:center}
+.mf-val{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
+.mf-pct{font-size:10px;font-weight:700;margin-top:1px}
+.mf-na{color:var(--light);font-size:12px}
+/* EXERCISE */
+.ex-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ex-col{background:var(--soft);border-radius:10px;padding:12px;border:1.5px solid var(--border)}
+.ex-col.him{border-color:rgba(26,107,82,.3)}
+.ex-col.her{border-color:rgba(139,58,107,.3)}
+.ex-name{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.ex-col.him .ex-name{color:var(--him)}
+.ex-col.her .ex-name{color:var(--her)}
+.ex-stat{display:flex;justify-content:space-between;align-items:baseline;font-size:11.5px;color:var(--muted);margin-bottom:6px}
+.ex-stat strong{font-size:15px;color:var(--text);font-weight:800;font-variant-numeric:tabular-nums}
+.ex-break{margin-top:10px;padding-top:10px;border-top:1px dashed var(--border)}
+.ex-break-title{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin-bottom:6px}
+.ex-act{display:flex;justify-content:space-between;font-size:11px;color:var(--text);padding:2px 0}
+.ex-act .ex-act-n{font-weight:700;font-variant-numeric:tabular-nums;color:var(--muted)}
+.ex-none{font-size:11px;color:var(--light);font-style:italic}
+.empty-state{text-align:center;padding:30px 20px;color:var(--muted)}
+.empty-state .ei{font-size:34px;margin-bottom:10px}
+.no-fb{background:rgba(230,126,34,.08);border:1px solid rgba(230,126,34,.2);border-radius:10px;padding:14px;font-size:13px;color:var(--yellow);text-align:center;line-height:1.6}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a href="weekly.html" class="back-btn">←</a>
+  <div class="header-title">⚔️ The Challenge <span class="sync-dot" id="syncDot"></span></div>
+  <button class="theme-btn" id="themeBtn">☀️</button>
+</div>
+
+<div id="appContent">
+  <div class="loading"><div class="loading-spin"></div><div class="loading-text">Loading the standings…</div></div>
+</div>
+
+<script>
+const FIREBASE_CONFIG={apiKey:"AIzaSyDmZStC-d8Vo92XfPnXA-nOPnzDTFGMdvI",authDomain:"whateverfood-3863a.firebaseapp.com",databaseURL:"https://whateverfood-3863a-default-rtdb.firebaseio.com",projectId:"whateverfood-3863a",storageBucket:"whateverfood-3863a.firebasestorage.app",messagingSenderId:"164590977645",appId:"1:164590977645:web:4c136c3aa53ed938d5b564"};
+const SYNC_KEY='family-food-tracker-2026';
+const LST='dft_theme';
+let theme='light';
+try{theme=localStorage.getItem(LST)||'light';}catch(e){}
+document.documentElement.setAttribute('data-theme',theme);
+document.getElementById('themeBtn').textContent=theme==='light'?'☀️':'🌙';
+document.getElementById('themeBtn').addEventListener('click',()=>{theme=theme==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',theme);document.getElementById('themeBtn').textContent=theme==='light'?'☀️':'🌙';try{localStorage.setItem(LST,theme);}catch(e){}});
+
+/* ═══ CONFIG (mirrors index.html — score + macros; workout labels added) ═══ */
+const SHARED_SNACKS=[{id:'pumpkin_walnut',score:.75,m:[180,7,8,15,2]},{id:'apple_almond',score:.5,m:[180,5,28,9,5]},{id:'roast_chickpea',score:.5,m:[180,8,24,6,6]},{id:'edamame_s',score:.5,m:[120,11,8,5,4]},{id:'berries_flax',score:.5,m:[80,2,16,3,5]},{id:'dark_choc',score:.25,m:[80,1,10,5,1]},{id:'celery_hummus',score:.5,m:[110,4,14,6,3]}];
+const HIM={id:'him',burnCap:500,targets:{cal:3000,protein:240,carbs:300,fat:90},grace:{cal:250,carb:20},slots:{morning:{opts:[{id:'lemon_cinn',score:.5,m:[10,0,2,0]},{id:'lemon_only',score:.25,m:[10,0,2,0]}]},breakfast:{opts:[{id:'c2',score:1.25,m:[500,38,42,22],ingr:[{m:[150,23,10,4]},{m:[40,1,10,0]},{m:[20,0,5,0]},{m:[50,1,1,5]},{m:[50,3,2,4]},{m:[50,2,3,4]},{m:[140,8,11,5]}]},{id:'a2',score:1.0,m:[422,33,47,15],ingr:[{m:[60,1,15,0]},{m:[45,1,11,0]},{m:[50,1,12,0]},{m:[120,25,3,2]},{m:[50,3,2,4]},{m:[60,2,3,5]},{m:[37,0,1,4]}]},{id:'b2',score:1.0,m:[610,51,70,15]},{id:'b_omelette',score:.75,m:[775,55,54,37],ingr:[{m:[210,18,2,15]},{m:[80,5,1,7]},{m:[7,1,1,0]},{m:[20,1,4,0]},{m:[40,0,0,5]},{m:[95,2,16,3]},{m:[100,12,4,4]},{m:[140,8,11,5]},{m:[80,1,4,7]}]},{id:'a_yogurt',score:.75,m:[280,22,28,8]},{id:'silver_honey',score:.5,m:[271,19,34,7]},{id:'boiled_eggs',score:.25,m:[78,6,0,5],ingr:[{m:[78,6,0,5]}]},{id:'eggs_biscuits',score:.25,m:[203,13,22,11],ingr:[{m:[78,6,0,5]},{m:[80,5,1,7]},{m:[45,1,8,1]}]},{id:'wrap',score:.25,m:[300,18,28,10],takeout:true},{id:'chai_bis',score:0,m:[275,7,42,8],ingr:[{m:[140,4,11,5]},{m:[45,1,8,1]}]}]},coffee1:{opts:[{id:'black1',score:.25,m:[5,0,0,0],isBlack:true},{id:'latte1',score:0,m:[150,9,14,6]}]},coffee2:{opts:[{id:'black2',score:.25,m:[5,0,0,0],isBlack:true},{id:'latte2',score:0,m:[150,9,14,6]}]},greentea1:{opts:[{id:'gt1',score:.25,m:[5,0,1,0]}]},lunch:{opts:[{id:'salmon_l',score:1.25,m:[480,51,8,14],ingr:[{m:[290,40,0,12]},{m:[120,11,8,5]},{m:[5,0,1,0]},{m:[40,0,0,5]},{m:[25,0,4,0]}]},{id:'chk_veg_l',score:1.0,m:[420,42,16,14],ingr:[{m:[280,42,0,6]},{m:[100,4,16,3]},{m:[40,0,0,5]}]},{id:'chk_rice_l',score:.75,m:[450,45,35,9]},{id:'lentil_l',score:.75,m:[420,40,28,6]},{id:'tahini_l',score:-.25,m:[550,40,45,18],takeout:true},{id:'burrito_l',score:-.25,m:[580,42,52,16],takeout:true},{id:'skip_l',score:0,m:[0,0,0,0]},{id:'tofu_veg_l',score:1.25,m:[380,22,20,16]},{id:'tofu_quin_l',score:1.0,m:[400,24,35,14]},{id:'tofu_tikka_l',score:1.0,m:[350,20,18,16]}]},kulcha:{opts:[{id:'pre_walk_k',score:.5,m:[0,0,0,0]},{id:'kulcha_meal',score:-1.25,m:[820,30,122,22]},{id:'post_walk_k',score:1.25,m:[0,0,0,0]}]},greentea2:{opts:[{id:'gt2',score:.25,m:[5,0,1,0]}]},snack:{opts:[{id:'almonds_s',score:.5,m:[100,4,3,9]},{id:'yogurt_s',score:.5,m:[130,12,8,3]},{id:'cottage_s',score:.5,m:[160,15,12,6]},{id:'nuts_s',score:.5,m:[150,5,10,10]},{id:'babybel_s',score:.25,m:[160,7,22,6]},...SHARED_SNACKS,{id:'skip_s',score:-.25,m:[0,0,0,0]}]},predinner:{opts:[{id:'pre_water',score:.25,m:[0,0,0,0]}]},dinner:{opts:[{id:'chk_veg_d',score:1.0,m:[470,66,16,14],ingr:[{m:[360,56,0,8]},{m:[110,5,15,4]},{m:[40,0,0,5]},{m:[0,0,0,0]}]},{id:'salmon_d',score:1.0,m:[550,55,8,22]},{id:'parm_d',score:.75,m:[420,52,12,14]},{id:'lentil_d',score:.75,m:[420,40,28,6]},{id:'tahini_d',score:-.25,m:[520,40,42,16],takeout:true},{id:'burrito_d',score:-.25,m:[580,42,52,16],takeout:true},{id:'thai_d',score:0,m:[480,28,28,22],takeout:true},{id:'tofu_veg_d',score:1.0,m:[380,20,18,16]},{id:'tofu_pep_d',score:1.0,m:[400,22,30,16]},{id:'tofu_stir_d',score:1.0,m:[340,18,22,14]},{id:'chickpea_sal_d',score:1.0,m:[380,18,42,10],ingr:[{m:[270,15,45,4]},{m:[140,9,1,11]},{m:[27,2,5,0]},{m:[20,1,4,0]},{m:[8,0,2,0]},{m:[16,1,3,0]},{m:[28,2,6,0]},{m:[40,0,0,5]},{m:[5,0,1,0]}]}]},postdinner:{opts:[{id:'acv_water',score:.25,m:[5,0,1,0]},{id:'plain_water',score:.1,m:[0,0,0,0]}]},tweaks:{opts:[{id:'eat_order',score:.5,m:[0,0,0,0]},{id:'turmeric',score:.5,m:[0,0,0,0]},{id:'water_meals',score:.25,m:[0,0,0,0]}]}},indulgences:{opts:[{id:'lays_full',score:-3,m:[270,3,29,16]},{id:'lays_small',score:-.5,m:[135,2,15,8]},{id:'white_rice',score:-1,m:[200,4,45,0]},{id:'pita',score:-.5,m:[165,6,34,1]},{id:'sweet_drk',score:-2,m:[150,0,40,0]},{id:'ice_cream',score:-1,m:[280,4,36,14]}]},extras:[{id:'xblack',score:.25,m:[5,0,0,0]},{id:'xwalks',score:.25,m:[0,0,0,0]},{id:'xwater',score:0,m:[0,0,0,0]},{id:'xchai',score:0,m:[85,4,10,3]},{id:'xchaach',score:.5,m:[55,3,5,2]},{id:'xbubly',score:0,m:[0,0,0,0]},{id:'xflo',score:.25,m:[60,1,14,0]},{id:'xfmod',score:-.25,m:[65,1,16,0]},{id:'xfhi',score:-1,m:[70,1,18,0]},{id:'xlatte',score:-.5,m:[150,9,14,6]},{id:'xbiscuit',score:-.25,m:[95,2,16,3]},{id:'xrice',score:-.5,m:[200,4,45,0]}],workout:[{id:'badminton',l:'🏸 Badminton',burn:220},{id:'muaythai',l:'🥊 Muay Thai',burn:300},{id:'weights',l:'🏋️ Weights',burn:45},{id:'walk10',l:'🚶 Walk 10m',burn:40},{id:'walk20',l:'🚶 Walk 20m',burn:75},{id:'walk30',l:'🚶 Walk 30m',burn:110}]};
+const HER={id:'her',burnCap:400,targets:{cal:2100,protein:200,carbs:175,fat:90,fiber:40},grace:{cal:150,carb:10},slots:{morning:{opts:[{id:'spearmint_lem',score:.75,m:[15,0,3,0,0]},{id:'lemon_cinn_h',score:.5,m:[10,0,2,0,0]},{id:'lemon_only_h',score:.25,m:[10,0,2,0,0]}]},breakfast:{opts:[{id:'spinach_oml',score:1.25,m:[380,30,8,22,5],ingr:[{m:[210,18,2,15,0]},{m:[15,2,2,0,2]},{m:[5,0,1,0,0]},{m:[55,2,3,4,3]},{m:[40,0,0,5,0]},{m:[20,1,4,0,1]},{m:[35,0,2,3,2]}]},{id:'yogurt_ber_h',score:1.25,m:[320,22,35,10,9],ingr:[{m:[150,23,10,4,0]},{m:[75,2,18,0,4]},{m:[55,2,3,4,3]},{m:[60,2,3,5,5]},{m:[5,0,1,0,0]},{m:[20,0,5,0,0]}]},{id:'green_smth',score:1.0,m:[380,30,40,12,10],ingr:[{m:[15,2,2,0,2]},{m:[75,2,18,0,4]},{m:[55,2,3,4,3]},{m:[120,25,3,2,0]},{m:[40,1,2,3,0]},{m:[100,4,3,8,2]},{m:[5,0,1,0,0]}]},{id:'oats_h',score:.75,m:[350,12,55,8,8]},{id:'silver_alm_h',score:.5,m:[280,12,28,14,5]},{id:'silver_cot_h',score:.5,m:[250,17,28,5,4]},{id:'boiled_egg_h',score:.25,m:[78,6,0,5,0],ingr:[{m:[78,6,0,5,0]}]},{id:'chai_bis_h',score:0,m:[275,7,42,8,2],ingr:[{m:[140,4,11,5,0]},{m:[45,1,8,1,0]}]}]},coffee1:{opts:[{id:'spearmint1_h',score:.5,m:[5,0,1,0,0]},{id:'green1_h',score:.25,m:[5,0,1,0,0]},{id:'black1_h',score:.25,m:[5,0,0,0,0],isBlack:true},{id:'latte1_h',score:0,m:[130,5,18,5,0]}]},coffee2:{opts:[{id:'spearmint2_h',score:.5,m:[5,0,1,0,0]},{id:'green2_h',score:.25,m:[5,0,1,0,0]},{id:'black2_h',score:.25,m:[5,0,0,0,0],isBlack:true},{id:'latte2_h',score:0,m:[130,5,18,5,0]}]},afternoon_tea:{opts:[{id:'spearmint_pm',score:.5,m:[5,0,1,0,0]},{id:'gt_pm_h',score:.25,m:[5,0,1,0,0]}]},lunch:{opts:[{id:'turmeric_chk',score:1.25,m:[420,45,15,14,6],ingr:[{m:[280,42,0,6,0]},{m:[10,0,2,0,1]},{m:[90,2,11,3,5]},{m:[40,0,0,5,0]}]},{id:'chk_quinoa_h',score:1.0,m:[450,48,30,12,6]},{id:'chk_tikka_h',score:1.0,m:[400,42,12,16,4]},{id:'chk_avo_h',score:1.0,m:[430,40,10,22,7]},{id:'chk_soup_h',score:.75,m:[320,35,20,8,5]},{id:'chickpea_h',score:.75,m:[350,14,45,10,12]},{id:'lentil_h',score:.75,m:[380,18,50,8,15]},{id:'tofu_turm_h',score:1.25,m:[380,22,20,16,6]},{id:'tofu_quin_h',score:1.0,m:[400,24,35,14,6]},{id:'tofu_tikk_h',score:1.0,m:[350,20,18,16,5]},{id:'tofu_avo_h',score:1.0,m:[370,18,15,22,7]},{id:'tofu_soup_h',score:.75,m:[280,16,25,10,5]},{id:'takeout_l_h',score:-.25,m:[550,38,45,18,3],takeout:true}]},snack:{opts:[{id:'protein_water',score:1.0,m:[110,25,2,1,0],ingr:[{m:[110,25,2,1,0]},{m:[0,0,0,0,0]},{m:[5,0,1,0,0]},{m:[0,0,0,0,0]}]},...SHARED_SNACKS,{id:'yogurt_cinn_h',score:.5,m:[130,12,8,3,0]},{id:'skip_s_h',score:-.25,m:[0,0,0,0,0]}]},predinner:{opts:[{id:'pre_water_h',score:.25,m:[0,0,0,0,0]}]},dinner:{opts:[{id:'stuffed_pep',score:1.25,m:[450,48,28,14,7],ingr:[{m:[280,42,0,6,0]},{m:[60,2,12,0,4]},{m:[60,3,11,1,2]},{m:[20,1,4,0,1]},{m:[40,0,0,5,0]},{m:[0,0,0,0,0]}]},{id:'chk_avo_d_h',score:1.25,m:[430,44,12,22,8]},{id:'turm_cauli',score:1.0,m:[380,44,15,14,6]},{id:'chk_stir_h',score:1.0,m:[400,42,20,14,6]},{id:'salmon_d_h',score:1.0,m:[520,52,12,22,5],ingr:[{m:[290,40,0,12,0]},{m:[120,11,8,5,4]},{m:[30,2,4,0,1]},{m:[40,0,0,5,0]},{m:[10,0,1,0,0]},{m:[30,0,1,2,1]}]},{id:'lentil_c_h',score:.75,m:[420,18,55,8,12]},{id:'tofu_pep_h',score:1.25,m:[400,22,30,16,8]},{id:'tofu_avo_d_h',score:1.0,m:[380,20,16,22,7]},{id:'tofu_caul_h',score:1.0,m:[320,20,18,16,5]},{id:'tofu_stir_h',score:1.0,m:[340,18,22,14,6]},{id:'chickpea_sal_d_h',score:1.25,m:[380,18,42,10,14],ingr:[{m:[270,15,45,4,12]},{m:[140,9,1,11,0]},{m:[27,2,5,0,3]},{m:[20,1,4,0,1]},{m:[8,0,2,0,0]},{m:[16,1,3,0,1]},{m:[28,2,6,0,3]},{m:[40,0,0,5,0]},{m:[5,0,1,0,0]}]},{id:'takeout_d_h',score:-.25,m:[520,38,42,16,3],takeout:true}]},postdinner:{opts:[{id:'acv_h',score:.25,m:[5,0,1,0,0]},{id:'plain_h',score:.1,m:[0,0,0,0,0]}]},tweaks:{opts:[{id:'flaxseed_h',score:.5,m:[37,1,2,3,3]},{id:'spearmint_tw',score:.5,m:[0,0,0,0,0]},{id:'inositol_h',score:.5,m:[0,0,0,0,0]},{id:'eat_ord_h',score:.5,m:[0,0,0,0,0]},{id:'zinc_h',score:.25,m:[0,0,0,0,0]}]}},indulgences:{opts:[{id:'dairy_h',score:-.5,m:[80,5,5,6,0]},{id:'sweet_h',score:-2,m:[150,0,40,0,0]},{id:'refined_h',score:-1,m:[300,8,60,4,2]},{id:'processed_h',score:-1.5,m:[250,4,35,12,1]},{id:'caffeine_h',score:-.75,m:[0,0,0,0,0]}]},extras:[{id:'spearmint_x',score:.5,m:[5,0,1,0,0]},{id:'chaach_hx',score:.25,m:[55,3,5,2,0]},{id:'bubly_hx',score:0,m:[0,0,0,0,0]},{id:'walks_hx',score:.5,m:[0,0,0,0,0]},{id:'water_hx',score:0,m:[0,0,0,0,0]},{id:'flo_hx',score:.25,m:[60,1,14,0,3]},{id:'fmod_hx',score:-.25,m:[65,1,16,0,2]},{id:'fhi_hx',score:-1,m:[70,1,18,0,1]},{id:'dairy_hx',score:-.5,m:[80,5,5,6,0]},{id:'lattes_hx',score:-.5,m:[130,5,18,5,0]},{id:'biscuits_hx',score:-.25,m:[95,2,16,3,1]}],workout:[{id:'badminton_h',l:'🏸 Badminton',burn:200},{id:'muaythai_h',l:'🥊 Muay Thai',burn:270},{id:'weights_h',l:'🏋️ Weights',burn:40},{id:'walk10_h',l:'🚶 Walk 10m',burn:35},{id:'walk20_h',l:'🚶 Walk 20m',burn:65},{id:'walk30_h',l:'🚶 Walk 30m',burn:95}]};
+const CONFIGS={him:HIM,her:HER};
+
+/* ═══ SCORING (pure) ═══ */
+function effMacros(sk,o,st){if(!o.ingr)return o.m||[0,0,0,0,0];const ck=`${sk}__${o.id}`,c=st.customs?.[ck];if(!c||Object.keys(c).length===0)return o.m||[0,0,0,0,0];const mm=[0,0,0,0,0];o.ingr.forEach((ig,i)=>{const mu=c[i]!==undefined?Number(c[i]):1;if(mu<=0)return;for(let j=0;j<5;j++)mm[j]+=(ig.m[j]||0)*mu;});return mm;}
+function dayMacros(cfg,st){const m={cal:0,protein:0,carbs:0,fat:0,fiber:0};for(const sk in cfg.slots)cfg.slots[sk].opts.forEach(o=>{const cnt=Math.max(0,st.counts?.[`${sk}__${o.id}`]||0);if(cnt<=0)return;const ma=effMacros(sk,o,st);m.cal+=ma[0]*cnt;m.protein+=ma[1]*cnt;m.carbs+=ma[2]*cnt;m.fat+=ma[3]*cnt;m.fiber+=(ma[4]||0)*cnt;});cfg.indulgences.opts.forEach(o=>{const cnt=Math.max(0,st.inds?.[o.id]||0);if(cnt<=0||!o.m)return;m.cal+=o.m[0]*cnt;m.protein+=o.m[1]*cnt;m.carbs+=o.m[2]*cnt;m.fat+=o.m[3]*cnt;m.fiber+=(o.m[4]||0)*cnt;});cfg.extras.forEach(e=>{const cnt=Math.max(0,st.extras?.[e.id]||0);if(cnt<=0||!e.m)return;m.cal+=e.m[0]*cnt;m.protein+=e.m[1]*cnt;m.carbs+=e.m[2]*cnt;m.fat+=e.m[3]*cnt;m.fiber+=(e.m[4]||0)*cnt;});return m;}
+function dayBurn(cfg,st){return Math.min(cfg.workout.reduce((t,w)=>t+Math.max(0,st.workout?.[w.id]||0)*w.burn,0),cfg.burnCap);}
+function calPen(n,t,g){const x=n-(t+g);return x<=0?0:-Math.min(3,x/200);}
+function carbPen(c,t,g){const x=c-(t+g);return x<=0?0:-Math.min(2.5,x/15);}
+function dayHasTakeout(cfg,st){for(const sk in cfg.slots)for(const o of cfg.slots[sk].opts)if(o.takeout&&Math.max(0,st.counts?.[`${sk}__${o.id}`]||0)>0)return true;return Object.values(st.inds||{}).some(v=>Number(v)>0);}
+function dayMaster(cfg,st){if(cfg.id!=='him')return false;if(!dayHasTakeout(cfg,st))return false;const c=st.counts||{};return(Number(c['coffee1__black1'])||0)>0&&(Number(c['coffee2__black2'])||0)>0;}
+function dayScore(cfg,st){let s=0;for(const sk in cfg.slots)cfg.slots[sk].opts.forEach(o=>{const c=Math.max(0,st.counts?.[`${sk}__${o.id}`]||0);if(c>0)s+=c*o.score;});cfg.indulgences.opts.forEach(o=>{const c=Math.max(0,st.inds?.[o.id]||0);if(c>0)s+=c*o.score;});cfg.extras.forEach(e=>{const c=Math.max(0,st.extras?.[e.id]||0);if(c>0)s+=c*e.score;});const m=dayMacros(cfg,st),b=dayBurn(cfg,st),net=m.cal-b;s+=calPen(net,cfg.targets.cal,cfg.grace.cal);s+=carbPen(m.carbs,cfg.targets.carbs,cfg.grace.carb);if(dayMaster(cfg,st))s+=0.5;return Math.round(s*100)/100;}
+function hasLog(st){if(!st)return false;const anyPos=o=>o&&Object.values(o).some(v=>Number(v)>0);return!!((st.counts&&Object.keys(st.counts).length>0)||anyPos(st.extras)||anyPos(st.inds)||anyPos(st.workout));}
+
+/* ═══ DATE / WEEK HELPERS (week = Sunday→Saturday) ═══ */
+const todayKey=new Date().toISOString().split('T')[0];
+function dow(key){return new Date(key+'T12:00:00').getDay();}        // 0=Sunday
+function addDays(key,n){const d=new Date(key+'T12:00:00');d.setDate(d.getDate()+n);return d.toISOString().split('T')[0];}
+function rangeKeys(s,e){const a=[];let k=s;while(k<=e){a.push(k);k=addDays(k,1);}return a;}
+const curStartKey=addDays(todayKey,-dow(todayKey));
+const curEndKey=addDays(curStartKey,6);
+const lastStartKey=addDays(curStartKey,-7);
+const lastEndKey=addDays(curStartKey,-1);
+const curPlayed=rangeKeys(curStartKey,todayKey);   // Sun → today
+const curFull=rangeKeys(curStartKey,curEndKey);    // full Sun → Sat
+const lastDays=rangeKeys(lastStartKey,lastEndKey); // last full week
+const fetchDays=rangeKeys(lastStartKey,todayKey);  // everything we need
+
+const DOW_LETTER=['S','M','T','W','T','F','S'];
+function fmtRange(a,b){const A=new Date(a+'T12:00:00'),B=new Date(b+'T12:00:00');const o={month:'short',day:'numeric'};return`${A.toLocaleDateString('en-CA',o)} – ${B.toLocaleDateString('en-CA',o)}`;}
+function sStr(s){if(s===null||s===undefined)return'—';return(s>=0?'+':'')+s.toFixed(2);}
+
+/* ═══ COMPUTE ═══ */
+function compute(dayData){const out={};['him','her'].forEach(p=>{const st=dayData?.[p]||{};const has=hasLog(st);out[p]={has,score:has?dayScore(CONFIGS[p],st):null};});return out;}
+function dayWinner(c){const h=c.him.has?c.him.score:null,r=c.her.has?c.her.score:null;if(h===null&&r===null)return null;if(h!==null&&r===null)return'him';if(r!==null&&h===null)return'her';if(h>r)return'him';if(r>h)return'her';return'tie';}
+function tally(days,data){let him=0,her=0,tie=0,played=0;days.forEach(d=>{const w=dayWinner(compute(data[d]));if(!w)return;played++;if(w==='him')him++;else if(w==='her')her++;else tie++;});return{him,her,tie,played};}
+
+/* ═══ MACRO + EXERCISE AVERAGES (current week) ═══ */
+function macroColor(key,pct){if(key==='cal')return pct<70?'var(--yellow)':pct<=115?'var(--green)':'var(--red)';if(key==='protein'||key==='fiber')return pct<50?'var(--red)':pct<80?'var(--yellow)':'var(--green)';return pct<=80?'var(--green)':pct<=110?'var(--yellow)':'var(--red)';}
+function weekMacroAvg(cfg,days,data){let n=0;const sum={cal:0,protein:0,carbs:0,fat:0,fiber:0};days.forEach(d=>{const st=data[d]?.[cfg.id];if(!hasLog(st))return;n++;const m=dayMacros(cfg,st),b=dayBurn(cfg,st);sum.cal+=m.cal-b;sum.protein+=m.protein;sum.carbs+=m.carbs;sum.fat+=m.fat;sum.fiber+=m.fiber;});if(!n)return null;const avg={};for(const k in sum)avg[k]=sum[k]/n;return{avg,n};}
+function weekExercise(cfg,days,data){let totalBurn=0,loggedDays=0,activeDays=0,sessions=0;const byType={};cfg.workout.forEach(w=>byType[w.id]={l:w.l,n:0});days.forEach(d=>{const st=data[d]?.[cfg.id];if(!hasLog(st))return;loggedDays++;totalBurn+=dayBurn(cfg,st);let dh=false;cfg.workout.forEach(w=>{const n=Math.max(0,st.workout?.[w.id]||0);if(n>0){byType[w.id].n+=n;sessions+=n;dh=true;}});if(dh)activeDays++;});return{totalBurn,loggedDays,activeDays,sessions,byType,avgBurn:loggedDays?Math.round(totalBurn/loggedDays):0};}
+
+/* ═══ RENDER ═══ */
+function renderChampion(data){
+  const t=tally(lastDays,data);
+  if(t.played===0)return`<div class="champ-card draw"><div class="champ-eyebrow">Last Week</div><div class="champ-trophy">🗓️</div><div class="champ-name">No games last week</div><div class="champ-dates">${fmtRange(lastStartKey,lastEndKey)}</div></div>`;
+  const who=t.him>t.her?'him':t.her>t.him?'her':'draw';
+  const name=who==='him'?'👨 Him':who==='her'?'👩 Her':'🤝 Draw';
+  const title=who==='draw'?'It was a tie!':`${name} takes the week`;
+  return`<div class="champ-card ${who}">
+    <div class="champ-eyebrow">🏆 Last Week's Champion</div>
+    <div class="champ-trophy">${who==='draw'?'🤝':'🏆'}</div>
+    <div class="champ-name">${title}</div>
+    <div class="champ-record">👨 ${t.him} &nbsp;–&nbsp; ${t.her} 👩${t.tie?` · ${t.tie} tie${t.tie>1?'s':''}`:''}</div>
+    <div class="champ-dates">${fmtRange(lastStartKey,lastEndKey)} · ${t.played} day${t.played>1?'s':''} played</div>
+  </div>`;
+}
+
+function renderThisWeek(data){
+  const t=tally(curPlayed,data);
+  const leader=t.him>t.her?'him':t.her>t.him?'her':'tie';
+  const leadTxt=leader==='him'?'👨 Him is ahead':leader==='her'?'👩 Her is ahead':(t.played?'All square':'No games yet this week');
+  const daysLeft=curFull.filter(d=>d>todayKey).length;
+  let rows='';
+  curPlayed.forEach(d=>{
+    const c=compute(data[d]),w=dayWinner(c);
+    if(!w)return;
+    const dl=DOW_LETTER[dow(d)]+' '+new Date(d+'T12:00:00').toLocaleDateString('en-CA',{day:'numeric'});
+    const himChip=`<div class="dl-chip ${c.him.has?'him':'empty'} ${w==='him'?'win':''}">${w==='him'?'<span class="dl-crown">👑</span>':''}${sStr(c.him.has?c.him.score:null)}</div>`;
+    const herChip=`<div class="dl-chip ${c.her.has?'her':'empty'} ${w==='her'?'win':''}">${w==='her'?'<span class="dl-crown">👑</span>':''}${sStr(c.her.has?c.her.score:null)}</div>`;
+    rows+=`<div class="daylog-row"><span class="dl-day">${dl}</span>${himChip}<span class="dl-vs">vs</span>${herChip}</div>`;
+  });
+  return`<div class="section">
+    <div class="section-title">🔥 This Week's Battle <span class="live-pill">LIVE</span></div>
+    <div class="scoreboard">
+      <div class="sb-side him"><div class="sb-avatar">👨</div><div class="sb-name">Him</div><div class="sb-wins">${t.him}</div><div class="sb-wins-lbl">days won</div></div>
+      <div class="sb-vs">VS</div>
+      <div class="sb-side her"><div class="sb-avatar">👩</div><div class="sb-name">Her</div><div class="sb-wins">${t.her}</div><div class="sb-wins-lbl">days won</div></div>
+    </div>
+    <div class="sb-leader ${leader}">${leadTxt}${t.tie?` · ${t.tie} tied day${t.tie>1?'s':''}`:''}</div>
+    ${rows?`<div class="daylog">${rows}</div>`:`<div class="empty-state" style="padding:18px"><div class="ei">⚔️</div>No scores logged yet this week.</div>`}
+    ${daysLeft>0?`<div class="upcoming-note">${daysLeft} day${daysLeft>1?'s':''} left · week ends Saturday (${fmtRange(curStartKey,curEndKey)})</div>`:`<div class="upcoming-note">Final day — week ends today</div>`}
+  </div>`;
+}
+
+function renderMacroFaceoff(data){
+  const h=weekMacroAvg(HIM,curPlayed,data),r=weekMacroAvg(HER,curPlayed,data);
+  if(!h&&!r)return`<div class="section"><div class="section-title">🍽️ Macro Face-Off · This Week Avg</div><div class="empty-state"><div class="ei">🍽️</div>No meals logged yet this week.</div></div>`;
+  const rowsDef=[{k:'cal',lbl:'Net Calories',u:''},{k:'protein',lbl:'Protein',u:'g'},{k:'carbs',lbl:'Carbs',u:'g'},{k:'fat',lbl:'Fat',u:'g'},{k:'fiber',lbl:'Fiber',u:'g'}];
+  const cell=(data,key,cfg)=>{
+    if(!data)return`<div class="mf-cell"><span class="mf-na">—</span></div>`;
+    const v=data.avg[key],tgt=cfg.targets[key];
+    if(tgt===undefined)return`<div class="mf-cell"><div class="mf-val">${Math.round(v)}</div><div class="mf-pct" style="color:var(--light)">no target</div></div>`;
+    const pct=Math.round((v/tgt)*100);
+    return`<div class="mf-cell"><div class="mf-val">${Math.round(v)}</div><div class="mf-pct" style="color:${macroColor(key,pct)}">${pct}% · /${tgt}</div></div>`;
+  };
+  const rows=rowsDef.map(rd=>`<div class="mf-row"><span class="mf-lbl">${rd.lbl}</span>${cell(h,rd.k,HIM)}${cell(r,rd.k,HER)}</div>`).join('');
+  const daysTxt=`${(h?h.n:0)||0} / ${(r?r.n:0)||0} days logged`;
+  return`<div class="section">
+    <div class="section-title">🍽️ Macro Face-Off · This Week Avg</div>
+    <div class="mf-table">
+      <div class="mf-head"><div class="mf-h-lbl">Per day</div><div class="mf-h-him">👨 Him</div><div class="mf-h-her">👩 Her</div></div>
+      ${rows}
+    </div>
+    <div class="upcoming-note">Avg per logged day · ${daysTxt} · raw value + % of own target</div>
+  </div>`;
+}
+
+function renderExerciseFaceoff(data){
+  const h=weekExercise(HIM,curPlayed,data),r=weekExercise(HER,curPlayed,data);
+  if(h.loggedDays===0&&r.loggedDays===0)return`<div class="section"><div class="section-title">🏋️ Exercise Face-Off · This Week</div><div class="empty-state"><div class="ei">🏋️</div>No activity logged yet this week.</div></div>`;
+  const col=(ex,cls,name)=>{
+    const acts=Object.values(ex.byType).filter(a=>a.n>0);
+    const breakdown=acts.length?acts.map(a=>`<div class="ex-act"><span>${a.l}</span><span class="ex-act-n">×${a.n}</span></div>`).join(''):`<div class="ex-none">No workouts logged</div>`;
+    return`<div class="ex-col ${cls}">
+      <div class="ex-name">${name}</div>
+      <div class="ex-stat"><span>Avg burn/day</span><strong>${ex.avgBurn}</strong></div>
+      <div class="ex-stat"><span>Total burned</span><strong>${ex.totalBurn}</strong></div>
+      <div class="ex-stat"><span>Sessions</span><strong>${ex.sessions}</strong></div>
+      <div class="ex-stat"><span>Active days</span><strong>${ex.activeDays}</strong></div>
+      <div class="ex-break"><div class="ex-break-title">By activity</div>${breakdown}</div>
+    </div>`;
+  };
+  return`<div class="section">
+    <div class="section-title">🏋️ Exercise Face-Off · This Week</div>
+    <div class="ex-grid">${col(h,'him','👨 Him')}${col(r,'her','👩 Her')}</div>
+  </div>`;
+}
+
+function renderAll(data){
+  document.getElementById('appContent').innerHTML=`<div class="wrap">
+    ${renderChampion(data)}
+    ${renderThisWeek(data)}
+    ${renderMacroFaceoff(data)}
+    ${renderExerciseFaceoff(data)}
+  </div>`;
+}
+
+/* ═══ FIREBASE ═══ */
+function loadData(){
+  if(!FIREBASE_CONFIG.apiKey){document.getElementById('appContent').innerHTML=`<div class="wrap"><div class="no-fb">🔥 Firebase not configured.</div></div>`;return;}
+  const load=(src,cb)=>{const s=document.createElement('script');s.src=src;s.onload=cb;s.onerror=()=>{document.getElementById('appContent').innerHTML=`<div class="wrap"><div class="no-fb">⚠️ Couldn't load Firebase. Check your connection.</div></div>`;};document.head.appendChild(s);};
+  load('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js',()=>{
+    load('https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js',()=>{
+      try{
+        if(!firebase.apps.length)firebase.initializeApp(FIREBASE_CONFIG);
+        const db=firebase.database();
+        document.getElementById('syncDot').classList.add('live');
+        const data={};
+        Promise.all(fetchDays.map(d=>db.ref(`trackers/${SYNC_KEY}/dt/${d}`).once('value').then(s=>{data[d]=s.val()||{};}))).then(()=>{
+          renderAll(data);
+          db.ref(`trackers/${SYNC_KEY}/dt/${todayKey}`).on('value',s=>{data[todayKey]=s.val()||{};renderAll(data);});
+        }).catch(e=>{document.getElementById('appContent').innerHTML=`<div class="wrap"><div class="no-fb">⚠️ ${e.message}</div></div>`;});
+      }catch(e){document.getElementById('appContent').innerHTML=`<div class="wrap"><div class="no-fb">⚠️ ${e.message}</div></div>`;}
+    });
+  });
+}
+loadData();
+</script>
+</body>
+</html>
