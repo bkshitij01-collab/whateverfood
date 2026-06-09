@@ -285,12 +285,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
 .rem-toggle.on::after{transform:translateX(18px)}
 .rem-perm-note{font-size:11.5px;color:var(--muted);line-height:1.6;background:var(--soft);border-radius:10px;padding:10px 12px;margin-top:6px}
 .rem-master{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0 12px;margin-bottom:8px;border-bottom:1.5px solid var(--border)}
+.rem-protein{background:rgba(26,107,82,.06);border-radius:9px;margin:-4px -2px}
+.rem-protein .rem-name{color:var(--him)}
+/* in-app toast */
+.notif-toast{position:fixed;top:-140px;left:50%;transform:translateX(-50%);background:var(--card);border:1.5px solid var(--border2);border-radius:16px;padding:13px 16px 12px;max-width:360px;width:calc(100% - 28px);box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:999;transition:top .4s cubic-bezier(.34,1.56,.64,1);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.notif-toast.show{top:14px}
+.notif-toast-top{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.notif-toast-icon{font-size:18px;line-height:1}
+.notif-toast-app{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;flex:1}
+.notif-toast-close{font-size:16px;color:var(--light);line-height:1;padding:2px}
+.notif-toast-title{font-size:14px;font-weight:800;color:var(--text);margin-bottom:3px}
+.notif-toast-body{font-size:12px;color:var(--muted);line-height:1.55;white-space:pre-line}
 </style>
 </head>
 <body>
 
 <div class="lock-banner" id="lockBanner" onclick="showLockPrompt()">🔒 Read-only · tap to unlock editing</div>
 <div class="past-banner" id="pastBanner">📅 Viewing past day — edits will update that day's data</div>
+<!-- In-app notification toast -->
+<div class="notif-toast" id="notifToast" onclick="dismissToast()">
+  <div class="notif-toast-top"><span class="notif-toast-icon">🌿</span><span class="notif-toast-app">Food Tracker</span><span class="notif-toast-close">×</span></div>
+  <div class="notif-toast-title" id="toastTitle"></div>
+  <div class="notif-toast-body" id="toastBody"></div>
+</div>
 
 <header class="app-header">
   <div class="hdr-top">
@@ -324,6 +341,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
     </div>
     <button class="dnav-btn" id="nextDayBtn" title="Next day" disabled>›</button>
     <a href="weekly.html" class="week-link" title="7-day summary">📅 Week</a>
+    <a href="challenge.html" class="week-link" title="His vs Her challenge" style="border-color:rgba(139,58,107,.35);color:var(--her)">⚔️</a>
   </div>
 </header>
 
@@ -456,12 +474,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
     <button class="rem-toggle" id="remMaster"></button>
   </div>
   <div id="remList"></div>
-  <div class="rem-perm-note" id="remNote">Reminders fire while the app is open or recently backgrounded. On iPhone, add the app to your Home Screen first (Share → Add to Home Screen) for the most reliable delivery.</div>
+  <div class="rem-perm-note" id="remNote">In-app alerts show while the app is open on any device. For system notifications (banner even when minimised), add to Home Screen first, then allow notifications. Protein alerts show live tracked values at fire time.</div>
   <div class="modal-btns" style="margin-top:14px">
     <button class="btn btn-cancel" onclick="document.getElementById('remindModal').classList.remove('show')">Close</button>
     <button class="btn" id="remTestBtn" style="background:var(--him);color:#fff">🔔 Test</button>
   </div>
 </div></div>
+
+<div class="footer-outer"><div class="footer-nav" id="footerNav">
   <div class="footer-handle" id="footerHandle"><div class="footer-pill"></div></div>
   <div class="footer-items">
     <button class="fnav-btn fn-him" onclick="navScroll('himFoodSection')"><span class="fnav-icon">🥗</span><span class="fnav-lbl">His Food</span></button>
@@ -663,20 +683,92 @@ function handleDelDish(e){e.stopPropagation();const b=e.currentTarget;const[p,id
 document.getElementById('dishSaveBtn').addEventListener('click',saveDish);
 document.addEventListener('click',e=>{if(e.target.id==='dishModal')document.getElementById('dishModal').classList.remove('show');if(e.target.id==='remindModal')document.getElementById('remindModal').classList.remove('show');});
 
-// ═══ REMINDERS (Notification API; fires while app open/backgrounded) ═══
+// ═══ REMINDERS ═══
 const LSREM='dft_reminders';
-const REM_DEFS=[{id:'water',name:'💧 Drink water',sub:'Stay hydrated',def:'11:00'},{id:'lunch',name:'🍽️ Log lunch',sub:'Don\'t forget to track',def:'13:00'},{id:'protein',name:'💪 Protein check',sub:'Are you on pace?',def:'16:00'},{id:'dinner',name:'🌙 Log dinner',sub:'Track your evening meal',def:'19:30'}];
+const REM_DEFS=[
+  {id:'water',       name:'💧 Drink water',           sub:'Stay hydrated all day',             def:'11:00'},
+  {id:'protein_am',  name:'💪 Morning protein check',  sub:'Him & her — are you on pace?',      def:'09:30', protein:true, slot:'morning'},
+  {id:'lunch',       name:'🍽️ Log lunch',             sub:"Don't forget to track your meal",   def:'13:00'},
+  {id:'protein_mid', name:'💪 Midday protein check',   sub:'Halfway there — check the numbers.',def:'14:30', protein:true, slot:'midday'},
+  {id:'dinner',      name:'🌙 Log dinner',             sub:'Track your evening meal',           def:'19:30'},
+  {id:'protein_pm',  name:'💪 Evening protein check',  sub:'Lock in your goal before bed.',     def:'18:00', protein:true, slot:'evening'},
+];
 let reminders={enabled:false,items:{}};
+let toastTimer=null;
 function loadReminders(){try{const r=localStorage.getItem(LSREM);if(r)reminders=JSON.parse(r);}catch(e){}REM_DEFS.forEach(d=>{if(!reminders.items[d.id])reminders.items[d.id]={on:false,time:d.def};});}
 function saveReminders(){try{localStorage.setItem(LSREM,JSON.stringify(reminders));}catch(e){}}
-function renderReminders(){const master=document.getElementById('remMaster');master.className='rem-toggle'+(reminders.enabled?' on':'');document.getElementById('remList').innerHTML=REM_DEFS.map(d=>{const it=reminders.items[d.id];return`<div class="rem-row"><div class="rem-info"><div class="rem-name">${d.name}</div><div class="rem-sub">${d.sub}</div></div><input type="time" class="rem-time" value="${it.time}" data-remtime="${d.id}"><button class="rem-toggle ${it.on?'on':''}" data-remtog="${d.id}"></button></div>`;}).join('');document.querySelectorAll('[data-remtog]').forEach(b=>b.addEventListener('click',()=>{const id=b.dataset.remtog;reminders.items[id].on=!reminders.items[id].on;saveReminders();renderReminders();}));document.querySelectorAll('[data-remtime]').forEach(inp=>inp.addEventListener('change',()=>{reminders.items[inp.dataset.remtime].time=inp.value;saveReminders();}));}
-async function toggleMasterReminders(){if(!reminders.enabled){if('Notification'in window){let perm=Notification.permission;if(perm!=='granted')perm=await Notification.requestPermission();if(perm!=='granted'){document.getElementById('remNote').innerHTML='⚠️ Notifications are blocked. Enable them for this site in your browser/phone settings, then try again.';return;}}else{document.getElementById('remNote').innerHTML='⚠️ This browser doesn\'t support notifications.';return;}reminders.enabled=true;}else{reminders.enabled=false;}saveReminders();renderReminders();}
-function fireNotification(title,body){try{if('Notification'in window&&Notification.permission==='granted'){new Notification(title,{body,icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><text y="48" font-size="48">🌿</text></svg>'});}}catch(e){}}
-let lastRemCheck='';
-function checkReminders(){if(!reminders.enabled)return;const now=new Date();const hhmm=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');const dayKey=now.toISOString().split('T')[0];REM_DEFS.forEach(d=>{const it=reminders.items[d.id];if(it.on&&it.time===hhmm){const fireKey=`${dayKey}_${d.id}_${it.time}`;if(it.lastFired!==fireKey){it.lastFired=fireKey;saveReminders();fireNotification(d.name,d.sub);}}});}
+// Dynamic protein message
+function getProteinMsg(slot){
+  const hm=calcMacros('him'),rm=calcMacros('her');
+  const hP=Math.round(hm.protein),hT=HIM.targets.protein,hR=Math.max(0,hT-hP),hPct=Math.round(hP/hT*100);
+  const rP=Math.round(rm.protein),rT=HER.targets.protein,rR=Math.max(0,rT-rP),rPct=Math.round(rP/rT*100);
+  if(slot==='morning'){
+    const hype=hP>0?'Great start — keep stacking! 🔥':'Day is fresh — first protein hit incoming! 🌅';
+    return{title:'💪 Morning Protein Check',body:`👨 Him: ${hP}g / ${hT}g (${hPct}%) · ${hR}g left\n👩 Her: ${rP}g / ${rT}g (${rPct}%) · ${rR}g left\n${hype}`};
+  }
+  if(slot==='midday'){
+    const hMsg=hPct<35?'⚠️ Behind — add protein now!':hPct<60?'On pace, keep pushing 🔥':'Crushing it! 💪';
+    const rMsg=rPct<35?'⚠️ Behind — protein first!':rPct<60?'On track 👍':'Strong 💜';
+    return{title:'💪 Midday Protein Check',body:`👨 Him: ${hP}g / ${hT}g — ${hR}g left. ${hMsg}\n👩 Her: ${rP}g / ${rT}g — ${rR}g left. ${rMsg}`};
+  }
+  const hMsg=hR===0?'✅ Goal smashed!':hR<60?`${hR}g to go — dinner can finish it! 🎯`:`${hR}g left — make dinner count! 🍗`;
+  const rMsg=rR===0?'✅ Goal hit!':rR<50?`${rR}g to go — almost there 💜`:`${rR}g left — protein dinner needed! 🥗`;
+  return{title:'💪 Evening Protein Check',body:`👨 Him: ${hP}g / ${hT}g — ${hMsg}\n👩 Her: ${rP}g / ${rT}g — ${rMsg}`};
+}
+// In-app toast (works on ALL devices including iOS)
+function showToast(title,body){
+  document.getElementById('toastTitle').textContent=title;
+  document.getElementById('toastBody').textContent=body;
+  const t=document.getElementById('notifToast');
+  t.classList.add('show');clearTimeout(toastTimer);
+  toastTimer=setTimeout(dismissToast,6000);
+}
+function dismissToast(){document.getElementById('notifToast').classList.remove('show');clearTimeout(toastTimer);}
+// System notification (desktop + Android; silent fail on iOS)
+function trySystemNotif(title,body){
+  try{
+    if(!('Notification'in window)||Notification.permission!=='granted')return;
+    if(navigator.serviceWorker&&navigator.serviceWorker.controller){
+      navigator.serviceWorker.ready.then(reg=>reg.showNotification(title,{body})).catch(()=>{});
+    } else {new Notification(title,{body});}
+  }catch(e){}
+}
+function fireNotification(title,body){showToast(title,body);trySystemNotif(title,body);}
+function renderReminders(){
+  const master=document.getElementById('remMaster');
+  master.className='rem-toggle'+(reminders.enabled?' on':'');
+  document.getElementById('remList').innerHTML=REM_DEFS.map(d=>{
+    const it=reminders.items[d.id];
+    const cls=d.protein?'rem-row rem-protein':'rem-row';
+    return`<div class="${cls}"><div class="rem-info"><div class="rem-name">${d.name}</div><div class="rem-sub">${d.sub}</div></div><input type="time" class="rem-time" value="${it.time}" data-remtime="${d.id}"><button class="rem-toggle ${it.on?'on':''}" data-remtog="${d.id}"></button></div>`;
+  }).join('');
+  document.querySelectorAll('[data-remtog]').forEach(b=>b.addEventListener('click',()=>{reminders.items[b.dataset.remtog].on=!reminders.items[b.dataset.remtog].on;saveReminders();renderReminders();}));
+  document.querySelectorAll('[data-remtime]').forEach(inp=>inp.addEventListener('change',()=>{reminders.items[inp.dataset.remtime].time=inp.value;saveReminders();}));
+}
+async function toggleMasterReminders(){
+  if(!reminders.enabled){
+    if('Notification'in window){let perm=Notification.permission;if(perm==='default')perm=await Notification.requestPermission();if(perm!=='granted')document.getElementById('remNote').innerHTML='⚠️ System notifications blocked — in-app alerts will still show. To enable full notifications, allow them for this site in your device settings.';}
+    reminders.enabled=true;
+  } else {reminders.enabled=false;}
+  saveReminders();renderReminders();
+}
+function checkReminders(){
+  if(!reminders.enabled)return;
+  const now=new Date(),hhmm=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  const dayKey=now.toISOString().split('T')[0];
+  REM_DEFS.forEach(d=>{
+    const it=reminders.items[d.id];
+    if(!it||!it.on||it.time!==hhmm)return;
+    const fk=`${dayKey}_${d.id}_${it.time}`;
+    if(it.lastFired===fk)return;
+    it.lastFired=fk;saveReminders();
+    if(d.protein){const msg=getProteinMsg(d.slot);fireNotification(msg.title,msg.body);}
+    else fireNotification(d.name,d.sub);
+  });
+}
 document.getElementById('remindBtn').addEventListener('click',()=>{renderReminders();document.getElementById('remindModal').classList.add('show');});
 document.getElementById('remMaster').addEventListener('click',toggleMasterReminders);
-document.getElementById('remTestBtn').addEventListener('click',()=>{if('Notification'in window&&Notification.permission==='granted'){fireNotification('🔔 Test reminder','Reminders are working!');}else{toggleMasterReminders().then(()=>fireNotification('🔔 Test reminder','Reminders are working!'));}});
+document.getElementById('remTestBtn').addEventListener('click',()=>{const msg=getProteinMsg('midday');fireNotification(msg.title,msg.body);trySystemNotif(msg.title,msg.body);});
 
 // ═══ load favorites + custom dishes (local first, then Firebase listeners) ═══
 function loadPrefsLocal(){try{const f=localStorage.getItem(LSFAV);if(f)favorites=JSON.parse(f);}catch(e){}try{const c=localStorage.getItem(LSCD);if(c)customDishes=JSON.parse(c);}catch(e){}if(!favorites.him)favorites.him={};if(!favorites.her)favorites.her={};if(!customDishes.him)customDishes.him={};if(!customDishes.her)customDishes.her={};}
@@ -721,7 +813,7 @@ function navScroll(id){const el=document.getElementById(id);if(!el)return;setTim
   loadReminders();
   loadLocal();
   initFirebase();
-  setInterval(checkReminders,30000);
+  setInterval(checkReminders,60000);
 })();
 </script>
 </body>
