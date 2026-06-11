@@ -287,15 +287,48 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
 .rem-master{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0 12px;margin-bottom:8px;border-bottom:1.5px solid var(--border)}
 .rem-protein{background:rgba(26,107,82,.06);border-radius:9px;margin:-4px -2px}
 .rem-protein .rem-name{color:var(--him)}
-/* in-app toast */
-.notif-toast{position:fixed;top:-140px;left:50%;transform:translateX(-50%);background:var(--card);border:1.5px solid var(--border2);border-radius:16px;padding:13px 16px 12px;max-width:360px;width:calc(100% - 28px);box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:999;transition:top .4s cubic-bezier(.34,1.56,.64,1);cursor:pointer;-webkit-tap-highlight-color:transparent}
-.notif-toast.show{top:14px}
+/* in-app toast — bottom placement, transform animation (iOS safe) */
+.notif-toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(180px);opacity:0;background:var(--card);border:1.5px solid var(--border2);border-radius:16px;padding:13px 16px 12px;max-width:360px;width:calc(100% - 28px);box-shadow:0 8px 32px rgba(0,0,0,.22);z-index:998;transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s ease;cursor:pointer;-webkit-tap-highlight-color:transparent;pointer-events:none}
+.notif-toast.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:all}
 .notif-toast-top{display:flex;align-items:center;gap:8px;margin-bottom:5px}
 .notif-toast-icon{font-size:18px;line-height:1}
 .notif-toast-app{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;flex:1}
 .notif-toast-close{font-size:16px;color:var(--light);line-height:1;padding:2px}
 .notif-toast-title{font-size:14px;font-weight:800;color:var(--text);margin-bottom:3px}
 .notif-toast-body{font-size:12px;color:var(--muted);line-height:1.55;white-space:pre-line}
+/* macro pace check bars */
+.mc-head{font-size:13.5px;font-weight:800;color:var(--text);line-height:1.35;margin-bottom:2px;white-space:normal}
+.mc-time{font-size:10.5px;font-weight:700;color:var(--light);text-transform:uppercase;letter-spacing:.4px;margin-bottom:9px}
+.mc-bar-row{margin-bottom:9px}
+.mc-bar-row:last-child{margin-bottom:0}
+.mc-bar-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px}
+.mc-bar-lbl{font-size:12px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:5px}
+.mc-tag{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;padding:1px 5px;border-radius:5px}
+.mc-tag.behind{background:rgba(193,58,58,.14);color:var(--red)}
+.mc-tag.over{background:rgba(199,140,30,.16);color:var(--yellow)}
+.mc-track{position:relative;height:8px;border-radius:5px;background:var(--soft);overflow:hidden;margin-bottom:3px}
+.mc-fill{position:absolute;top:0;left:0;height:100%;border-radius:5px;transition:width .5s ease}
+.mc-mark{position:absolute;top:-2px;width:2px;height:12px;background:var(--text);opacity:.55;border-radius:2px}
+.mc-bar-txt{font-size:10.5px;color:var(--muted);line-height:1.4}
+.mc-allgood{font-size:13.5px;font-weight:700;color:var(--green);line-height:1.4;white-space:normal}
+/* water slot */
+.water-slot{border-color:rgba(59,130,246,.3)!important}
+.water-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0 8px}
+.water-glasses{font-size:16px;letter-spacing:1px;flex:1;line-height:1.4;word-break:break-all}
+.water-ctr{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.water-tgt{font-size:11px;color:var(--muted);font-weight:500}
+.water-bar-wrap{height:5px;border-radius:4px;background:var(--soft);overflow:hidden;margin-top:2px}
+.water-bar-fill{height:100%;border-radius:4px;background:#3b82f6;transition:width .4s ease}
+/* kulcha collapse arrow */
+.slot-arrow{font-size:10px;margin-left:6px;color:var(--light)}
+.kulcha-slot .slot-hdr{user-select:none}
+.slot-add-btn{display:block;text-align:right;padding:4px 13px 6px;font-size:12px;font-weight:700;color:var(--muted);text-decoration:none;opacity:.7;letter-spacing:.5px}
+.slot-add-btn:active{opacity:1}
+/* 2-column macro grid */
+.mc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.mc-col-hdr{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;padding-bottom:4px;border-bottom:1.5px solid var(--border)}
+.mc-col-hdr.him-txt{color:var(--him)}.mc-col-hdr.her-txt{color:var(--her)}
+.mc-col .mc-bar-row{margin-bottom:7px}
 </style>
 </head>
 <body>
@@ -304,8 +337,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
 <div class="past-banner" id="pastBanner">📅 Viewing past day — edits will update that day's data</div>
 <!-- In-app notification toast -->
 <div class="notif-toast" id="notifToast" onclick="dismissToast()">
-  <div class="notif-toast-top"><span class="notif-toast-icon">🌿</span><span class="notif-toast-app">Food Tracker</span><span class="notif-toast-close">×</span></div>
-  <div class="notif-toast-title" id="toastTitle"></div>
+  <div class="notif-toast-top"><span class="notif-toast-icon">📊</span><span class="notif-toast-app">Food Tracker</span><span class="notif-toast-close">×</span></div>
   <div class="notif-toast-body" id="toastBody"></div>
 </div>
 
@@ -466,18 +498,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro',Segoe UI,sans-serif;b
   </div>
 </div></div>
 
-<!-- REMINDERS MODAL -->
+<!-- MACRO PACE CHECK MODAL -->
 <div class="modal" id="remindModal"><div class="modal-box form-box">
-  <div class="modal-title">⏰ Reminders</div>
+  <div class="modal-title">📊 Macro Pace Check</div>
   <div class="rem-master">
-    <div class="rem-info"><div class="rem-name">Enable reminders</div><div class="rem-sub">Allow notifications on this device</div></div>
+    <div class="rem-info"><div class="rem-name">Pace alerts on app open</div><div class="rem-sub">Pops up if either of you is behind pace or over on carbs</div></div>
     <button class="rem-toggle" id="remMaster"></button>
   </div>
-  <div id="remList"></div>
-  <div class="rem-perm-note" id="remNote">In-app alerts show while the app is open on any device. For system notifications (banner even when minimised), add to Home Screen first, then allow notifications. Protein alerts show live tracked values at fire time.</div>
+  <div class="rem-perm-note" id="remNote">Every time you open the app (8am–10pm), it checks your macros against where you should be by this hour. If 👨 or 👩 is behind on protein / calories / fat / fiber, or over the carb pace, a card slides up showing exactly what's off. Carb limit gets a small workout allowance (1% per 100 cal burned, including 25% of yesterday's burn if it was over 300).</div>
   <div class="modal-btns" style="margin-top:14px">
     <button class="btn btn-cancel" onclick="document.getElementById('remindModal').classList.remove('show')">Close</button>
-    <button class="btn" id="remTestBtn" style="background:var(--him);color:#fff">🔔 Test</button>
+    <button class="btn" id="remTestBtn" style="background:var(--him);color:#fff">📊 Check now</button>
   </div>
 </div></div>
 
@@ -582,6 +613,7 @@ function initFirebase(){
         firebaseReady=true;
         startListeners();
         startPrefListeners();
+        fetchWeekUsage();
       }catch(e){document.getElementById('syncDot').classList.remove('live');firebaseReady=false;loadLocal();}
     });
   });
@@ -611,19 +643,93 @@ const SHARED_SNACKS=[
   {id:'dark_choc',label:'🍫 Dark chocolate 70%+ (2 squares)',sub:'Antioxidants — max 2',score:.25,m:[80,1,10,5,1]},
   {id:'celery_hummus',label:'🥗 Celery + hummus',sub:'Low GI, iron',score:.5,m:[110,4,14,6,3]},
 ];
-const HIM={id:'him',burnCap:500,targets:{cal:3000,protein:240,carbs:300,fat:90},grace:{cal:250,carb:20},slots:{morning:{title:'🍋 Morning Ritual',time:'7:00 AM',opts:[{id:'lemon_cinn',label:'Lemon water + cinnamon',sub:'Pre-loads insulin sensitivity',score:.5,m:[10,0,2,0]},{id:'lemon_only',label:'Lemon water only',score:.25,m:[10,0,2,0]}]},breakfast:{title:'🌅 Breakfast',time:'7:30–8:30 AM',opts:[{id:'c2',label:'🥣 Yogurt bowl + chai (C2)',sub:'38g protein, best pre-kulcha buffer',score:1.25,m:[500,38,42,22],ingr:[{n:'Greek yogurt 2% (1 cup)',m:[150,23,10,4]},{n:'Mixed berries (1/2 cup)',m:[40,1,10,0]},{n:'Honey drizzle (1 tsp)',m:[20,0,5,0]},{n:'Walnuts (1 tbsp)',m:[50,1,1,5]},{n:'Pumpkin seeds (1 tbsp)',m:[50,3,2,4]},{n:'Chia/flax (1 tbsp)',m:[50,2,3,4]},{n:'Chai no-sugar, 2% milk',m:[140,8,11,5]}]},{id:'a2',label:'🌴 Tropical smoothie (A2)',sub:'Papaya, kiwi, mango, seeds, protein',score:1.0,m:[422,33,47,15],ingr:[{n:'Papaya (1 cup)',m:[60,1,15,0]},{n:'Kiwi (1)',m:[45,1,11,0]},{n:'Mango (1/2 cup)',m:[50,1,12,0]},{n:'Whey protein (1 scoop)',m:[120,25,3,2]},{n:'Pumpkin seeds (1 tbsp)',m:[50,3,2,4]},{n:'Chia seeds (1 tbsp)',m:[60,2,3,5]},{n:'Almond milk (1 cup)',m:[37,0,1,4]}]},{id:'b2',label:'🫐 Chai + biscuits + blueberry shake',sub:'B2 — shaker bottle, 51g protein',score:1.0,m:[610,51,70,15]},{id:'b_omelette',label:'🍳 Chai + biscuits + omelette',sub:'B — 10 min cook, 55g protein',score:.75,m:[775,55,54,37],ingr:[{n:'3 eggs',m:[210,18,2,15]},{n:'Cheese (1 slice)',m:[80,5,1,7]},{n:'Spinach handful',m:[7,1,1,0]},{n:'Bell pepper / onion',m:[20,1,4,0]},{n:'Olive oil (1 tsp)',m:[40,0,0,5]},{n:'Marie/bran biscuits (3)',m:[95,2,16,3]},{n:'Cottage cheese side',m:[100,12,4,4]},{n:'Chai no-sugar, 2% milk',m:[140,8,11,5]},{n:'Avocado slice',m:[80,1,4,7]}]},{id:'a_yogurt',label:'🥄 Greek yogurt jar',sub:'A — overnight prep',score:.75,m:[280,22,28,8]},{id:'silver_honey',label:'🍞 Silver Hills + cottage cheese + honey',sub:'Fiber bread, honey drizzle',score:.5,m:[271,19,34,7]},{id:'boiled_eggs',label:'🥚 Boiled egg',sub:'6g protein · tap + to add 2, 3…',score:.25,m:[78,6,0,5],ingr:[{n:'Egg (1 large boiled)',m:[78,6,0,5]}]},{id:'eggs_biscuits',label:'🥚 Boiled egg + biscuit + cheese',sub:'1 egg base — add more via counter',score:.25,m:[203,13,22,11],ingr:[{n:'Egg (1 large boiled)',m:[78,6,0,5]},{n:'Cheese (1 slice)',m:[80,5,1,7]},{n:'Marie/bran biscuit (1)',m:[45,1,8,1]}]},{id:'wrap',label:'🥪 Tim Hortons / Starbucks wrap',sub:'Outside food — master rule fires',score:.25,m:[300,18,28,10],takeout:true},{id:'chai_bis',label:'🫖 Chai + biscuits only',sub:'Weakest — no protein',score:0,m:[275,7,42,8],ingr:[{n:'Chai no-sugar, 2% milk',m:[140,4,11,5]},{n:'Marie/bran biscuit (1)',m:[45,1,8,1]}]}]},coffee1:{title:'☕ Coffee Slot 1',time:'9:00 AM',opts:[{id:'black1',label:'Black coffee / Americano',score:.25,m:[5,0,0,0],isBlack:true},{id:'latte1',label:'Latte (oat or 2%, no sugar)',score:0,m:[150,9,14,6]}]},coffee2:{title:'☕ Coffee Slot 2',time:'11:00 AM',opts:[{id:'black2',label:'Black coffee / Americano',score:.25,m:[5,0,0,0],isBlack:true},{id:'latte2',label:'Latte (oat or 2%, no sugar)',score:0,m:[150,9,14,6]}]},greentea1:{title:'🌿 Green Tea',time:'11:30 AM',opts:[{id:'gt1',label:'Lemon ginger green tea',score:.25,m:[5,0,1,0]}]},lunch:{title:'🍽️ Lunch',time:'12:30–1:00 PM',opts:[{id:'salmon_l',label:'🏠 Salmon + edamame + lemon',sub:'~480 cal, 51g protein',score:1.25,m:[480,51,8,14],ingr:[{n:'Salmon fillet (6 oz)',m:[290,40,0,12]},{n:'Edamame (1 cup)',m:[120,11,8,5]},{n:'Lemon juice',m:[5,0,1,0]},{n:'Olive oil drizzle',m:[40,0,0,5]},{n:'Mixed greens',m:[25,0,4,0]}]},{id:'chk_veg_l',label:'🏠 Grilled chicken + veggies',sub:'~420 cal, 42g protein',score:1.0,m:[420,42,16,14],ingr:[{n:'Chicken breast (6 oz)',m:[280,42,0,6]},{n:'Roasted veggies (1.5 cup)',m:[100,4,16,3]},{n:'Olive oil (1 tsp)',m:[40,0,0,5]}]},{id:'chk_rice_l',label:'🏠 Chicken + small rice + cucumber',sub:'~450 cal, 45g protein',score:.75,m:[450,45,35,9]},{id:'lentil_l',label:'🏠 Lentil soup + chicken side',sub:'Lazy option',score:.75,m:[420,40,28,6]},{id:'tahini_l',label:'🥡 Tahini shawarma (modified)',sub:'Half rice, no pita',score:-.25,m:[550,40,45,18],takeout:true},{id:'burrito_l',label:'🥡 Bar Burrito bowl',sub:'Half rice, double chicken, guac',score:-.25,m:[580,42,52,16],takeout:true},{id:'skip_l',label:'⏭️ Skip lunch',sub:'C2 days after kulcha only',score:0,m:[0,0,0,0]},{id:'tofu_veg_l',label:'🫘 Tofu + roasted veggies (turmeric)',sub:'Plant protein',score:1.25,m:[380,22,20,16],isTofu:true},{id:'tofu_quin_l',label:'🫘 Tofu + quinoa + greens',sub:'Complete plant protein',score:1.0,m:[400,24,35,14],isTofu:true},{id:'tofu_tikka_l',label:'🫘 Tofu tikka + salad',sub:'Yogurt-marinated, grilled',score:1.0,m:[350,20,18,16],isTofu:true}]},kulcha:{title:'🫓 Kulcha Block',time:'12:30 PM (alt)',subtitle:'Alternative to lunch on C2 days',opts:[{id:'pre_walk_k',label:'🚶 Pre-kulcha 10 min walk',sub:'Activates muscles before carb load',score:.5,m:[0,0,0,0]},{id:'kulcha_meal',label:'2 Aloo kulcha + chane + onion',sub:'1 tsp butter, yogurt, onion chutney',score:-1.25,m:[820,30,122,22]},{id:'post_walk_k',label:'🚶 Post-kulcha 20 min walk',sub:'Non-negotiable',score:1.25,m:[0,0,0,0]}]},greentea2:{title:'🌿 Green Tea',time:'2:30 PM',opts:[{id:'gt2',label:'Lemon ginger green tea',score:.25,m:[5,0,1,0]}]},snack:{title:'🌰 Snack',time:'3:00 PM',opts:[{id:'almonds_s',label:'Almonds (15–20)',sub:'Walnuts even better for omega-3',score:.5,m:[100,4,3,9]},{id:'yogurt_s',label:'Plain 2% Greek yogurt small',sub:'12g protein',score:.5,m:[130,12,8,3]},{id:'cottage_s',label:'Cottage cheese + berries',sub:'15g protein, low GI',score:.5,m:[160,15,12,6]},{id:'nuts_s',label:'Mixed nuts + pumpkin seeds',sub:'Magnesium boost',score:.5,m:[150,5,10,10]},{id:'babybel_s',label:'Babybel + 3 bran biscuits',score:.25,m:[160,7,22,6]},...SHARED_SNACKS,{id:'skip_s',label:'⏭️ Skip snack',sub:'Risks afternoon glucose crash',score:-.25,m:[0,0,0,0]}]},predinner:{title:'💧 Pre-Dinner Water',time:'5:45 PM',opts:[{id:'pre_water',label:'Glass of water before dinner',sub:'Reduces meal size',score:.25,m:[0,0,0,0]}]},dinner:{title:'🌙 Dinner',time:'6:00–7:00 PM',opts:[{id:'chk_veg_d',label:'🏠 Grilled chicken + veggies',sub:'~470 cal, 66g protein',score:1.0,m:[470,66,16,14],ingr:[{n:'Chicken breast (8 oz)',m:[360,56,0,8]},{n:'Roasted veggies (2 cup)',m:[110,5,15,4]},{n:'Olive oil (1 tsp)',m:[40,0,0,5]},{n:'Herbs/spices',m:[0,0,0,0]}]},{id:'salmon_d',label:'🏠 Salmon + edamame',sub:'~550 cal, 55g protein',score:1.0,m:[550,55,8,22]},{id:'parm_d',label:'🏠 Modified chicken parm + veggies',sub:'No pasta, no breading',score:.75,m:[420,52,12,14]},{id:'lentil_d',label:'🏠 Lentil soup + chicken',sub:'Lazy night option',score:.75,m:[420,40,28,6]},{id:'tahini_d',label:'🥡 Tahini chicken plate',sub:'Half rice, no pita',score:-.25,m:[520,40,42,16],takeout:true},{id:'burrito_d',label:'🥡 Bar Burrito bowl',score:-.25,m:[580,42,52,16],takeout:true},{id:'thai_d',label:'🥡 Thai green curry (no rice)',score:0,m:[480,28,28,22],takeout:true},{id:'tofu_veg_d',label:'🫘 Tofu + roasted veggies',score:1.0,m:[380,20,18,16],isTofu:true},{id:'tofu_pep_d',label:'🫘 Tofu stuffed peppers + quinoa',score:1.0,m:[400,22,30,16],isTofu:true},{id:'tofu_stir_d',label:'🫘 Tofu stir-fry + veggies',score:1.0,m:[340,18,22,14],isTofu:true},{id:'chickpea_sal_d',label:'🥗 Chickpea salad',sub:'High-fiber — customize your veggies',score:1.0,m:[380,18,42,10],ingr:[{n:'Chickpeas (1 cup cooked)',m:[270,15,45,4]},{n:'Paneer (50g cubed)',m:[140,9,1,11]},{n:'Broccoli (1/2 cup)',m:[27,2,5,0]},{n:'Bell peppers (1/2 cup)',m:[20,1,4,0]},{n:'Cucumber (1/2 cup)',m:[8,0,2,0]},{n:'Tomatoes (1/2 cup)',m:[16,1,3,0]},{n:'Brussels sprouts (1/2 cup)',m:[28,2,6,0]},{n:'Olive oil drizzle (1 tsp)',m:[40,0,0,5]},{n:'Salt + pepper + turmeric',m:[5,0,1,0]}]}]},postdinner:{title:'💧 Post-Dinner',time:'7:30–8:00 PM',opts:[{id:'acv_water',label:'Water + apple cider vinegar',sub:'Lowers next-morning fasting glucose',score:.25,m:[5,0,1,0]},{id:'plain_water',label:'Plain water',score:.1,m:[0,0,0,0]}]},tweaks:{title:'✨ Daily Tweaks',time:'All Day',subtitle:'Tap once per application today',opts:[{id:'eat_order',label:'Eating order: veggies → protein → carbs',sub:'Reduces spike by up to 37%',score:.5,m:[0,0,0,0]},{id:'turmeric',label:'Garlic + turmeric + black pepper added',sub:'At least one meal',score:.5,m:[0,0,0,0]},{id:'water_meals',label:'Water before each major meal',score:.25,m:[0,0,0,0]}]}},indulgences:{title:'⚠️ Indulgences',subtitle:'Honest tracking only',opts:[{id:'lays_full',label:'Masala Lays full bag (alone)',sub:'High-GI on empty stomach',score:-3,m:[270,3,29,16]},{id:'lays_small',label:'Lays handful with protein meal',score:-.5,m:[135,2,15,8]},{id:'white_rice',label:'White rice added to meal',score:-1,m:[200,4,45,0]},{id:'pita',label:'Pita added to shawarma',score:-.5,m:[165,6,34,1]},{id:'sweet_drk',label:'Sweetened juice / soda',sub:'Worst single-item glucose hit',score:-2,m:[150,0,40,0]},{id:'ice_cream',label:'Ice cream / Drumstick',sub:'Sugar spike with no protein buffer',score:-1,m:[280,4,36,14]}]},extras:[{id:'xblack',label:'☕ Extra black coffees',sub:'+0.25 each',score:.25,m:[5,0,0,0]},{id:'xwalks',label:'🚶 Extra walks (10+ min)',sub:'+0.25 each',score:.25,m:[0,0,0,0]},{id:'xwater',label:'💧 Water glasses',sub:'Tracked only',score:0,m:[0,0,0,0]},{id:'xchai',label:'🫖 Extra chai (no sugar)',sub:'Tracked only',score:0,m:[85,4,10,3]},{id:'xchaach',label:'🥛 Chaach (salty lassi)',sub:'+0.5 — probiotic, low cal',score:.5,m:[55,3,5,2]},{id:'xbubly',label:'🫧 Bubly / sparkling water',sub:'Tracked — zero cal',score:0,m:[0,0,0,0]},{id:'xflo',label:'🫐 Low-GI fruit bowl',sub:'Berries, kiwi, papaya · +0.25',score:.25,m:[60,1,14,0]},{id:'xfmod',label:'🍊 Moderate-GI fruit bowl',sub:'Mango, pineapple · -0.25',score:-.25,m:[65,1,16,0]},{id:'xfhi',label:'🍌 High-GI fruit bowl',sub:'Banana, watermelon · -1',score:-1,m:[70,1,18,0]},{id:'xlatte',label:'☕ Extra lattes (over 2)',sub:'-0.5 each',score:-.5,m:[150,9,14,6]},{id:'xbiscuit',label:'🥖 Extra biscuits (per 3)',sub:'Marie/bran · -0.25',score:-.25,m:[95,2,16,3]},{id:'xrice',label:'🍚 Extra rice portion',sub:'White or basmati · -0.5',score:-.5,m:[200,4,45,0]}],workout:[{id:'badminton',label:'🏸 Badminton (1 hr)',burn:220},{id:'muaythai',label:'🥊 Muay Thai (1 hr)',burn:300},{id:'weights',label:'🏋️ Weight lifting (10 min)',burn:45},{id:'walk10',label:'🚶 Walk 10 min',burn:40},{id:'walk20',label:'🚶 Walk 20 min',burn:75},{id:'walk30',label:'🚶 Walk 30 min',burn:110}]};
-const HER={id:'her',burnCap:400,targets:{cal:2100,protein:200,carbs:175,fat:90,fiber:40},grace:{cal:150,carb:10},slots:{morning:{title:'🍋 Morning Ritual',time:'7:00 AM',opts:[{id:'spearmint_lem',label:'🌿 Spearmint tea + lemon water + cinnamon',sub:'Anti-androgenic, blood sugar support',score:.75,m:[15,0,3,0,0]},{id:'lemon_cinn_h',label:'Lemon water + cinnamon',score:.5,m:[10,0,2,0,0]},{id:'lemon_only_h',label:'Lemon water only',score:.25,m:[10,0,2,0,0]}]},breakfast:{title:'🌅 Breakfast',time:'7:30–8:30 AM',opts:[{id:'spinach_oml',label:'🥬 Spinach & turmeric omelette + flaxseed',sub:'3 eggs, anti-inflammatory, 30g protein',score:1.25,m:[380,30,8,22,5],ingr:[{n:'3 eggs',m:[210,18,2,15,0]},{n:'Spinach (large handful)',m:[15,2,2,0,2]},{n:'Turmeric + black pepper',m:[5,0,1,0,0]},{n:'Flaxseed (1 tbsp)',m:[55,2,3,4,3]},{n:'Olive oil (1 tsp)',m:[40,0,0,5,0]},{n:'Cherry tomato handful',m:[20,1,4,0,1]},{n:'Avocado slice',m:[35,0,2,3,2]}]},{id:'yogurt_ber_h',label:'🫐 Greek yogurt + berries + flaxseed + chia',sub:'Anti-androgenic lignans, probiotics',score:1.25,m:[320,22,35,10,9],ingr:[{n:'Greek yogurt 2% (1 cup)',m:[150,23,10,4,0]},{n:'Mixed berries (1 cup)',m:[75,2,18,0,4]},{n:'Ground flaxseed (1 tbsp)',m:[55,2,3,4,3]},{n:'Chia seeds (1 tbsp)',m:[60,2,3,5,5]},{n:'Cinnamon',m:[5,0,1,0,0]},{n:'Honey drizzle (1 tsp)',m:[20,0,5,0,0]}]},{id:'green_smth',label:'💚 Spinach + berries + flaxseed + protein',sub:'Iron, omega-3, anti-inflammatory',score:1.0,m:[380,30,40,12,10],ingr:[{n:'Spinach (large handful)',m:[15,2,2,0,2]},{n:'Mixed berries (1 cup)',m:[75,2,18,0,4]},{n:'Flaxseed (1 tbsp)',m:[55,2,3,4,3]},{n:'Whey protein (1 scoop)',m:[120,25,3,2,0]},{n:'Almond milk (1 cup)',m:[40,1,2,3,0]},{n:'Almond butter (1 tbsp)',m:[100,4,3,8,2]},{n:'Cinnamon',m:[5,0,1,0,0]}]},{id:'oats_h',label:'🌾 Overnight oats + cinnamon + berries',sub:'Fiber-rich, slow-release carbs',score:.75,m:[350,12,55,8,8]},{id:'silver_alm_h',label:'🍞 Silver Hills + almond butter',sub:'Healthy fat, no honey',score:.5,m:[280,12,28,14,5]},{id:'silver_cot_h',label:'🍞 Silver Hills + cottage cheese',sub:'Lean protein, low-GI bread',score:.5,m:[250,17,28,5,4]},{id:'boiled_egg_h',label:'🥚 Boiled egg',sub:'6g protein · tap + to add 2, 3…',score:.25,m:[78,6,0,5,0],ingr:[{n:'Egg (1 large boiled)',m:[78,6,0,5,0]}]},{id:'chai_bis_h',label:'🫖 Chai + biscuits only',sub:'Weakest — no protein',score:0,m:[275,7,42,8,2],ingr:[{n:'Chai no-sugar, 2% milk',m:[140,4,11,5,0]},{n:'Marie/bran biscuit (1)',m:[45,1,8,1,0]}]}]},coffee1:{title:'☕ Morning Drink',time:'9:00 AM',opts:[{id:'spearmint1_h',label:'🌿 Spearmint tea',sub:'Best for PCOD — lowers free testosterone',score:.5,m:[5,0,1,0,0]},{id:'green1_h',label:'Green tea (lemon/ginger)',sub:'Antioxidants, metabolism',score:.25,m:[5,0,1,0,0]},{id:'black1_h',label:'Black coffee / Americano',score:.25,m:[5,0,0,0,0],isBlack:true},{id:'latte1_h',label:'Oat milk latte (no sugar)',sub:'Oat milk over dairy for PCOD',score:0,m:[130,5,18,5,0]}]},coffee2:{title:'☕ Mid-Morning Drink',time:'11:00 AM',opts:[{id:'spearmint2_h',label:'🌿 Spearmint tea',sub:'2nd cup doubles anti-androgenic benefit',score:.5,m:[5,0,1,0,0]},{id:'green2_h',label:'Green tea',score:.25,m:[5,0,1,0,0]},{id:'black2_h',label:'Black coffee / Americano',score:.25,m:[5,0,0,0,0],isBlack:true},{id:'latte2_h',label:'Oat milk latte (no sugar)',score:0,m:[130,5,18,5,0]}]},afternoon_tea:{title:'🌿 Afternoon Spearmint',time:'2:30 PM',opts:[{id:'spearmint_pm',label:'🌿 Spearmint tea',sub:'3rd cup = strong anti-androgenic effect',score:.5,m:[5,0,1,0,0]},{id:'gt_pm_h',label:'Lemon ginger green tea',score:.25,m:[5,0,1,0,0]}]},lunch:{title:'🍽️ Lunch',time:'12:30–1:00 PM',subtitle:'Chicken + Tofu options',opts:[{id:'turmeric_chk',label:'🍗 Turmeric & ginger chicken + roasted veg',sub:'Anti-inflammatory powerhouse',score:1.25,m:[420,45,15,14,6],ingr:[{n:'Chicken breast (6 oz)',m:[280,42,0,6,0]},{n:'Turmeric + ginger + spices',m:[10,0,2,0,1]},{n:'Roasted veggies (1.5 cup)',m:[90,2,11,3,5]},{n:'Olive oil (1 tsp)',m:[40,0,0,5,0]}]},{id:'chk_quinoa_h',label:'🍗 Grilled chicken + quinoa + mixed greens',sub:'Complete protein, complex carbs',score:1.0,m:[450,48,30,12,6]},{id:'chk_tikka_h',label:'🍗 Home-made chicken tikka + salad',sub:'Yogurt-marinated, no cream',score:1.0,m:[400,42,12,16,4]},{id:'chk_avo_h',label:'🍗 Grilled chicken + avocado + large salad',sub:'Healthy fat, anti-inflammatory',score:1.0,m:[430,40,10,22,7]},{id:'chk_soup_h',label:'🍗 Chicken vegetable soup (homemade)',sub:'High vegetable ratio',score:.75,m:[320,35,20,8,5]},{id:'chickpea_h',label:'🥗 Large chickpea + vegetable salad',sub:'Inositol-rich, zinc, fiber',score:.75,m:[350,14,45,10,12]},{id:'lentil_h',label:'🫘 Lentil dal + mixed vegetables',sub:'Iron-rich, complex carbs',score:.75,m:[380,18,50,8,15]},{id:'tofu_turm_h',label:'🫘 Tofu + turmeric roasted veg',sub:'Plant protein — 22g',score:1.25,m:[380,22,20,16,6],isTofu:true},{id:'tofu_quin_h',label:'🫘 Tofu + quinoa + mixed greens',sub:'Complete plant protein',score:1.0,m:[400,24,35,14,6],isTofu:true},{id:'tofu_tikk_h',label:'🫘 Tofu tikka + salad',score:1.0,m:[350,20,18,16,5],isTofu:true},{id:'tofu_avo_h',label:'🫘 Tofu + avocado + large salad',score:1.0,m:[370,18,15,22,7],isTofu:true},{id:'tofu_soup_h',label:'🫘 Tofu vegetable soup',sub:'Light, gut-healing broth',score:.75,m:[280,16,25,10,5],isTofu:true},{id:'takeout_l_h',label:'🥡 Takeout (modified)',sub:'Use master rule',score:-.25,m:[550,38,45,18,3],takeout:true}]},snack:{title:'🌰 PCOD Snack',time:'3:00 PM',opts:[{id:'protein_water',label:'💪 Protein powder + water',sub:'25g protein, near-zero carbs/fat',score:1.0,m:[110,25,2,1,0],ingr:[{n:'Whey or plant protein (1 scoop)',m:[110,25,2,1,0]},{n:'Cold water (1 cup)',m:[0,0,0,0,0]},{n:'Cinnamon (optional)',m:[5,0,1,0,0]},{n:'Ice cubes',m:[0,0,0,0,0]}]},...SHARED_SNACKS,{id:'yogurt_cinn_h',label:'🥛 Plain Greek yogurt + cinnamon',sub:'Probiotics — limit dairy total',score:.5,m:[130,12,8,3,0]},{id:'skip_s_h',label:'⏭️ Skip snack',sub:'Can lead to overeating at dinner',score:-.25,m:[0,0,0,0,0]}]},predinner:{title:'💧 Pre-Dinner Water',time:'5:45 PM',opts:[{id:'pre_water_h',label:'Glass of water before dinner',score:.25,m:[0,0,0,0,0]}]},dinner:{title:'🌙 Dinner',time:'6:00–7:00 PM',subtitle:'Chicken + Tofu options',opts:[{id:'stuffed_pep',label:'🍗 Chicken stuffed peppers + quinoa',sub:'Anti-inflammatory, complete meal',score:1.25,m:[450,48,28,14,7],ingr:[{n:'Chicken breast (6 oz)',m:[280,42,0,6,0]},{n:'Bell peppers (2 large)',m:[60,2,12,0,4]},{n:'Cooked quinoa (1/2 cup)',m:[60,3,11,1,2]},{n:'Onion + garlic',m:[20,1,4,0,1]},{n:'Olive oil (1 tsp)',m:[40,0,0,5,0]},{n:'Herbs/spices',m:[0,0,0,0,0]}]},{id:'chk_avo_d_h',label:'🍗 Grilled chicken + avocado + greens',sub:'Highest healthy fat dinner',score:1.25,m:[430,44,12,22,8]},{id:'turm_cauli',label:'🍗 Turmeric chicken + cauliflower rice',sub:'Lowest carb dinner option',score:1.0,m:[380,44,15,14,6]},{id:'chk_stir_h',label:'🍗 Chicken + vegetable stir-fry',sub:'No sugar sauce, high veg',score:1.0,m:[400,42,20,14,6]},{id:'salmon_d_h',label:'🐟 Salmon + edamame + greens',sub:'Omega-3, anti-inflammatory',score:1.0,m:[520,52,12,22,5],ingr:[{n:'Salmon fillet (6 oz)',m:[290,40,0,12,0]},{n:'Edamame (1 cup)',m:[120,11,8,5,4]},{n:'Mixed greens (2 cup)',m:[30,2,4,0,1]},{n:'Olive oil (1 tsp)',m:[40,0,0,5,0]},{n:'Lemon + herbs',m:[10,0,1,0,0]},{n:'Avocado slice',m:[30,0,1,2,1]}]},{id:'lentil_c_h',label:'🫘 Lentil curry + small brown rice',sub:'Iron-rich, plant protein',score:.75,m:[420,18,55,8,12]},{id:'tofu_pep_h',label:'🫘 Tofu stuffed peppers + quinoa',score:1.25,m:[400,22,30,16,8],isTofu:true},{id:'tofu_avo_d_h',label:'🫘 Grilled tofu + avocado + greens',score:1.0,m:[380,20,16,22,7],isTofu:true},{id:'tofu_caul_h',label:'🫘 Tofu + cauliflower rice (turmeric)',score:1.0,m:[320,20,18,16,5],isTofu:true},{id:'tofu_stir_h',label:'🫘 Tofu stir-fry + veggies',score:1.0,m:[340,18,22,14,6],isTofu:true},{id:'chickpea_sal_d_h',label:'🥗 Chickpea salad',sub:'Inositol-rich — customize veggies',score:1.25,m:[380,18,42,10,14],ingr:[{n:'Chickpeas (1 cup cooked)',m:[270,15,45,4,12]},{n:'Paneer (50g cubed)',m:[140,9,1,11,0]},{n:'Broccoli (1/2 cup)',m:[27,2,5,0,3]},{n:'Bell peppers (1/2 cup)',m:[20,1,4,0,1]},{n:'Cucumber (1/2 cup)',m:[8,0,2,0,0]},{n:'Tomatoes (1/2 cup)',m:[16,1,3,0,1]},{n:'Brussels sprouts (1/2 cup)',m:[28,2,6,0,3]},{n:'Olive oil drizzle (1 tsp)',m:[40,0,0,5,0]},{n:'Salt + pepper + turmeric',m:[5,0,1,0,0]}]},{id:'takeout_d_h',label:'🥡 Takeout (grilled, modified)',score:-.25,m:[520,38,42,16,3],takeout:true}]},postdinner:{title:'💧 Post-Dinner',time:'7:30–8:00 PM',opts:[{id:'acv_h',label:'Water + apple cider vinegar',sub:'Lowers next-morning fasting glucose',score:.25,m:[5,0,1,0,0]},{id:'plain_h',label:'Plain water',score:.1,m:[0,0,0,0,0]}]},tweaks:{title:'✨ PCOD Tweaks',time:'All Day',subtitle:'Each is clinically supported',opts:[{id:'flaxseed_h',label:'🌱 Flaxseed (1 tbsp) in meal',sub:'Lignans lower testosterone',score:.5,m:[37,1,2,3,3]},{id:'spearmint_tw',label:'🌿 Spearmint consumed (2+ cups today)',sub:'Proven to lower free testosterone',score:.5,m:[0,0,0,0,0]},{id:'inositol_h',label:'💊 Myo-inositol supplement',sub:'Most evidence-backed PCOD supplement',score:.5,m:[0,0,0,0,0]},{id:'eat_ord_h',label:'Eating order: fiber → protein → carbs',score:.5,m:[0,0,0,0,0]},{id:'zinc_h',label:'🎃 Zinc-rich food today',sub:'Pumpkin seeds/chickpeas',score:.25,m:[0,0,0,0,0]}]}},indulgences:{title:'⚠️ Indulgences',subtitle:'Stricter — hormones are sensitive',opts:[{id:'dairy_h',label:'Full-fat dairy / cream sauce',sub:'Can worsen hormonal imbalance',score:-.5,m:[80,5,5,6,0]},{id:'sweet_h',label:'Sweetened juice / soda / alcohol',score:-2,m:[150,0,40,0,0]},{id:'refined_h',label:'White bread / pizza / pasta (large)',sub:'Spikes insulin driving PCOD',score:-1,m:[300,8,60,4,2]},{id:'processed_h',label:'Processed / packaged junk food',sub:'Inflammatory, worsens PCOD',score:-1.5,m:[250,4,35,12,1]},{id:'caffeine_h',label:'Excess caffeine (3+ coffees/lattes)',sub:'Raises cortisol',score:-.75,m:[0,0,0,0,0]}]},extras:[{id:'spearmint_x',label:'🌿 Extra spearmint teas',sub:'+0.5 each',score:.5,m:[5,0,1,0,0]},{id:'chaach_hx',label:'🥛 Chaach (salty lassi)',sub:'+0.25 — probiotic but contains dairy',score:.25,m:[55,3,5,2,0]},{id:'bubly_hx',label:'🫧 Bubly / sparkling water',sub:'Tracked — zero cal',score:0,m:[0,0,0,0,0]},{id:'walks_hx',label:'🚶 Extra walks (15+ min)',sub:'+0.5 each',score:.5,m:[0,0,0,0,0]},{id:'water_hx',label:'💧 Water glasses',sub:'Tracked only',score:0,m:[0,0,0,0,0]},{id:'flo_hx',label:'🫐 Low-GI fruit bowl',sub:'Berries, kiwi, apple · +0.25',score:.25,m:[60,1,14,0,3]},{id:'fmod_hx',label:'🍊 Moderate-GI fruit bowl',sub:'Mango, pineapple · -0.25',score:-.25,m:[65,1,16,0,2]},{id:'fhi_hx',label:'🍌 High-GI fruit bowl',sub:'Banana, watermelon · -1',score:-1,m:[70,1,18,0,1]},{id:'dairy_hx',label:'🥛 Extra dairy portions',sub:'-0.5 each',score:-.5,m:[80,5,5,6,0]},{id:'lattes_hx',label:'☕ Extra lattes',sub:'-0.5 each',score:-.5,m:[130,5,18,5,0]},{id:'biscuits_hx',label:'🥖 Extra biscuits (per 3)',sub:'-0.25 each',score:-.25,m:[95,2,16,3,1]}],workout:[{id:'badminton_h',label:'🏸 Badminton (1 hr)',burn:200},{id:'muaythai_h',label:'🥊 Muay Thai (1 hr)',burn:270},{id:'weights_h',label:'🏋️ Weight lifting (10 min)',burn:40},{id:'walk10_h',label:'🚶 Walk 10 min',burn:35},{id:'walk20_h',label:'🚶 Walk 20 min',burn:65},{id:'walk30_h',label:'🚶 Walk 30 min',burn:95}]};
+const HIM={id:'him',burnCap:500,waterTarget:10,targets:{cal:3000,protein:240,carbs:300,fat:90},grace:{cal:250,carb:20},slots:{water:{title:'💧 Water',time:'All Day',isWater:true,opts:[{id:'glass',label:'Glass of water',score:0,m:[0,0,0,0]}]},morning:{title:'🍋 Morning Ritual',time:'7:00 AM',opts:[{id:'lemon_cinn',label:'Lemon water + cinnamon',sub:'Pre-loads insulin sensitivity',score:.5,m:[10,0,2,0]},{id:'lemon_only',label:'Lemon water only',score:.25,m:[10,0,2,0]}]},breakfast:{title:'🌅 Breakfast',time:'7:30–8:30 AM',opts:[{id:'c2',label:'🥣 Yogurt bowl + chai (C2)',sub:'38g protein, best pre-kulcha buffer',score:1.25,m:[500,38,42,22],ingr:[{n:'Greek yogurt 2% (1 cup)',m:[150,23,10,4]},{n:'Mixed berries (1/2 cup)',m:[40,1,10,0]},{n:'Honey drizzle (1 tsp)',m:[20,0,5,0]},{n:'Walnuts (1 tbsp)',m:[50,1,1,5]},{n:'Pumpkin seeds (1 tbsp)',m:[50,3,2,4]},{n:'Chia/flax (1 tbsp)',m:[50,2,3,4]},{n:'Chai no-sugar, 2% milk',m:[140,8,11,5]}]},{id:'a2',label:'🌴 Tropical smoothie (A2)',sub:'Papaya, kiwi, mango, seeds, protein',score:1.0,m:[422,33,47,15],ingr:[{n:'Papaya (1 cup)',m:[60,1,15,0]},{n:'Kiwi (1)',m:[45,1,11,0]},{n:'Mango (1/2 cup)',m:[50,1,12,0]},{n:'Whey protein (1 scoop)',m:[120,25,3,2]},{n:'Pumpkin seeds (1 tbsp)',m:[50,3,2,4]},{n:'Chia seeds (1 tbsp)',m:[60,2,3,5]},{n:'Almond milk (1 cup)',m:[37,0,1,4]}]},{id:'b2',label:'🫐 Chai + biscuits + blueberry shake',sub:'B2 — shaker bottle, 51g protein',score:1.0,m:[610,51,70,15]},{id:'b_omelette',label:'🍳 Chai + biscuits + omelette',sub:'B — 10 min cook, 55g protein',score:.75,m:[775,55,54,37],ingr:[{n:'3 eggs',m:[210,18,2,15]},{n:'Cheese (1 slice)',m:[80,5,1,7]},{n:'Spinach handful',m:[7,1,1,0]},{n:'Bell pepper / onion',m:[20,1,4,0]},{n:'Olive oil (1 tsp)',m:[40,0,0,5]},{n:'Marie/bran biscuits (3)',m:[95,2,16,3]},{n:'Cottage cheese side',m:[100,12,4,4]},{n:'Chai no-sugar, 2% milk',m:[140,8,11,5]},{n:'Avocado slice',m:[80,1,4,7]}]},{id:'a_yogurt',label:'🥄 Greek yogurt jar',sub:'A — overnight prep',score:.75,m:[280,22,28,8]},{id:'silver_honey',label:'🍞 Silver Hills + cottage cheese + honey',sub:'Fiber bread, honey drizzle',score:.5,m:[271,19,34,7]},{id:'boiled_eggs',label:'🥚 Boiled egg',sub:'6g protein · tap + to add 2, 3…',score:.25,m:[78,6,0,5],ingr:[{n:'Egg (1 large boiled)',m:[78,6,0,5]}]},{id:'eggs_biscuits',label:'🥚 Boiled egg + biscuit + cheese',sub:'1 egg base — add more via counter',score:.25,m:[203,13,22,11],ingr:[{n:'Egg (1 large boiled)',m:[78,6,0,5]},{n:'Cheese (1 slice)',m:[80,5,1,7]},{n:'Marie/bran biscuit (1)',m:[45,1,8,1]}]},{id:'wrap',label:'🥪 Tim Hortons / Starbucks wrap',sub:'Outside food — master rule fires',score:.25,m:[300,18,28,10],takeout:true},{id:'chai_bis',label:'🫖 Chai + biscuits only',sub:'Weakest — no protein',score:0,m:[275,7,42,8],ingr:[{n:'Chai no-sugar, 2% milk',m:[140,4,11,5]},{n:'Marie/bran biscuit (1)',m:[45,1,8,1]}]}]},coffee1:{title:'☕ Coffee Slot 1',time:'9:00 AM',opts:[{id:'black1',label:'Black coffee / Americano',score:.25,m:[5,0,0,0],isBlack:true},{id:'latte1',label:'Latte (oat or 2%, no sugar)',score:0,m:[150,9,14,6]}]},coffee2:{title:'☕ Coffee Slot 2',time:'11:00 AM',opts:[{id:'black2',label:'Black coffee / Americano',score:.25,m:[5,0,0,0],isBlack:true},{id:'latte2',label:'Latte (oat or 2%, no sugar)',score:0,m:[150,9,14,6]}]},greentea1:{title:'🌿 Green Tea',time:'11:30 AM',opts:[{id:'gt1',label:'Lemon ginger green tea',score:.25,m:[5,0,1,0]}]},lunch:{title:'🍽️ Lunch',time:'12:30–1:00 PM',opts:[{id:'salmon_l',label:'🏠 Salmon + edamame + lemon',sub:'~480 cal, 51g protein',score:1.25,m:[480,51,8,14],ingr:[{n:'Salmon fillet (6 oz)',m:[290,40,0,12]},{n:'Edamame (1 cup)',m:[120,11,8,5]},{n:'Lemon juice',m:[5,0,1,0]},{n:'Olive oil drizzle',m:[40,0,0,5]},{n:'Mixed greens',m:[25,0,4,0]}]},{id:'chk_veg_l',label:'🏠 Grilled chicken + veggies',sub:'~420 cal, 42g protein',score:1.0,m:[420,42,16,14],ingr:[{n:'Chicken breast (6 oz)',m:[280,42,0,6]},{n:'Roasted veggies (1.5 cup)',m:[100,4,16,3]},{n:'Olive oil (1 tsp)',m:[40,0,0,5]}]},{id:'chk_rice_l',label:'🏠 Chicken + small rice + cucumber',sub:'~450 cal, 45g protein',score:.75,m:[450,45,35,9]},{id:'lentil_l',label:'🏠 Lentil soup + chicken side',sub:'Lazy option',score:.75,m:[420,40,28,6]},{id:'tahini_l',label:'🥡 Tahini shawarma (modified)',sub:'Half rice, no pita',score:-.25,m:[550,40,45,18],takeout:true},{id:'burrito_l',label:'🥡 Bar Burrito bowl',sub:'Half rice, double chicken, guac',score:-.25,m:[580,42,52,16],takeout:true},{id:'skip_l',label:'⏭️ Skip lunch',sub:'C2 days after kulcha only',score:0,m:[0,0,0,0]},{id:'tofu_veg_l',label:'🫘 Tofu + roasted veggies (turmeric)',sub:'Plant protein',score:1.25,m:[380,22,20,16],isTofu:true},{id:'tofu_quin_l',label:'🫘 Tofu + quinoa + greens',sub:'Complete plant protein',score:1.0,m:[400,24,35,14],isTofu:true},{id:'tofu_tikka_l',label:'🫘 Tofu tikka + salad',sub:'Yogurt-marinated, grilled',score:1.0,m:[350,20,18,16],isTofu:true}]},kulcha:{title:'🫓 Kulcha Block',time:'12:30 PM (alt)',subtitle:'Alternative to lunch on C2 days',opts:[{id:'pre_walk_k',label:'🚶 Pre-kulcha 10 min walk',sub:'Activates muscles before carb load',score:.5,m:[0,0,0,0]},{id:'kulcha_meal',label:'2 Aloo kulcha + chane + onion',sub:'1 tsp butter, yogurt, onion chutney',score:-1.25,m:[820,30,122,22]},{id:'post_walk_k',label:'🚶 Post-kulcha 20 min walk',sub:'Non-negotiable',score:0.75,m:[0,0,0,0]}]},greentea2:{title:'🌿 Green Tea',time:'2:30 PM',opts:[{id:'gt2',label:'Lemon ginger green tea',score:.25,m:[5,0,1,0]}]},snack:{title:'🌰 Snack',time:'3:00 PM',opts:[{id:'almonds_s',label:'Almonds (15–20)',sub:'Walnuts even better for omega-3',score:.5,m:[100,4,3,9]},{id:'yogurt_s',label:'Plain 2% Greek yogurt small',sub:'12g protein',score:.5,m:[130,12,8,3]},{id:'cottage_s',label:'Cottage cheese + berries',sub:'15g protein, low GI',score:.5,m:[160,15,12,6]},{id:'nuts_s',label:'Mixed nuts + pumpkin seeds',sub:'Magnesium boost',score:.5,m:[150,5,10,10]},{id:'babybel_s',label:'Babybel + 3 bran biscuits',score:.25,m:[160,7,22,6]},...SHARED_SNACKS,{id:'skip_s',label:'⏭️ Skip snack',sub:'Risks afternoon glucose crash',score:-.25,m:[0,0,0,0]}]},predinner:{title:'💧 Pre-Dinner Water',time:'5:45 PM',opts:[{id:'pre_water',label:'Glass of water before dinner',sub:'Reduces meal size',score:.25,m:[0,0,0,0]}]},dinner:{title:'🌙 Dinner',time:'6:00–7:00 PM',opts:[{id:'chk_veg_d',label:'🏠 Grilled chicken + veggies',sub:'~470 cal, 66g protein',score:1.0,m:[470,66,16,14],ingr:[{n:'Chicken breast (8 oz)',m:[360,56,0,8]},{n:'Roasted veggies (2 cup)',m:[110,5,15,4]},{n:'Olive oil (1 tsp)',m:[40,0,0,5]},{n:'Herbs/spices',m:[0,0,0,0]}]},{id:'salmon_d',label:'🏠 Salmon + edamame',sub:'~550 cal, 55g protein',score:1.0,m:[550,55,8,22]},{id:'parm_d',label:'🏠 Modified chicken parm + veggies',sub:'No pasta, no breading',score:.75,m:[420,52,12,14]},{id:'lentil_d',label:'🏠 Lentil soup + chicken',sub:'Lazy night option',score:.75,m:[420,40,28,6]},{id:'tahini_d',label:'🥡 Tahini chicken plate',sub:'Half rice, no pita',score:-.25,m:[520,40,42,16],takeout:true},{id:'burrito_d',label:'🥡 Bar Burrito bowl',score:-.25,m:[580,42,52,16],takeout:true},{id:'thai_d',label:'🥡 Thai green curry (no rice)',score:0,m:[480,28,28,22],takeout:true},{id:'tofu_veg_d',label:'🫘 Tofu + roasted veggies',score:1.0,m:[380,20,18,16],isTofu:true},{id:'tofu_pep_d',label:'🫘 Tofu stuffed peppers + quinoa',score:1.0,m:[400,22,30,16],isTofu:true},{id:'tofu_stir_d',label:'🫘 Tofu stir-fry + veggies',score:1.0,m:[340,18,22,14],isTofu:true},{id:'chickpea_sal_d',label:'🥗 Chickpea salad',sub:'High-fiber — customize your veggies',score:1.0,m:[380,18,42,10],ingr:[{n:'Chickpeas (1 cup cooked)',m:[270,15,45,4]},{n:'Paneer (50g cubed)',m:[140,9,1,11]},{n:'Broccoli (1/2 cup)',m:[27,2,5,0]},{n:'Bell peppers (1/2 cup)',m:[20,1,4,0]},{n:'Cucumber (1/2 cup)',m:[8,0,2,0]},{n:'Tomatoes (1/2 cup)',m:[16,1,3,0]},{n:'Brussels sprouts (1/2 cup)',m:[28,2,6,0]},{n:'Olive oil drizzle (1 tsp)',m:[40,0,0,5]},{n:'Salt + pepper + turmeric',m:[5,0,1,0]}]}]},postdinner:{title:'💧 Post-Dinner',time:'7:30–8:00 PM',opts:[{id:'acv_water',label:'Water + apple cider vinegar',sub:'Lowers next-morning fasting glucose',score:.25,m:[5,0,1,0]},{id:'plain_water',label:'Plain water',score:.1,m:[0,0,0,0]}]},tweaks:{title:'✨ Daily Tweaks',time:'All Day',subtitle:'Tap once per application today',opts:[{id:'eat_order',label:'Eating order: veggies → protein → carbs',sub:'Reduces spike by up to 37%',score:.5,m:[0,0,0,0]},{id:'turmeric',label:'Garlic + turmeric + black pepper added',sub:'At least one meal',score:.5,m:[0,0,0,0]},{id:'water_meals',label:'Water before each major meal',score:.25,m:[0,0,0,0]}]}},indulgences:{title:'⚠️ Indulgences',subtitle:'Honest tracking only',opts:[{id:'lays_full',label:'Masala Lays full bag (alone)',sub:'High-GI on empty stomach',score:-3,m:[270,3,29,16]},{id:'lays_small',label:'Lays handful with protein meal',score:-.5,m:[135,2,15,8]},{id:'white_rice',label:'White rice added to meal',score:-1,m:[200,4,45,0]},{id:'pita',label:'Pita added to shawarma',score:-.5,m:[165,6,34,1]},{id:'sweet_drk',label:'Sweetened juice / soda',sub:'Worst single-item glucose hit',score:-2,m:[150,0,40,0]},{id:'ice_cream',label:'Ice cream / Drumstick',sub:'Sugar spike with no protein buffer',score:-1,m:[280,4,36,14]}]},extras:[{id:'xblack',label:'☕ Extra black coffees',sub:'+0.25 each',score:.25,m:[5,0,0,0]},{id:'xwalks',label:'🚶 Extra walks (10+ min)',sub:'+0.25 each',score:.25,m:[0,0,0,0]},{id:'xwater',label:'💧 Water glasses',sub:'Tracked only',score:0,m:[0,0,0,0]},{id:'xchai',label:'🫖 Extra chai (no sugar)',sub:'Tracked only',score:0,m:[85,4,10,3]},{id:'xchaach',label:'🥛 Chaach (salty lassi)',sub:'+0.5 — probiotic, low cal',score:.5,m:[55,3,5,2]},{id:'xbubly',label:'🫧 Bubly / sparkling water',sub:'Tracked — zero cal',score:0,m:[0,0,0,0]},{id:'xflo',label:'🫐 Low-GI fruit bowl',sub:'Berries, kiwi, papaya · +0.25',score:.25,m:[60,1,14,0]},{id:'xfmod',label:'🍊 Moderate-GI fruit bowl',sub:'Mango, pineapple · -0.25',score:-.25,m:[65,1,16,0]},{id:'xfhi',label:'🍌 High-GI fruit bowl',sub:'Banana, watermelon · -1',score:-1,m:[70,1,18,0]},{id:'xlatte',label:'☕ Extra lattes (over 2)',sub:'-0.5 each',score:-.5,m:[150,9,14,6]},{id:'xbiscuit',label:'🥖 Extra biscuits (per 3)',sub:'Marie/bran · -0.25',score:-.25,m:[95,2,16,3]},{id:'xrice',label:'🍚 Extra rice portion',sub:'White or basmati · -0.5',score:-.5,m:[200,4,45,0]}],workout:[{id:'badminton',label:'🏸 Badminton (1 hr)',burn:220},{id:'muaythai',label:'🥊 Muay Thai (1 hr)',burn:300},{id:'weights',label:'🏋️ Weight lifting (10 min)',burn:45},{id:'walk10',label:'🚶 Walk 10 min',burn:30},{id:'walk20',label:'🚶 Walk 20 min',burn:60},{id:'walk30',label:'🚶 Walk 30 min',burn:90}]};
+const HER={id:'her',burnCap:400,waterTarget:10,targets:{cal:2100,protein:200,carbs:175,fat:90,fiber:40},grace:{cal:150,carb:10},slots:{water:{title:'💧 Water',time:'All Day',isWater:true,opts:[{id:'glass_h',label:'Glass of water',score:0,m:[0,0,0,0,0]}]},morning:{title:'🍋 Morning Ritual',time:'7:00 AM',opts:[{id:'spearmint_lem',label:'🌿 Spearmint tea + lemon water + cinnamon',sub:'Anti-androgenic, blood sugar support',score:.75,m:[15,0,3,0,0]},{id:'lemon_cinn_h',label:'Lemon water + cinnamon',score:.5,m:[10,0,2,0,0]},{id:'lemon_only_h',label:'Lemon water only',score:.25,m:[10,0,2,0,0]}]},breakfast:{title:'🌅 Breakfast',time:'7:30–8:30 AM',opts:[{id:'spinach_oml',label:'🥬 Spinach & turmeric omelette + flaxseed',sub:'3 eggs, anti-inflammatory, 30g protein',score:1.25,m:[380,30,8,22,5],ingr:[{n:'3 eggs',m:[210,18,2,15,0]},{n:'Spinach (large handful)',m:[15,2,2,0,2]},{n:'Turmeric + black pepper',m:[5,0,1,0,0]},{n:'Flaxseed (1 tbsp)',m:[55,2,3,4,3]},{n:'Olive oil (1 tsp)',m:[40,0,0,5,0]},{n:'Cherry tomato handful',m:[20,1,4,0,1]},{n:'Avocado slice',m:[35,0,2,3,2]}]},{id:'yogurt_ber_h',label:'🫐 Greek yogurt + berries + flaxseed + chia',sub:'Anti-androgenic lignans, probiotics',score:1.25,m:[320,22,35,10,9],ingr:[{n:'Greek yogurt 2% (1 cup)',m:[150,23,10,4,0]},{n:'Mixed berries (1 cup)',m:[75,2,18,0,4]},{n:'Ground flaxseed (1 tbsp)',m:[55,2,3,4,3]},{n:'Chia seeds (1 tbsp)',m:[60,2,3,5,5]},{n:'Cinnamon',m:[5,0,1,0,0]},{n:'Honey drizzle (1 tsp)',m:[20,0,5,0,0]}]},{id:'green_smth',label:'💚 Spinach + berries + flaxseed + protein',sub:'Iron, omega-3, anti-inflammatory',score:1.0,m:[380,30,40,12,10],ingr:[{n:'Spinach (large handful)',m:[15,2,2,0,2]},{n:'Mixed berries (1 cup)',m:[75,2,18,0,4]},{n:'Flaxseed (1 tbsp)',m:[55,2,3,4,3]},{n:'Whey protein (1 scoop)',m:[120,25,3,2,0]},{n:'Almond milk (1 cup)',m:[40,1,2,3,0]},{n:'Almond butter (1 tbsp)',m:[100,4,3,8,2]},{n:'Cinnamon',m:[5,0,1,0,0]}]},{id:'oats_h',label:'🌾 Overnight oats + cinnamon + berries',sub:'Fiber-rich, slow-release carbs',score:.75,m:[350,12,55,8,8]},{id:'silver_alm_h',label:'🍞 Silver Hills + almond butter',sub:'Healthy fat, no honey',score:.5,m:[280,12,28,14,5]},{id:'silver_cot_h',label:'🍞 Silver Hills + cottage cheese',sub:'Lean protein, low-GI bread',score:.5,m:[250,17,28,5,4]},{id:'boiled_egg_h',label:'🥚 Boiled egg',sub:'6g protein · tap + to add 2, 3…',score:.25,m:[78,6,0,5,0],ingr:[{n:'Egg (1 large boiled)',m:[78,6,0,5,0]}]},{id:'chai_bis_h',label:'🫖 Chai + biscuits only',sub:'Weakest — no protein',score:0,m:[275,7,42,8,2],ingr:[{n:'Chai no-sugar, 2% milk',m:[140,4,11,5,0]},{n:'Marie/bran biscuit (1)',m:[45,1,8,1,0]}]}]},coffee1:{title:'☕ Morning Drink',time:'9:00 AM',opts:[{id:'spearmint1_h',label:'🌿 Spearmint tea',sub:'Best for PCOD — lowers free testosterone',score:.5,m:[5,0,1,0,0]},{id:'green1_h',label:'Green tea (lemon/ginger)',sub:'Antioxidants, metabolism',score:.25,m:[5,0,1,0,0]},{id:'black1_h',label:'Black coffee / Americano',score:.25,m:[5,0,0,0,0],isBlack:true},{id:'latte1_h',label:'Oat milk latte (no sugar)',sub:'Oat milk over dairy for PCOD',score:0,m:[130,5,18,5,0]}]},coffee2:{title:'☕ Mid-Morning Drink',time:'11:00 AM',opts:[{id:'spearmint2_h',label:'🌿 Spearmint tea',sub:'2nd cup doubles anti-androgenic benefit',score:.5,m:[5,0,1,0,0]},{id:'green2_h',label:'Green tea',score:.25,m:[5,0,1,0,0]},{id:'black2_h',label:'Black coffee / Americano',score:.25,m:[5,0,0,0,0],isBlack:true},{id:'latte2_h',label:'Oat milk latte (no sugar)',score:0,m:[130,5,18,5,0]}]},afternoon_tea:{title:'🌿 Afternoon Spearmint',time:'2:30 PM',opts:[{id:'spearmint_pm',label:'🌿 Spearmint tea',sub:'3rd cup = strong anti-androgenic effect',score:.5,m:[5,0,1,0,0]},{id:'gt_pm_h',label:'Lemon ginger green tea',score:.25,m:[5,0,1,0,0]}]},lunch:{title:'🍽️ Lunch',time:'12:30–1:00 PM',subtitle:'Chicken + Tofu options',opts:[{id:'turmeric_chk',label:'🍗 Turmeric & ginger chicken + roasted veg',sub:'Anti-inflammatory powerhouse',score:1.25,m:[420,45,15,14,6],ingr:[{n:'Chicken breast (6 oz)',m:[280,42,0,6,0]},{n:'Turmeric + ginger + spices',m:[10,0,2,0,1]},{n:'Roasted veggies (1.5 cup)',m:[90,2,11,3,5]},{n:'Olive oil (1 tsp)',m:[40,0,0,5,0]}]},{id:'chk_quinoa_h',label:'🍗 Grilled chicken + quinoa + mixed greens',sub:'Complete protein, complex carbs',score:1.0,m:[450,48,30,12,6]},{id:'chk_tikka_h',label:'🍗 Home-made chicken tikka + salad',sub:'Yogurt-marinated, no cream',score:1.0,m:[400,42,12,16,4]},{id:'chk_avo_h',label:'🍗 Grilled chicken + avocado + large salad',sub:'Healthy fat, anti-inflammatory',score:1.0,m:[430,40,10,22,7]},{id:'chk_soup_h',label:'🍗 Chicken vegetable soup (homemade)',sub:'High vegetable ratio',score:.75,m:[320,35,20,8,5]},{id:'chickpea_h',label:'🥗 Large chickpea + vegetable salad',sub:'Inositol-rich, zinc, fiber',score:.75,m:[350,14,45,10,12]},{id:'lentil_h',label:'🫘 Lentil dal + mixed vegetables',sub:'Iron-rich, complex carbs',score:.75,m:[380,18,50,8,15]},{id:'tofu_turm_h',label:'🫘 Tofu + turmeric roasted veg',sub:'Plant protein — 22g',score:1.25,m:[380,22,20,16,6],isTofu:true},{id:'tofu_quin_h',label:'🫘 Tofu + quinoa + mixed greens',sub:'Complete plant protein',score:1.0,m:[400,24,35,14,6],isTofu:true},{id:'tofu_tikk_h',label:'🫘 Tofu tikka + salad',score:1.0,m:[350,20,18,16,5],isTofu:true},{id:'tofu_avo_h',label:'🫘 Tofu + avocado + large salad',score:1.0,m:[370,18,15,22,7],isTofu:true},{id:'tofu_soup_h',label:'🫘 Tofu vegetable soup',sub:'Light, gut-healing broth',score:.75,m:[280,16,25,10,5],isTofu:true},{id:'takeout_l_h',label:'🥡 Takeout (modified)',sub:'Use master rule',score:-.25,m:[550,38,45,18,3],takeout:true}]},snack:{title:'🌰 PCOD Snack',time:'3:00 PM',opts:[{id:'protein_water',label:'💪 Protein powder + water',sub:'25g protein, near-zero carbs/fat',score:1.0,m:[110,25,2,1,0],ingr:[{n:'Whey or plant protein (1 scoop)',m:[110,25,2,1,0]},{n:'Cold water (1 cup)',m:[0,0,0,0,0]},{n:'Cinnamon (optional)',m:[5,0,1,0,0]},{n:'Ice cubes',m:[0,0,0,0,0]}]},...SHARED_SNACKS,{id:'yogurt_cinn_h',label:'🥛 Plain Greek yogurt + cinnamon',sub:'Probiotics — limit dairy total',score:.5,m:[130,12,8,3,0]},{id:'skip_s_h',label:'⏭️ Skip snack',sub:'Can lead to overeating at dinner',score:-.25,m:[0,0,0,0,0]}]},predinner:{title:'💧 Pre-Dinner Water',time:'5:45 PM',opts:[{id:'pre_water_h',label:'Glass of water before dinner',score:.25,m:[0,0,0,0,0]}]},dinner:{title:'🌙 Dinner',time:'6:00–7:00 PM',subtitle:'Chicken + Tofu options',opts:[{id:'stuffed_pep',label:'🍗 Chicken stuffed peppers + quinoa',sub:'Anti-inflammatory, complete meal',score:1.25,m:[450,48,28,14,7],ingr:[{n:'Chicken breast (6 oz)',m:[280,42,0,6,0]},{n:'Bell peppers (2 large)',m:[60,2,12,0,4]},{n:'Cooked quinoa (1/2 cup)',m:[60,3,11,1,2]},{n:'Onion + garlic',m:[20,1,4,0,1]},{n:'Olive oil (1 tsp)',m:[40,0,0,5,0]},{n:'Herbs/spices',m:[0,0,0,0,0]}]},{id:'chk_avo_d_h',label:'🍗 Grilled chicken + avocado + greens',sub:'Highest healthy fat dinner',score:1.25,m:[430,44,12,22,8]},{id:'turm_cauli',label:'🍗 Turmeric chicken + cauliflower rice',sub:'Lowest carb dinner option',score:1.0,m:[380,44,15,14,6]},{id:'chk_stir_h',label:'🍗 Chicken + vegetable stir-fry',sub:'No sugar sauce, high veg',score:1.0,m:[400,42,20,14,6]},{id:'salmon_d_h',label:'🐟 Salmon + edamame + greens',sub:'Omega-3, anti-inflammatory',score:1.0,m:[520,52,12,22,5],ingr:[{n:'Salmon fillet (6 oz)',m:[290,40,0,12,0]},{n:'Edamame (1 cup)',m:[120,11,8,5,4]},{n:'Mixed greens (2 cup)',m:[30,2,4,0,1]},{n:'Olive oil (1 tsp)',m:[40,0,0,5,0]},{n:'Lemon + herbs',m:[10,0,1,0,0]},{n:'Avocado slice',m:[30,0,1,2,1]}]},{id:'lentil_c_h',label:'🫘 Lentil curry + small brown rice',sub:'Iron-rich, plant protein',score:.75,m:[420,18,55,8,12]},{id:'tofu_pep_h',label:'🫘 Tofu stuffed peppers + quinoa',score:1.25,m:[400,22,30,16,8],isTofu:true},{id:'tofu_avo_d_h',label:'🫘 Grilled tofu + avocado + greens',score:1.0,m:[380,20,16,22,7],isTofu:true},{id:'tofu_caul_h',label:'🫘 Tofu + cauliflower rice (turmeric)',score:1.0,m:[320,20,18,16,5],isTofu:true},{id:'tofu_stir_h',label:'🫘 Tofu stir-fry + veggies',score:1.0,m:[340,18,22,14,6],isTofu:true},{id:'chickpea_sal_d_h',label:'🥗 Chickpea salad',sub:'Inositol-rich — customize veggies',score:1.25,m:[380,18,42,10,14],ingr:[{n:'Chickpeas (1 cup cooked)',m:[270,15,45,4,12]},{n:'Paneer (50g cubed)',m:[140,9,1,11,0]},{n:'Broccoli (1/2 cup)',m:[27,2,5,0,3]},{n:'Bell peppers (1/2 cup)',m:[20,1,4,0,1]},{n:'Cucumber (1/2 cup)',m:[8,0,2,0,0]},{n:'Tomatoes (1/2 cup)',m:[16,1,3,0,1]},{n:'Brussels sprouts (1/2 cup)',m:[28,2,6,0,3]},{n:'Olive oil drizzle (1 tsp)',m:[40,0,0,5,0]},{n:'Salt + pepper + turmeric',m:[5,0,1,0,0]}]},{id:'takeout_d_h',label:'🥡 Takeout (grilled, modified)',score:-.25,m:[520,38,42,16,3],takeout:true}]},postdinner:{title:'💧 Post-Dinner',time:'7:30–8:00 PM',opts:[{id:'acv_h',label:'Water + apple cider vinegar',sub:'Lowers next-morning fasting glucose',score:.25,m:[5,0,1,0,0]},{id:'plain_h',label:'Plain water',score:.1,m:[0,0,0,0,0]}]},tweaks:{title:'✨ PCOD Tweaks',time:'All Day',subtitle:'Each is clinically supported',opts:[{id:'flaxseed_h',label:'🌱 Flaxseed (1 tbsp) in meal',sub:'Lignans lower testosterone',score:.5,m:[37,1,2,3,3]},{id:'spearmint_tw',label:'🌿 Spearmint consumed (2+ cups today)',sub:'Proven to lower free testosterone',score:.5,m:[0,0,0,0,0]},{id:'inositol_h',label:'💊 Myo-inositol supplement',sub:'Most evidence-backed PCOD supplement',score:.5,m:[0,0,0,0,0]},{id:'eat_ord_h',label:'Eating order: fiber → protein → carbs',score:.5,m:[0,0,0,0,0]},{id:'zinc_h',label:'🎃 Zinc-rich food today',sub:'Pumpkin seeds/chickpeas',score:.25,m:[0,0,0,0,0]}]}},indulgences:{title:'⚠️ Indulgences',subtitle:'Stricter — hormones are sensitive',opts:[{id:'dairy_h',label:'Full-fat dairy / cream sauce',sub:'Can worsen hormonal imbalance',score:-.5,m:[80,5,5,6,0]},{id:'sweet_h',label:'Sweetened juice / soda / alcohol',score:-2,m:[150,0,40,0,0]},{id:'refined_h',label:'White bread / pizza / pasta (large)',sub:'Spikes insulin driving PCOD',score:-1,m:[300,8,60,4,2]},{id:'processed_h',label:'Processed / packaged junk food',sub:'Inflammatory, worsens PCOD',score:-1.5,m:[250,4,35,12,1]},{id:'caffeine_h',label:'Excess caffeine (3+ coffees/lattes)',sub:'Raises cortisol',score:-.75,m:[0,0,0,0,0]}]},extras:[{id:'spearmint_x',label:'🌿 Extra spearmint teas',sub:'+0.5 each',score:.5,m:[5,0,1,0,0]},{id:'chaach_hx',label:'🥛 Chaach (salty lassi)',sub:'+0.25 — probiotic but contains dairy',score:.25,m:[55,3,5,2,0]},{id:'bubly_hx',label:'🫧 Bubly / sparkling water',sub:'Tracked — zero cal',score:0,m:[0,0,0,0,0]},{id:'walks_hx',label:'🚶 Extra walks (15+ min)',sub:'+0.5 each',score:.5,m:[0,0,0,0,0]},{id:'water_hx',label:'💧 Water glasses',sub:'Tracked only',score:0,m:[0,0,0,0,0]},{id:'flo_hx',label:'🫐 Low-GI fruit bowl',sub:'Berries, kiwi, apple · +0.25',score:.25,m:[60,1,14,0,3]},{id:'fmod_hx',label:'🍊 Moderate-GI fruit bowl',sub:'Mango, pineapple · -0.25',score:-.25,m:[65,1,16,0,2]},{id:'fhi_hx',label:'🍌 High-GI fruit bowl',sub:'Banana, watermelon · -1',score:-1,m:[70,1,18,0,1]},{id:'dairy_hx',label:'🥛 Extra dairy portions',sub:'-0.5 each',score:-.5,m:[80,5,5,6,0]},{id:'lattes_hx',label:'☕ Extra lattes',sub:'-0.5 each',score:-.5,m:[130,5,18,5,0]},{id:'biscuits_hx',label:'🥖 Extra biscuits (per 3)',sub:'-0.25 each',score:-.25,m:[95,2,16,3,1]}],workout:[{id:'badminton_h',label:'🏸 Badminton (1 hr)',burn:200},{id:'muaythai_h',label:'🥊 Muay Thai (1 hr)',burn:270},{id:'weights_h',label:'🏋️ Weight lifting (10 min)',burn:40},{id:'walk10_h',label:'🚶 Walk 10 min',burn:30},{id:'walk20_h',label:'🚶 Walk 20 min',burn:60},{id:'walk30_h',label:'🚶 Walk 30 min',burn:90}]};
 
 const CONFIGS={him:HIM,her:HER};
 function defaultState(cfg){const e={},w={};cfg.extras.forEach(x=>e[x.id]=0);cfg.workout.forEach(x=>w[x.id]=0);return{counts:{},extras:e,inds:{},workout:w,customs:{}};}
 let allState={him:defaultState(HIM),her:defaultState(HER)};
 let customDishes={him:{},her:{}};
 let favorites={him:{},her:{}};
+let slotFav={him:{},her:{}};
+let weekUsage={him:{},her:{}};   // weekUsage[p][sk__id] = {count, lastDate}
+let weekUsageLoaded=false;
 function slotOpts(p,sk){
   const base=CONFIGS[p].slots[sk]?.opts||[];
   const cd=customDishes[p]||{};
   const extra=Object.keys(cd).filter(id=>cd[id]&&cd[id].slot===sk).map(id=>{const d=cd[id];return{id,label:d.label,sub:d.sub||'',score:Number(d.score)||0,m:d.m||[0,0,0,0,0],userDish:true};});
   return base.concat(extra);
+}
+
+// ─── 7-DAY USAGE (for top-3 slot selection) ───
+function fetchWeekUsage(){
+  if(!firebaseReady||!db)return;
+  const dates=[];
+  for(let i=0;i<7;i++)dates.push(offsetDate(TODAY_DATE,-i));
+  ['him','her'].forEach(p=>{
+    const tally={};
+    let pending=dates.length;
+    dates.forEach(date=>{
+      db.ref(`trackers/${SYNC_KEY}/dt/${date}/${p}/counts`).once('value').then(snap=>{
+        const counts=snap.val()||{};
+        for(const key in counts){
+          const c=counts[key]||0;
+          if(c<=0)continue;
+          if(!tally[key])tally[key]={count:0,lastDate:date};
+          tally[key].count+=c;
+          if(date>tally[key].lastDate)tally[key].lastDate=date;
+        }
+        if(--pending===0){weekUsage[p]=tally;weekUsageLoaded=true;renderAll();}
+      }).catch(()=>{if(--pending===0){weekUsage[p]=tally;renderAll();}});
+    });
+  });
+}
+
+// ─── PICK 3 VISIBLE DISHES PER SLOT ───
+// slot1 = crowned fav (slotFav) OR highest-score default
+// slot2 = most used this week (excluding slot1)
+// slot3 = most recent (excluding slot1,2); fill remaining with highest score
+// PLUS: any dish counted today that isn't already shown (ghost row, stays till reset)
+function visibleSlotOpts(p,sk){
+  const all=slotOpts(p,sk);
+  if(!all.length)return [];
+  if(sk==='kulcha')return all;  // kulcha shows all (collapsed anyway)
+  const usage=weekUsage[p]||{};
+  const u=(o)=>usage[`${sk}__${o.id}`]||{count:0,lastDate:''};
+  const chosen=[];
+  const pick=(o)=>{if(o&&!chosen.find(x=>x.id===o.id))chosen.push(o);};
+
+  // slot 1: crown, else explicit fav, else highest score
+  const crownId=slotFav[p]&&slotFav[p][sk];
+  let s1=crownId?all.find(o=>o.id===crownId):null;
+  if(!s1){
+    // any starred fav in this slot → highest score among favs
+    const favs=all.filter(o=>isFav(p,`${sk}__${o.id}`));
+    if(favs.length)s1=favs.sort((a,b)=>b.score-a.score)[0];
+  }
+  if(!s1)s1=[...all].sort((a,b)=>b.score-a.score)[0];
+  pick(s1);
+
+  // slot 2: most used this week
+  const byUsage=[...all].filter(o=>!chosen.find(x=>x.id===o.id)&&u(o).count>0)
+    .sort((a,b)=>u(b).count-u(a).count||u(b).lastDate.localeCompare(u(a).lastDate));
+  if(byUsage[0])pick(byUsage[0]);
+
+  // slot 3: most recent (by lastDate), else next most-used
+  const byRecent=[...all].filter(o=>!chosen.find(x=>x.id===o.id)&&u(o).lastDate)
+    .sort((a,b)=>u(b).lastDate.localeCompare(u(a).lastDate)||u(b).count-u(a).count);
+  if(byRecent[0])pick(byRecent[0]);
+
+  // fill to 3 with highest-score remaining
+  if(chosen.length<3){
+    const rest=[...all].filter(o=>!chosen.find(x=>x.id===o.id)).sort((a,b)=>b.score-a.score);
+    for(const o of rest){if(chosen.length>=3)break;pick(o);}
+  }
+
+  // include any dish counted TODAY not already shown (ghost rows, till reset)
+  all.forEach(o=>{if(getCount(p,`${sk}__${o.id}`)>0)pick(o);});
+
+  return chosen;
 }
 function isFav(p,key){return !!(favorites[p]&&favorites[p][key]);}
 let expandedIds=new Set();
@@ -652,7 +758,48 @@ function sStr(s){return(s>=0?'+':'')+s.toFixed(2);}
 function oStr(s){return(s>=0?'+':'')+s.toFixed(s%1===0?1:2);}
 function renderIngredients(p,slotKey,opt){const dishKey=`${slotKey}__${opt.id}`,custom=allState[p].customs?.[dishKey]||{},hasCustom=Object.keys(custom).length>0;return`<div class="ingr-list"><div class="ingr-head"><span class="ingr-title">🧪 Ingredients · tap −/+ to customize</span>${hasCustom?`<button class="ingr-reset" onclick="resetDishCustom('${p}','${dishKey}')">↺ Reset</button>`:''}</div>${opt.ingr.map((ingr,i)=>{const mult=custom[i]!==undefined?Number(custom[i]):1;const macStr=`${ingr.m[0]}c · ${ingr.m[1]}p · ${ingr.m[2]}ca · ${ingr.m[3]}f${ingr.m[4]?` · ${ingr.m[4]}fib`:''}`;return`<div class="ingr-row ${mult===0?'skipped':''}"><div class="ingr-info"><div class="ingr-name">${ingr.n}</div><div class="ingr-macros">${macStr}</div></div><div class="ingr-ctr"><button class="cnt-btn ingr-btn" data-p="${p}" data-dk="${dishKey}" data-i="${i}" data-d="-1">−</button><span class="cnt-val">${mult}</span><button class="cnt-btn ingr-btn" data-p="${p}" data-dk="${dishKey}" data-i="${i}" data-d="1">+</button></div></div>`;}).join('')}</div>`;}
 function renderOptRow(p,slotKey,opt,isInd=false){const key=isInd?opt.id:`${slotKey}__${opt.id}`,rowId=`${p}|${key}`;const cnt=isInd?getInd(p,opt.id):getCount(p,key),active=cnt>0;const customized=!isInd&&isCustomized(p,slotKey,opt.id);const effM=isInd?(opt.m||[0,0,0,0,0]):getEffectiveMacros(p,slotKey,opt);const light=active?'on':getLight(p,opt.score,effM);const cls=active?(isInd?'ind-active':'active'):(opt.isTofu&&p==='him'?'muted-opt':'');const exp=expandedIds.has(rowId)?'expanded':'';const dtype=isInd?'ind':'count';const[cal,prot,carbs,fat,fiber]=effM,showFiber=p==='her',hasIngr=!isInd&&opt.ingr;const fav=!isInd&&isFav(p,key);const star=isInd?'':`<button class="opt-star ${fav?'on':''}" data-fav="${rowId}" title="Pin to favorites">⭐</button>`;const badges=`${hasIngr?'<span class="customizable-badge">🧪 Custom</span>':''} ${opt.userDish?'<span class="userdish-badge">My dish</span>':''} ${customized?'<span class="custom-badge">Modified</span>':''}`;const delBtn=opt.userDish?`<button class="dish-del" data-deldish="${p}|${opt.id}">🗑 Delete this dish</button>`:'';return`<div class="opt-row ${cls} ${exp}" data-row-id="${rowId}"><span class="opt-dot ${light}"></span><span class="opt-info" data-expand="${rowId}"><span class="opt-lbl">${opt.label} ${badges}</span>${opt.sub?`<span class="opt-sub">${opt.sub}</span>`:''}</span><span class="opt-score">${oStr(opt.score)}</span>${star}<div class="opt-ctr"><button class="cnt-btn" data-p="${p}" data-t="${dtype}" data-k="${key}" data-oid="${opt.id}" data-d="-1">−</button><span class="cnt-val">${cnt}</span><button class="cnt-btn" data-p="${p}" data-t="${dtype}" data-k="${key}" data-oid="${opt.id}" data-d="1">+</button></div><div class="opt-details"><div class="detail-macros"><div class="dm-item"><div class="dm-val">${Math.round(cal)}</div><div class="dm-lbl">cal</div></div><div class="dm-item"><div class="dm-val">${Math.round(prot)}g</div><div class="dm-lbl">protein</div></div><div class="dm-item"><div class="dm-val">${Math.round(carbs)}g</div><div class="dm-lbl">carbs</div></div><div class="dm-item"><div class="dm-val">${Math.round(fat)}g</div><div class="dm-lbl">fat</div></div>${showFiber?`<div class="dm-item"><div class="dm-val">${Math.round(fiber||0)}g</div><div class="dm-lbl">fiber</div></div>`:''}</div><div class="detail-text">Score: <strong>${oStr(opt.score)}</strong> per serving · Tap again to collapse</div>${hasIngr?renderIngredients(p,slotKey,opt):''}${delBtn}</div></div>`;}
-function renderSlots(p){const cfg=CONFIGS[p];const favRows=[];for(const sk in cfg.slots)slotOpts(p,sk).forEach(o=>{if(isFav(p,`${sk}__${o.id}`))favRows.push(renderOptRow(p,sk,o));});const favHtml=favRows.length?`<div class="slot fav-slot"><div class="slot-hdr"><div class="slot-time">Pinned</div><div class="slot-title">⭐ Favorites</div></div><div class="opts">${favRows.join('')}</div></div>`:'';const slotsHtml=Object.entries(cfg.slots).map(([sk,slot])=>{const opts=slotOpts(p,sk).slice().sort((a,b)=>(isFav(p,`${sk}__${b.id}`)?1:0)-(isFav(p,`${sk}__${a.id}`)?1:0));return`<div class="slot"><div class="slot-hdr"><div class="slot-time">${slot.time}</div><div class="slot-title">${slot.title}</div>${slot.subtitle?`<div class="slot-sub">${slot.subtitle}</div>`:''}</div><div class="opts">${opts.map(o=>renderOptRow(p,sk,o)).join('')}</div></div>`;}).join('');return favHtml+slotsHtml;}
+function renderWaterSlot(p){
+  const tgt=CONFIGS[p].waterTarget||10;
+  const optId=p==='him'?'glass':'glass_h';
+  const cnt=getCount(p,`water__${optId}`);
+  const pct=Math.min(100,Math.round(cnt/tgt*100));
+  const glasses='💧'.repeat(Math.min(cnt,10))+'·'.repeat(Math.max(0,tgt-Math.min(cnt,10)));
+  return`<div class="slot water-slot">
+    <div class="slot-hdr"><div class="slot-time">ALL DAY</div><div class="slot-title">💧 Water</div></div>
+    <div class="water-row">
+      <div class="water-glasses">${glasses}</div>
+      <div class="water-ctr">
+        <button class="cnt-btn" data-p="${p}" data-t="count" data-k="water__${optId}" data-oid="${optId}" data-d="-1">−</button>
+        <span class="cnt-val">${cnt}<span class="water-tgt">/${tgt}</span></span>
+        <button class="cnt-btn" data-p="${p}" data-t="count" data-k="water__${optId}" data-oid="${optId}" data-d="1">+</button>
+      </div>
+    </div>
+    <div class="water-bar-wrap"><div class="water-bar-fill" style="width:${pct}%"></div></div>
+  </div>`;}
+function renderSlots(p){
+  const cfg=CONFIGS[p];
+  const favRows=[];
+  for(const sk in cfg.slots){
+    if(sk==='water')continue;
+    slotOpts(p,sk).forEach(o=>{if(isFav(p,`${sk}__${o.id}`))favRows.push(renderOptRow(p,sk,o));});
+  }
+  const favHtml=favRows.length?`<div class="slot fav-slot"><div class="slot-hdr"><div class="slot-time">Pinned</div><div class="slot-title">⭐ Favorites</div></div><div class="opts">${favRows.join('')}</div></div>`:'';
+  const slotsHtml=Object.entries(cfg.slots).map(([sk,slot])=>{
+    if(sk==='water')return renderWaterSlot(p);
+    const isKulcha=sk==='kulcha';
+    const opts=visibleSlotOpts(p,sk).slice().sort((a,b)=>(isFav(p,`${sk}__${b.id}`)?1:0)-(isFav(p,`${sk}__${a.id}`)?1:0));
+    const collapseId=`${p}-slot-${sk}`;
+    const collapsed=isKulcha&&!expandedIds.has(collapseId);
+    const hdrClick=isKulcha?`onclick="toggleSlotCollapse('${p}','${sk}','${collapseId}')" style="cursor:pointer"`:'';
+    const arrow=isKulcha?`<span class="slot-arrow">${collapsed?'▶':'▼'}</span>`:'';
+    return`<div class="slot${isKulcha?' kulcha-slot':''}"><div class="slot-hdr" ${hdrClick}><div class="slot-time">${slot.time}</div><div class="slot-title">${slot.title}${arrow}</div>${slot.subtitle?`<div class="slot-sub">${slot.subtitle}</div>`:''}</div><a href="customdishes.html?p=${p}&slot=${sk}" class="slot-add-btn">＋</a>${collapsed?'':`<div class="opts">${opts.map(o=>renderOptRow(p,sk,o)).join('')}</div>`}</div>`;
+  }).join('');
+  return favHtml+slotsHtml;}
+function toggleSlotCollapse(p,sk,collapseId){
+  if(expandedIds.has(collapseId))expandedIds.delete(collapseId);
+  else expandedIds.add(collapseId);
+  renderAll();
+}
 function renderExtras(p){const cfg=CONFIGS[p];const rows=cfg.extras.map(e=>{const cnt=getExtra(p,e.id),cls=e.score>0?'pos':e.score<0?'neg':'';return`<div class="counter-row ${cls}"><div class="ctr-info"><div class="ctr-lbl">${e.label}</div><div class="ctr-sub">${e.sub}</div></div><div class="ctr-right"><button class="cnt-btn" data-p="${p}" data-t="extra" data-k="${e.id}" data-oid="${e.id}" data-d="-1">−</button><span class="cnt-val">${cnt}</span><button class="cnt-btn" data-p="${p}" data-t="extra" data-k="${e.id}" data-oid="${e.id}" data-d="1">+</button></div></div>`;}).join('');return`<div class="slot"><div class="slot-hdr"><div class="slot-time">ANYTIME</div><div class="slot-title">➕ Extras & Tracking</div></div>${rows}</div>`;}
 function renderWorkout(p){const cfg=CONFIGS[p],burn=getTotalBurn(p),capped=burn>=cfg.burnCap;const rows=cfg.workout.map(w=>{const cnt=getWkt(p,w.id);return`<div class="counter-row ${cnt>0?'pos':''}"><div class="ctr-info"><div class="ctr-lbl">${w.label}</div><div class="ctr-sub">~${w.burn} cal each</div></div><div class="ctr-right"><button class="cnt-btn" data-p="${p}" data-t="workout" data-k="${w.id}" data-oid="${w.id}" data-d="-1">−</button><span class="cnt-val">${cnt}</span><button class="cnt-btn" data-p="${p}" data-t="workout" data-k="${w.id}" data-oid="${w.id}" data-d="1">+</button></div></div>`;}).join('');return`<div class="slot"><div class="slot-hdr"><div class="slot-time">END OF DAY</div><div class="slot-title">🏋️ Workout</div></div>${rows}<div class="workout-total">🔥 Burned: <strong>${burn} cal</strong> ${capped?`· 🔒 Cap (${cfg.burnCap})`:`· Cap: ${cfg.burnCap}`}</div></div>`;}
 function renderInds(p){const cfg=CONFIGS[p];return`<div class="slot" style="border-color:rgba(231,76,60,.25)"><div class="slot-hdr"><div class="slot-time">IF HAPPENED</div><div class="slot-title" style="color:var(--red)">${cfg.indulgences.title}</div><div class="slot-sub">${cfg.indulgences.subtitle}</div></div><div class="opts">${cfg.indulgences.opts.map(o=>renderOptRow(p,'inds',o,true)).join('')}</div></div>`;}
@@ -683,96 +830,172 @@ function handleDelDish(e){e.stopPropagation();const b=e.currentTarget;const[p,id
 document.getElementById('dishSaveBtn').addEventListener('click',saveDish);
 document.addEventListener('click',e=>{if(e.target.id==='dishModal')document.getElementById('dishModal').classList.remove('show');if(e.target.id==='remindModal')document.getElementById('remindModal').classList.remove('show');});
 
-// ═══ REMINDERS ═══
-const LSREM='dft_reminders';
-const REM_DEFS=[
-  {id:'water',       name:'💧 Drink water',           sub:'Stay hydrated all day',             def:'11:00'},
-  {id:'protein_am',  name:'💪 Morning protein check',  sub:'Him & her — are you on pace?',      def:'09:30', protein:true, slot:'morning'},
-  {id:'lunch',       name:'🍽️ Log lunch',             sub:"Don't forget to track your meal",   def:'13:00'},
-  {id:'protein_mid', name:'💪 Midday protein check',   sub:'Halfway there — check the numbers.',def:'14:30', protein:true, slot:'midday'},
-  {id:'dinner',      name:'🌙 Log dinner',             sub:'Track your evening meal',           def:'19:30'},
-  {id:'protein_pm',  name:'💪 Evening protein check',  sub:'Lock in your goal before bed.',     def:'18:00', protein:true, slot:'evening'},
-];
-let reminders={enabled:false,items:{}};
+// ═══ SMART MACRO PACE CHECK (fires on every app open) ═══
+const LSREM='dft_macrocheck';
+let macroCheckOn=true;
 let toastTimer=null;
-function loadReminders(){try{const r=localStorage.getItem(LSREM);if(r)reminders=JSON.parse(r);}catch(e){}REM_DEFS.forEach(d=>{if(!reminders.items[d.id])reminders.items[d.id]={on:false,time:d.def};});}
-function saveReminders(){try{localStorage.setItem(LSREM,JSON.stringify(reminders));}catch(e){}}
-// Dynamic protein message
-function getProteinMsg(slot){
-  const hm=calcMacros('him'),rm=calcMacros('her');
-  const hP=Math.round(hm.protein),hT=HIM.targets.protein,hR=Math.max(0,hT-hP),hPct=Math.round(hP/hT*100);
-  const rP=Math.round(rm.protein),rT=HER.targets.protein,rR=Math.max(0,rT-rP),rPct=Math.round(rP/rT*100);
-  if(slot==='morning'){
-    const hype=hP>0?'Great start — keep stacking! 🔥':'Day is fresh — first protein hit incoming! 🌅';
-    return{title:'💪 Morning Protein Check',body:`👨 Him: ${hP}g / ${hT}g (${hPct}%) · ${hR}g left\n👩 Her: ${rP}g / ${rT}g (${rPct}%) · ${rR}g left\n${hype}`};
-  }
-  if(slot==='midday'){
-    const hMsg=hPct<35?'⚠️ Behind — add protein now!':hPct<60?'On pace, keep pushing 🔥':'Crushing it! 💪';
-    const rMsg=rPct<35?'⚠️ Behind — protein first!':rPct<60?'On track 👍':'Strong 💜';
-    return{title:'💪 Midday Protein Check',body:`👨 Him: ${hP}g / ${hT}g — ${hR}g left. ${hMsg}\n👩 Her: ${rP}g / ${rT}g — ${rR}g left. ${rMsg}`};
-  }
-  const hMsg=hR===0?'✅ Goal smashed!':hR<60?`${hR}g to go — dinner can finish it! 🎯`:`${hR}g left — make dinner count! 🍗`;
-  const rMsg=rR===0?'✅ Goal hit!':rR<50?`${rR}g to go — almost there 💜`:`${rR}g left — protein dinner needed! 🥗`;
-  return{title:'💪 Evening Protein Check',body:`👨 Him: ${hP}g / ${hT}g — ${hMsg}\n👩 Her: ${rP}g / ${rT}g — ${rMsg}`};
+function loadReminders(){try{const v=localStorage.getItem(LSREM);if(v!==null)macroCheckOn=JSON.parse(v).on!==false;}catch(e){}}
+function saveReminders(){try{localStorage.setItem(LSREM,JSON.stringify({on:macroCheckOn}));}catch(e){}}
+
+// Hourly pace schedule — fraction of daily target you SHOULD have by each window (step fn)
+// [startHour, {cal,protein,carbs,fat,fiber}]
+const PACE=[
+  [23,{cal:1.00,protein:1.00,carbs:1.00,fat:1.00,fiber:1.00,water:1.00}],
+  [20,{cal:0.90,protein:0.93,carbs:0.87,fat:0.90,fiber:0.85,water:0.90}],
+  [19,{cal:0.75,protein:0.78,carbs:0.72,fat:0.75,fiber:0.70,water:0.80}],
+  [18,{cal:0.68,protein:0.68,carbs:0.65,fat:0.68,fiber:0.62,water:0.70}],
+  [17,{cal:0.65,protein:0.68,carbs:0.62,fat:0.65,fiber:0.58,water:0.60}],
+  [16,{cal:0.65,protein:0.68,carbs:0.62,fat:0.65,fiber:0.58,water:0.50}],
+  [12,{cal:0.55,protein:0.58,carbs:0.52,fat:0.55,fiber:0.45,water:0.40}],
+  [11,{cal:0.30,protein:0.30,carbs:0.28,fat:0.30,fiber:0.22,water:0.30}],
+  [10,{cal:0.25,protein:0.28,carbs:0.22,fat:0.25,fiber:0.18,water:0.20}],
+  [9, {cal:0.22,protein:0.25,carbs:0.20,fat:0.22,fiber:0.15,water:0.10}],
+  [0, {cal:0,  protein:0,   carbs:0,   fat:0,   fiber:0,   water:0   }],
+];
+function paceFor(hour){for(const [h,frac] of PACE){if(hour>=h)return frac;}return PACE[PACE.length-1][1];}
+
+// burned cal for a given date's stored workout data (same math as getTotalBurn but for any day node)
+function burnForState(cfg,st){if(!st)return 0;return Math.min(cfg.workout.reduce((t,w)=>t+Math.max(0,st.workout?.[w.id]||0)*w.burn,0),cfg.burnCap);}
+let yesterdayBurn={him:0,her:0};
+function fetchYesterdayBurn(){
+  if(!firebaseReady||!db)return;
+  const y=new Date();y.setDate(y.getDate()-1);const yKey=y.toISOString().split('T')[0];
+  ['him','her'].forEach(p=>{
+    db.ref(`trackers/${SYNC_KEY}/dt/${yKey}/${p}/workout`).once('value').then(snap=>{
+      const b=burnForState(CONFIGS[p],{workout:snap.val()||{}});
+      yesterdayBurn[p]=b>=300?b:0;   // ignore yesterday if under 300
+    }).catch(()=>{});
+  });
 }
-// In-app toast (works on ALL devices including iOS)
-function showToast(title,body){
-  document.getElementById('toastTitle').textContent=title;
-  document.getElementById('toastBody').textContent=body;
+
+// effective burn = today + 25% of yesterday's (yesterday only counts if >=300)
+function effectiveBurn(p){return getTotalBurn(p)+0.25*(yesterdayBurn[p]||0);}
+
+// Build the list of issues for one person
+function macroIssues(p){
+  const cfg=CONFIGS[p],m=calcMacros(p),T=cfg.targets,hour=new Date().getHours();
+  const frac=paceFor(hour);
+  const after6=hour>=18;
+  const burn=effectiveBurn(p);
+  const carbBufPct=burn/100*0.01;          // 1% per 100 cal effective burn
+  const issues=[];
+  // helper for "behind" macros (higher=better): protein, cal, fat, fiber
+  function behind(key,label,emoji,unit){
+    if(T[key]===undefined)return;
+    const expected=frac[key]*T[key];
+    if(expected<=0)return;                  // too early in the day
+    const actual=key==='cal'?(m.cal-getTotalBurn(p)):m[key];
+    // hybrid threshold: before 6pm absolute (expected - 10% of target); after 6pm relative (expected*0.9)
+    const thresh=after6?expected*0.90:expected-0.10*T[key];
+    if(actual<thresh){
+      issues.push({type:'behind',key,label,emoji,actual:Math.round(actual),expected:Math.round(expected),thresh:Math.round(thresh),target:T[key],unit,gap:Math.round(expected-actual)});
+    }
+  }
+  // over-carbs (lower=better): no behind buffer; workout buffer expands the ceiling
+  function overCarb(){
+    const expected=frac.carbs*T.carbs;
+    if(expected<=0)return;
+    const ceiling=expected*(1+carbBufPct);
+    if(m.carbs>ceiling){
+      issues.push({type:'over',key:'carbs',label:'Carbs',emoji:'🌾',actual:Math.round(m.carbs),expected:Math.round(expected),thresh:Math.round(ceiling),target:T.carbs,unit:'g',gap:Math.round(m.carbs-ceiling),bufPct:Math.round(carbBufPct*100)});
+    }
+  }
+  behind('protein','Protein','💪','g');
+  overCarb();
+  behind('cal','Calories','🔥','');
+  behind('fat','Fat','🥑','g');
+  behind('fiber','Fiber','🌱','g');
+  // Water — behind (per person, 10-glass target)
+  const wTarget=cfg.waterTarget||10;
+  const wOptId=p==='him'?'glass':'glass_h';
+  const wActual=getCount(p,`water__${wOptId}`)||0;
+  const wFrac=frac.water||0;
+  if(wFrac>0){
+    const wExp=Math.round(wFrac*wTarget);
+    const wThresh=after6?Math.floor(wExp*0.90):Math.max(0,wExp-1);
+    if(wActual<wThresh){
+      issues.push({type:'behind',key:'water',label:'Water',emoji:'💧',actual:wActual,expected:wExp,thresh:wThresh,target:wTarget,unit:' gl',gap:wExp-wActual,isWater:true});
+    }
+  }
+  // priority: protein > cal > carbs(over) > fat > fiber > water
+  const order={protein:0,cal:1,carbs:2,fat:3,fiber:4,water:5};
+  issues.sort((a,b)=>order[a.key]-order[b.key]);
+  return issues.slice(0,4);
+}
+
+// One bar row
+function issueBar(p,iss){
+  const color=p==='him'?'var(--him)':'var(--her)';
+  let pct,markPct,txt;
+  if(iss.type==='behind'){
+    pct=Math.max(0,Math.min(100,iss.actual/iss.expected*100));
+    markPct=100; // expected sits at the right edge
+    txt=`${iss.actual}${iss.unit} / ${iss.expected}${iss.unit} expected · ${iss.gap}${iss.unit} short`;
+  } else {
+    pct=Math.min(140,iss.actual/iss.thresh*100); // can exceed
+    markPct=iss.thresh/Math.max(iss.actual,iss.thresh)*100;
+    txt=`${iss.actual}${iss.unit} eaten · limit ${iss.thresh}${iss.unit}${iss.bufPct>0?` (+${iss.bufPct}% workout)`:''} · ${iss.gap}${iss.unit} over`;
+  }
+  const barColor=iss.isWater?'#3b82f6':iss.type==='over'?'var(--red)':(pct>=85?'var(--yellow)':'var(--red)');
+  const fillW=Math.min(100,pct);
+  return `<div class="mc-bar-row">
+    <div class="mc-bar-top"><span class="mc-bar-lbl">${iss.emoji} ${iss.label} <span class="mc-tag ${iss.type}">${iss.type==='over'?'over':'behind'}</span></span></div>
+    <div class="mc-track"><div class="mc-fill" style="width:${fillW}%;background:${barColor}"></div><div class="mc-mark" style="left:${Math.min(99,markPct)}%"></div></div>
+    <div class="mc-bar-txt">${txt}</div>
+  </div>`;
+}
+
+// In-app toast
+function showToast(html){
+  document.getElementById('toastBody').innerHTML=html;
   const t=document.getElementById('notifToast');
   t.classList.add('show');clearTimeout(toastTimer);
-  toastTimer=setTimeout(dismissToast,6000);
+  toastTimer=setTimeout(dismissToast,9000);
 }
 function dismissToast(){document.getElementById('notifToast').classList.remove('show');clearTimeout(toastTimer);}
-// System notification (desktop + Android; silent fail on iOS)
 function trySystemNotif(title,body){
   try{
     if(!('Notification'in window)||Notification.permission!=='granted')return;
-    if(navigator.serviceWorker&&navigator.serviceWorker.controller){
-      navigator.serviceWorker.ready.then(reg=>reg.showNotification(title,{body})).catch(()=>{});
-    } else {new Notification(title,{body});}
+    if(navigator.serviceWorker&&navigator.serviceWorker.controller){navigator.serviceWorker.ready.then(reg=>reg.showNotification(title,{body})).catch(()=>{});}
+    else{new Notification(title,{body});}
   }catch(e){}
 }
-function fireNotification(title,body){showToast(title,body);trySystemNotif(title,body);}
+
+// MAIN: 2-col toast — up to 4 issues per person = max 8 bars (4 rows × 2 cols)
+function runMacroCheck(force){
+  if(!macroCheckOn&&!force)return;
+  const hour=new Date().getHours();
+  if((hour<9||hour>23)&&!force)return;
+  const himIss=macroIssues('him'),herIss=macroIssues('her');
+  if(!himIss.length&&!herIss.length){
+    if(force)showToast('<div class="mc-allgood">✅ Both on pace — nice work! Keep it rolling.</div>');
+    return;
+  }
+  const hasHim=himIss.length>0,hasHer=herIss.length>0;
+  const allOver=[...himIss,...herIss].every(i=>i.type==='over');
+  const head=allOver?'Whoa — too many carbs for this time of day ⚠️':
+    (hasHim&&hasHer)?"You're both running behind target today 🥺":
+    hasHim?'👨 Him is running behind target today 🥺':'👩 Her is running behind target today 🥺';
+  const now=new Date(),hh=now.getHours()%12||12,ap=now.getHours()<12?'AM':'PM';
+  const timeStr=`${hh}:${String(now.getMinutes()).padStart(2,'0')} ${ap}`;
+  const himCol=himIss.length?`<div class="mc-col"><div class="mc-col-hdr him-txt">👨 Him</div>${himIss.map(i=>issueBar('him',i)).join('')}</div>`:'';
+  const herCol=herIss.length?`<div class="mc-col"><div class="mc-col-hdr her-txt">👩 Her</div>${herIss.map(i=>issueBar('her',i)).join('')}</div>`:'';
+  showToast(`<div class="mc-head">${head}</div><div class="mc-time">📊 Pace check · ${timeStr}</div><div class="mc-grid">${himCol}${herCol}</div>`);
+  trySystemNotif('📊 Macro Pace Check',head);
+}
+
+// Reminders modal (now just the on/off toggle + manual check)
 function renderReminders(){
-  const master=document.getElementById('remMaster');
-  master.className='rem-toggle'+(reminders.enabled?' on':'');
-  document.getElementById('remList').innerHTML=REM_DEFS.map(d=>{
-    const it=reminders.items[d.id];
-    const cls=d.protein?'rem-row rem-protein':'rem-row';
-    return`<div class="${cls}"><div class="rem-info"><div class="rem-name">${d.name}</div><div class="rem-sub">${d.sub}</div></div><input type="time" class="rem-time" value="${it.time}" data-remtime="${d.id}"><button class="rem-toggle ${it.on?'on':''}" data-remtog="${d.id}"></button></div>`;
-  }).join('');
-  document.querySelectorAll('[data-remtog]').forEach(b=>b.addEventListener('click',()=>{reminders.items[b.dataset.remtog].on=!reminders.items[b.dataset.remtog].on;saveReminders();renderReminders();}));
-  document.querySelectorAll('[data-remtime]').forEach(inp=>inp.addEventListener('change',()=>{reminders.items[inp.dataset.remtime].time=inp.value;saveReminders();}));
+  document.getElementById('remMaster').className='rem-toggle'+(macroCheckOn?' on':'');
 }
-async function toggleMasterReminders(){
-  if(!reminders.enabled){
-    if('Notification'in window){let perm=Notification.permission;if(perm==='default')perm=await Notification.requestPermission();if(perm!=='granted')document.getElementById('remNote').innerHTML='⚠️ System notifications blocked — in-app alerts will still show. To enable full notifications, allow them for this site in your device settings.';}
-    reminders.enabled=true;
-  } else {reminders.enabled=false;}
-  saveReminders();renderReminders();
-}
-function checkReminders(){
-  if(!reminders.enabled)return;
-  const now=new Date(),hhmm=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-  const dayKey=now.toISOString().split('T')[0];
-  REM_DEFS.forEach(d=>{
-    const it=reminders.items[d.id];
-    if(!it||!it.on||it.time!==hhmm)return;
-    const fk=`${dayKey}_${d.id}_${it.time}`;
-    if(it.lastFired===fk)return;
-    it.lastFired=fk;saveReminders();
-    if(d.protein){const msg=getProteinMsg(d.slot);fireNotification(msg.title,msg.body);}
-    else fireNotification(d.name,d.sub);
-  });
-}
+function toggleMasterReminders(){macroCheckOn=!macroCheckOn;saveReminders();renderReminders();}
 document.getElementById('remindBtn').addEventListener('click',()=>{renderReminders();document.getElementById('remindModal').classList.add('show');});
 document.getElementById('remMaster').addEventListener('click',toggleMasterReminders);
-document.getElementById('remTestBtn').addEventListener('click',()=>{const msg=getProteinMsg('midday');fireNotification(msg.title,msg.body);trySystemNotif(msg.title,msg.body);});
+document.getElementById('remTestBtn').addEventListener('click',()=>runMacroCheck(true));
 
 // ═══ load favorites + custom dishes (local first, then Firebase listeners) ═══
 function loadPrefsLocal(){try{const f=localStorage.getItem(LSFAV);if(f)favorites=JSON.parse(f);}catch(e){}try{const c=localStorage.getItem(LSCD);if(c)customDishes=JSON.parse(c);}catch(e){}if(!favorites.him)favorites.him={};if(!favorites.her)favorites.her={};if(!customDishes.him)customDishes.him={};if(!customDishes.her)customDishes.her={};}
-function startPrefListeners(){if(!firebaseReady||!db)return;db.ref(`trackers/${SYNC_KEY}/favorites`).on('value',snap=>{const v=snap.val()||{};favorites={him:v.him||{},her:v.her||{}};try{localStorage.setItem(LSFAV,JSON.stringify(favorites));}catch(e){}renderAll();});db.ref(`trackers/${SYNC_KEY}/customDishes`).on('value',snap=>{const v=snap.val()||{};customDishes={him:v.him||{},her:v.her||{}};try{localStorage.setItem(LSCD,JSON.stringify(customDishes));}catch(e){}renderAll();});}
+function startPrefListeners(){if(!firebaseReady||!db)return;db.ref(`trackers/${SYNC_KEY}/favorites`).on('value',snap=>{const v=snap.val()||{};favorites={him:v.him||{},her:v.her||{}};try{localStorage.setItem(LSFAV,JSON.stringify(favorites));}catch(e){}renderAll();});db.ref(`trackers/${SYNC_KEY}/customDishes`).on('value',snap=>{const v=snap.val()||{};customDishes={him:v.him||{},her:v.her||{}};try{localStorage.setItem(LSCD,JSON.stringify(customDishes));}catch(e){}renderAll();});db.ref(`trackers/${SYNC_KEY}/slotFav`).on('value',snap=>{const v=snap.val()||{};slotFav={him:v.him||{},her:v.her||{}};renderAll();});}
 document.getElementById('themeBtn').addEventListener('click',()=>{theme=theme==='light'?'dark':'light';document.documentElement.setAttribute('data-theme',theme);document.getElementById('themeBtn').textContent=theme==='light'?'☀️':'🌙';try{localStorage.setItem(LST,theme);}catch(e){}});
 document.getElementById('searchInput').addEventListener('input',e=>applySearch(e.target.value));
 document.getElementById('searchClear').addEventListener('click',()=>{const inp=document.getElementById('searchInput');inp.value='';applySearch('');inp.focus();});
@@ -813,8 +1036,11 @@ function navScroll(id){const el=document.getElementById(id);if(!el)return;setTim
   loadReminders();
   loadLocal();
   initFirebase();
-  setInterval(checkReminders,60000);
+  // fetch yesterday's burn once Firebase is up, then run the pace check on open
+  setTimeout(()=>{fetchYesterdayBurn();setTimeout(()=>runMacroCheck(false),1500);},1200);
 })();
+// re-run the check whenever the app is brought back to foreground
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){fetchYesterdayBurn();setTimeout(()=>runMacroCheck(false),600);}});
 </script>
 </body>
 </html>
