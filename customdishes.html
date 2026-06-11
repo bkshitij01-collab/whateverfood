@@ -300,9 +300,9 @@ function allDishesForSlot(p,sk){
   const cfg=CONFIGS[p];
   const slot=cfg.slots[sk];
   if(!slot||!slot.opts)return [];
-  const base=slot.opts.map(o=>({},o,{_sk:sk,_builtin:true}));
+  const base=slot.opts.map(o=>({...o,_sk:sk,_builtin:true}));
   const cd=customDishes[p]||{};
-  const custom=Object.entries(cd).filter(([id,d])=>d.slot===sk).map(([id,d])=>({},d,{id,_sk:sk,_builtin:false,userDish:true}));
+  const custom=Object.entries(cd).filter(([id,d])=>d.slot===sk).map(([id,d])=>({...d,id,_sk:sk,_builtin:false,userDish:true}));
   return [...base,...custom];
 }
 
@@ -340,7 +340,6 @@ function renderSection(){
 }
 
 function renderDishRow(p,sk,d){
-  const optId=d.id||d.id; // user dish has id, built-in has id in object
   const id=d.id;
   const favKey=`${sk}__${id}`;
   const pinned=!!(favorites[p]&&favorites[p][favKey]);
